@@ -116,11 +116,20 @@ for v, edges in HB.items():
                 arr[s.index.values] = s.values
             hist[v][d].append(arr.tolist())
 
+# wind rose: direction the wind blows from (16 sectors) x speed class, per district and month
+wdir = (270 - np.degrees(np.arctan2(df["VGRD_10m"].values, df["UGRD_10m"].values))) % 360
+sector = ((wdir + 11.25) // 22.5).astype(int) % 16
+sbin = np.digitize(df["wind"].values, [10, 20, 30])
+didx = df["District"].map({d: i for i, d in enumerate(districts)}).values
+code = ((didx * 12 + (df["month"].values - 1)) * 16 + sector) * 4 + sbin
+rose_counts = np.bincount(code, minlength=len(districts) * 12 * 16 * 4).reshape(len(districts), 12, 16, 4)
+rose = {d: rose_counts[i].tolist() for i, d in enumerate(districts)}
+
 payload = dict(
     clean=clean, stats=stats, corr=corr, vars=VARS,
     points=dict(lat=pts["latitude"].round(3).tolist(), lon=pts["longitude"].round(3).tolist(), did=pts["did"].tolist()),
     districts=[dict(name=d, state=dstate[d], n=int((pts.district == d).sum())) for d in districts],
-    grid=grid, daily=daily, conds=conds,
+    grid=grid, daily=daily, conds=conds, rose=rose,
     hist=hist, histEdges={v: e.round(2).tolist() for v, e in HB.items()},
 )
 if backdrop:

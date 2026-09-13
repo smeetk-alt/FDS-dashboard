@@ -313,6 +313,72 @@ html:not(.js-anim) .ticker{overflow-x:auto}
 .totop .arr{fill:none;stroke:var(--ink);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s cubic-bezier(.2,.75,.25,1.3)}
 .totop:hover .arr{transform:translateY(-3px)}
 @media (prefers-reduced-motion:reduce){.totop{transition:none}}
+
+/* ---------- data science lab ---------- */
+.grid > *{scroll-margin-top:170px}
+.two-col{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:24px;align-items:start}
+.three-col{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr) minmax(0,.9fr);gap:24px;align-items:start}
+.sub-h{font-family:var(--f-body);font-size:13.5px;font-weight:600;color:var(--ink);margin:0 0 6px;display:flex;justify-content:space-between;gap:8px;align-items:baseline;flex-wrap:wrap}
+.sub-h small{font-weight:400;color:var(--muted);font-size:12px}
+.metric-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:8px;margin-top:8px}
+.metric{background:var(--surface-2);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:1px;min-width:0}
+.metric small{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.metric b{font-size:16px;font-weight:600;font-variant-numeric:tabular-nums}
+.metric span{font-size:11px;color:var(--ink-2)}
+.mini-table{width:100%;font-size:12.5px;margin-top:8px}
+.mini-table th,.mini-table td{padding:6px 8px}
+.cluster-chips{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.cl-row{display:flex;gap:4px 8px;align-items:baseline;flex-wrap:wrap;font-size:12.5px;color:var(--ink-2);line-height:1.45}
+.cl-row b{color:var(--ink);font-weight:600}
+.swatch{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.live{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:26px;align-items:start}
+.live-now{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px 26px;align-items:center}
+.live-temp{font-size:60px;font-weight:600;line-height:1;letter-spacing:-.03em}
+.live-temp small{font-size:20px;font-weight:500;color:var(--ink-2);vertical-align:super;margin-left:2px}
+.live-cond{font-size:15px;font-weight:600;margin-top:4px}
+.live-grid{grid-column:1 / -1;display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:8px}
+.live-state{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);white-space:nowrap}
+.dot-live{display:inline-block;width:8px;height:8px;border-radius:50%;background:#2fbf71;animation:livePulse 2s infinite}
+@keyframes livePulse{0%{box-shadow:0 0 0 0 rgba(47,191,113,.55)}70%{box-shadow:0 0 0 8px rgba(47,191,113,0)}100%{box-shadow:0 0 0 0 rgba(47,191,113,0)}}
+.dot-off{background:var(--axis);animation:none}
+.forecast{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.fc-day{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11.5px;color:var(--ink-2)}
+.fc-bar{position:relative;width:8px;height:64px;border-radius:4px;background:var(--surface-2)}
+.fc-bar i{position:absolute;left:0;right:0;border-radius:4px;background:linear-gradient(180deg,var(--heat-2),var(--rain-1))}
+.daylight{height:6px;border-radius:3px;background:var(--surface-2);position:relative;overflow:hidden;margin-top:6px}
+.daylight i{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,#F2B84B,#E4701B);border-radius:3px}
+.compass{width:44px;height:44px;flex:none}
+.insights{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:11px}
+.insights li{display:grid;grid-template-columns:30px 1fr;gap:10px;align-items:start;font-size:13px;color:var(--ink-2)}
+.insights li b{color:var(--ink)}
+.ins-ico{width:30px;height:26px;border-radius:8px;display:grid;place-items:center;background:linear-gradient(135deg,color-mix(in srgb,var(--grad-a) 40%,transparent),color-mix(in srgb,var(--grad-b) 40%,transparent));color:var(--ink);font:600 11px var(--f-mono)}
+.wx-ico{width:84px;height:84px;flex:none}
+.wx-sun{transform-box:fill-box;transform-origin:50% 50%;animation:wxSpin 16s linear infinite}
+.wx-cloud{animation:wxFloat 5s ease-in-out infinite}
+.wx-drop{animation:wxDrop 1.2s linear infinite}
+.wx-drop:nth-child(2){animation-delay:.4s}.wx-drop:nth-child(3){animation-delay:.8s}
+.wx-bolt{animation:wxFlash 2.8s infinite}
+@keyframes wxSpin{to{transform:rotate(360deg)}}
+@keyframes wxFloat{50%{transform:translateX(3px)}}
+@keyframes wxDrop{0%{transform:translateY(-4px);opacity:0}30%{opacity:1}100%{transform:translateY(10px);opacity:0}}
+@keyframes wxFlash{0%,86%,100%{opacity:1}90%{opacity:.15}94%{opacity:1}}
+.in .anim .growx{transform-box:view-box;animation:growx .8s cubic-bezier(.2,.75,.2,1) both;animation-delay:calc(var(--i) * 50ms)}
+@keyframes growx{from{transform:scaleX(0)}}
+.in .anim .rgrow{transform-box:view-box;animation:rgrow .9s cubic-bezier(.2,.75,.2,1) both;animation-delay:calc(var(--i) * 40ms)}
+@keyframes rgrow{from{transform:scale(0)}}
+.rail{position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:70;display:flex;flex-direction:column;gap:11px}
+.rail a{display:flex;align-items:center;justify-content:flex-end;gap:10px;text-decoration:none;color:var(--ink-2);font-size:12px}
+.rail a span{opacity:0;transform:translateX(8px);transition:opacity .25s,transform .3s;background:var(--surface);border:1px solid var(--hair);padding:3px 10px;border-radius:999px;white-space:nowrap}
+.rail a i{width:8px;height:8px;border-radius:50%;background:var(--axis);transition:transform .3s,background .3s}
+.rail a:hover span,.rail a:focus-visible span{opacity:1;transform:none}
+.rail a.on i{background:linear-gradient(135deg,var(--grad-a),var(--grad-b));transform:scale(1.7)}
+@media (max-width:1580px){.rail{display:none}}
+.export{display:inline-flex;gap:6px;margin-left:auto}
+.export + .theme-toggle{margin-left:0}
+.export button{border:1px solid var(--hair);background:var(--surface);border-radius:7px;padding:5px 10px;cursor:pointer;font-size:12.5px;font-weight:500;color:var(--ink-2);min-height:32px}
+.export button:hover{border-color:var(--axis);color:var(--ink)}
+@media (max-width:1100px){.two-col,.three-col,.live{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.wx-sun,.wx-cloud,.wx-drop,.wx-bolt,.dot-live{animation:none}}
 @media (max-width:700px){.theme-toggle{margin-left:0}}
 </style>
 <script>
@@ -356,6 +422,7 @@ html:not(.js-anim) .ticker{overflow-x:auto}
         <div class="seg" id="f-var" role="group" aria-labelledby="lbl-var"></div>
       </div>
       <button class="reset" id="f-reset" type="button">Reset filters</button>
+      <div class="export" id="export" role="group" aria-label="Export the current selection"><button type="button" data-fmt="csv">Export CSV</button><button type="button" data-fmt="json">Export JSON</button></div>
       <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch colour theme">
         <span class="icons" aria-hidden="true">
           <svg class="ico sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6" fill="none" stroke-linecap="round"/></svg>
@@ -370,7 +437,16 @@ html:not(.js-anim) .ticker{overflow-x:auto}
   <main class="grid">
     <section class="kpis" id="kpis" aria-label="Key figures for the selection"></section>
 
-    <section class="panel map-panel" aria-labelledby="h-map">
+    <section class="panel span-12" id="sec-live" aria-labelledby="h-live">
+      <div class="ph"><div><div class="eyebrow">Live feed · insight engine</div><h2 id="h-live">Right now, and what stands out</h2>
+        <p class="sub" id="live-sub"></p></div><div class="live-state" id="live-state"></div></div>
+      <div class="live">
+        <div id="live-now"></div>
+        <div><div class="sub-h">What stands out in your selection</div><ul class="insights" id="insights"></ul></div>
+      </div>
+    </section>
+
+    <section class="panel map-panel" id="sec-map" aria-labelledby="h-map">
       <div class="ph"><div><div class="eyebrow">Geospatial</div><h2 id="h-map">Where it happens</h2>
         <p class="sub" id="map-sub"></p></div></div>
       <div class="map-wrap"><canvas id="map" role="img" aria-label="Grid map of the selected variable"></canvas></div>
@@ -394,7 +470,18 @@ html:not(.js-anim) .ticker{overflow-x:auto}
       <details><summary>View counts table</summary><div class="tscroll" style="max-height:260px" id="conds-table"></div></details>
     </section>
 
-    <section class="panel span-6" aria-labelledby="h-hist">
+    <section class="panel span-7" id="sec-calendar" aria-labelledby="h-cal">
+      <div class="ph"><div><div class="eyebrow">Calendar heatmap</div><h2 id="h-cal">Every day of 2022</h2><p class="sub" id="cal-sub"></p></div><div class="ramp" id="cal-ramp" style="min-width:230px"></div></div>
+      <div class="chart" id="calendar"></div>
+    </section>
+
+    <section class="panel span-5" id="sec-rose" aria-labelledby="h-rose">
+      <div class="ph"><div><div class="eyebrow">Directional statistics</div><h2 id="h-rose">Where the wind comes from</h2><p class="sub" id="rose-sub"></p></div></div>
+      <div class="chart" id="rose"></div>
+      <div class="legend" id="rose-legend"></div>
+    </section>
+
+    <section class="panel span-6" id="sec-dist" aria-labelledby="h-hist">
       <div class="ph"><div><div class="eyebrow">Distribution · outliers</div><h2 id="h-hist">Shape of the data</h2>
         <p class="sub" id="hist-sub"></p></div></div>
       <div class="chart" id="hist"></div>
@@ -409,7 +496,7 @@ html:not(.js-anim) .ticker{overflow-x:auto}
       <div class="ramp" id="corr-ramp"></div>
     </section>
 
-    <section class="panel span-7" aria-labelledby="h-scatter">
+    <section class="panel span-7" id="sec-reg" aria-labelledby="h-scatter">
       <div class="ph"><div><div class="eyebrow">Regression</div><h2 id="h-scatter">Fitting a line</h2>
         <p class="sub" id="scatter-sub"></p></div>
         <div class="controls">
@@ -427,7 +514,42 @@ html:not(.js-anim) .ticker{overflow-x:auto}
       <div class="tscroll" id="rank"></div>
     </section>
 
-    <section class="panel span-7" aria-labelledby="h-desc">
+    <section class="panel span-12" id="sec-models" aria-labelledby="h-models">
+      <div class="ph"><div><div class="eyebrow">Machine learning · validation</div><h2 id="h-models">Modelling lab</h2>
+        <p class="sub">Two models for the selected variable, each judged on data it never saw while being fitted.</p></div>
+        <div class="controls"><label for="harm-k">Harmonics</label><select id="harm-k"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div></div>
+      <div class="two-col">
+        <div><div class="sub-h" id="harm-title"></div><div class="chart" id="harm"></div><div class="metric-row" id="harm-metrics"></div><p class="caption" id="harm-note"></p></div>
+        <div><div class="sub-h" id="mlr-title"></div><div class="chart" id="mlr"></div><div id="mlr-table"></div><p class="caption" id="mlr-note"></p></div>
+      </div>
+    </section>
+
+    <section class="panel span-12" id="sec-clusters" aria-labelledby="h-clusters">
+      <div class="ph"><div><div class="eyebrow">Unsupervised learning · PCA</div><h2 id="h-clusters">Districts that behave alike</h2>
+        <p class="sub" id="cl-sub"></p></div>
+        <div class="controls"><label for="clus-k">Clusters (k)</label><select id="clus-k"><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option></select></div></div>
+      <div class="three-col">
+        <div><div class="sub-h">PCA projection <small id="pca-var"></small></div><div class="chart" id="pca"></div><p class="caption">Each shape is a district; grey arrows show how each climate feature pulls on the two principal components. Click a district to filter.</p></div>
+        <div><div class="sub-h">Cluster profiles <small>standardised means (z)</small></div><div class="chart" id="cl-profile"></div><div class="cluster-chips" id="cl-members"></div></div>
+        <div><div class="sub-h">Choosing k <small id="sil-note"></small></div><div class="chart" id="elbow"></div><p class="caption">Top: inertia, the spread inside clusters, falls as k grows; look for the bend. Bottom: silhouette score; higher means better-separated clusters.</p></div>
+      </div>
+    </section>
+
+    <section class="panel span-7" id="sec-anom" aria-labelledby="h-anom">
+      <div class="ph"><div><div class="eyebrow">Anomaly detection</div><h2 id="h-anom">Days that broke the pattern</h2><p class="sub" id="anom-sub"></p></div></div>
+      <div class="chart" id="anom"></div>
+      <div class="tscroll" style="max-height:280px" id="anom-table"></div>
+    </section>
+
+    <section class="panel span-5" id="sec-test" aria-labelledby="h-test">
+      <div class="ph"><div><div class="eyebrow">Hypothesis testing</div><h2 id="h-test">Is the difference real?</h2><p class="sub" id="test-sub"></p></div>
+        <div class="controls"><select id="test-a" aria-label="First season"></select><span>vs</span><select id="test-b" aria-label="Second season"></select></div></div>
+      <div class="chart" id="test-chart"></div>
+      <div class="metric-row" id="test-metrics"></div>
+      <div class="insight" id="test-insight"></div>
+    </section>
+
+    <section class="panel span-7" id="sec-data" aria-labelledby="h-desc">
       <div class="ph"><div><div class="eyebrow">Descriptive statistics</div><h2 id="h-desc">The numbers behind it all</h2>
         <p class="sub">Exact values over all 766,500 cleaned observations (whole state, full year). Outliers use Tukey's fences: below Q1 − 1.5·IQR or above Q3 + 1.5·IQR.</p></div></div>
       <div class="tscroll" id="desc" style="max-height:none"></div>
@@ -453,6 +575,18 @@ html:not(.js-anim) .ticker{overflow-x:auto}
     <path class="arr" d="M25 32V18M18.5 24.5 25 18l6.5 6.5"/>
   </svg>
 </button>
+<nav class="rail" aria-label="Jump to section">
+  <a href="#kpis"><span>Overview</span><i></i></a>
+  <a href="#sec-live"><span>Live and insights</span><i></i></a>
+  <a href="#sec-map"><span>Map and time series</span><i></i></a>
+  <a href="#sec-calendar"><span>Calendar and wind</span><i></i></a>
+  <a href="#sec-dist"><span>Distribution and correlation</span><i></i></a>
+  <a href="#sec-reg"><span>Regression and ranking</span><i></i></a>
+  <a href="#sec-models"><span>Modelling lab</span><i></i></a>
+  <a href="#sec-clusters"><span>Clustering</span><i></i></a>
+  <a href="#sec-anom"><span>Anomalies and tests</span><i></i></a>
+  <a href="#sec-data"><span>Statistics and cleaning</span><i></i></a>
+</nav>
 
 <script src="data.js"></script>
 <script>
@@ -804,6 +938,8 @@ function renderSeries() {
   const path = (arr) => { let d = ""; for (let i = 0; i < 365; i++) d += (i ? "L" : "M") + X(i).toFixed(1) + " " + Y(arr[i]).toFixed(1); return d; };
   svg += `<path class="ln ln-slow" pathLength="1" d="${path(y)}" fill="none" stroke="${c1}" stroke-width="1" opacity=".85"/>`;
   svg += `<path class="ln" pathLength="1" d="${path(roll)}" fill="none" stroke="${c2}" stroke-width="2.2" stroke-linejoin="round"/>`;
+  const anomHot = css("heat-2"), anomCool = css("rain-2");
+  svg += `<g class="fade late">${anomalyData(v).flagged.map((o) => `<circle cx="${X(o.i).toFixed(1)}" cy="${Y(o.y).toFixed(1)}" r="4.5" fill="none" stroke="${o.z > 0 ? anomHot : anomCool}" stroke-width="1.8"/>`).join("")}</g>`;
   let pk = 0; for (let i = 0; i < 365; i++) if (roll[i] > roll[pk]) pk = i;
   const px = X(pk), py = Y(roll[pk]), anchor = px > w - 150 ? "end" : "start";
   svg += `<g class="fade late"><circle class="pulse" cx="${px}" cy="${py}" r="4" fill="none" stroke="${c2}" stroke-width="2"/><circle cx="${px}" cy="${py}" r="4" fill="${c2}" stroke="var(--surface)" stroke-width="2"/><text class="clabel" x="${px + (anchor === "end" ? -8 : 8)}" y="${Math.max(mt + 10, py - 8)}" text-anchor="${anchor}">Peak 7-day mean ${fmt(roll[pk], M.dp)} ${M.unit} · ${dayLabel(pk)}</text></g>`;
@@ -826,7 +962,7 @@ function renderSeries() {
   };
   host.onblur = () => { g.style.display = "none"; hideTip(); };
   $("#series-sub").textContent = `Daily mean ${M.label.toLowerCase()} (${M.unit}) for ${st.district < 0 ? "the state, weighted by grid cells" : D[st.district].name}; thick line is a centred 7-day rolling mean.`;
-  $("#series-legend").innerHTML = `<span><i class="line" style="background:${c1}"></i>Daily</span><span><i class="line" style="background:${c2};height:3px"></i>7-day mean</span>${bandLo ? `<span><i class="band" style="background:${c1}"></i>${bandLabel}</span>` : ""}`;
+  $("#series-legend").innerHTML = `<span><i class="line" style="background:${c1}"></i>Daily</span><span><i class="line" style="background:${c2};height:3px"></i>7-day mean</span>${bandLo ? `<span><i class="band" style="background:${c1}"></i>${bandLabel}</span>` : ""}<span><i style="background:transparent;border:1.8px solid ${css("heat-2")};border-radius:50%"></i>Anomaly</span>`;
   const mM = monthlySel(v);
   $("#series-table").innerHTML = `<table><thead><tr><th>Month</th><th>Mean ${M.unit}</th><th>Min daily</th><th>Max daily</th></tr></thead><tbody>${MONTHS.map((mn, m) => { let a = Infinity, b = -Infinity; for (let k = 0; k < MDAYS[m]; k++) { a = Math.min(a, y[MSTART[m] + k]); b = Math.max(b, y[MSTART[m] + k]); } return `<tr><td>${mn}</td><td class="num">${fmt(mM[m], M.dp)}</td><td class="num">${fmt(a, M.dp)}</td><td class="num">${fmt(b, M.dp)}</td></tr>`; }).join("")}</tbody></table>`;
 }
@@ -873,14 +1009,15 @@ function renderConds() {
 function binnedStats(counts, edges) {
   const N = counts.reduce((a, b) => a + b, 0), mids = counts.map((_, i) => (edges[i] + edges[i + 1]) / 2);
   let mean = 0; counts.forEach((c, i) => mean += c * mids[i]); mean /= N;
-  let m2 = 0, m3 = 0; counts.forEach((c, i) => { const d = mids[i] - mean; m2 += c * d * d; m3 += c * d * d * d; });
+  let m2 = 0, m3 = 0, m4 = 0; counts.forEach((c, i) => { const d = mids[i] - mean; m2 += c * d * d; m3 += c * d * d * d; m4 += c * d * d * d * d; });
   const sd = Math.sqrt(m2 / N), skew = (m3 / N) / (sd ** 3 || 1);
   const q = (p) => { const target = p * N; let cum = 0; for (let i = 0; i < counts.length; i++) { if (cum + counts[i] >= target) return edges[i] + (edges[i + 1] - edges[i]) * ((target - cum) / (counts[i] || 1)); cum += counts[i]; } return edges[edges.length - 1]; };
   const q1 = q(.25), med = q(.5), q3 = q(.75), iqr = q3 - q1, fLo = q1 - 1.5 * iqr, fHi = q3 + 1.5 * iqr;
   let out = 0; counts.forEach((c, i) => { const a = edges[i], b = edges[i + 1];
     if (b <= fLo || a >= fHi) out += c; else { if (a < fLo) out += c * (fLo - a) / (b - a); if (b > fHi) out += c * (b - fHi) / (b - a); } });
   let first = counts.findIndex((c) => c > 0), last = counts.length - 1; while (last > 0 && !counts[last]) last--;
-  return {N, mean, sd, skew, q1, med, q3, iqr, fLo, fHi, out, min:edges[first], max:edges[last + 1]};
+  return {N, mean, sd, skew, kurt: (m4 / N) / (sd ** 4 || 1) - 3, q1, med, q3, iqr, fLo, fHi, out, min:edges[first], max:edges[last + 1],
+    p5: q(.05), p95: q(.95), mode: mids[counts.indexOf(Math.max(...counts))]};
 }
 function renderHist() {
   const v = st.v, M = META[v], edges = W.histEdges[v], host = $("#hist"), w = host.clientWidth, h = 250;
@@ -905,6 +1042,19 @@ function renderHist() {
     svg += `<rect data-i="${i}" x="${x1}" y="${mt}" width="${x2 - x1}" height="${ih}" fill="transparent"/>`;
   }
   svg += `<line x1="${ml}" x2="${w - mr}" y1="${mt + ih}" y2="${mt + ih}" stroke="${css("axis")}"/>`;
+  if (!uneven) {
+    // Gaussian kernel density over the binned counts; bandwidth is Silverman's rule, floored at 1.25 bins
+    const binW = edges[1] - edges[0], kmids = counts.map((_, i) => (edges[i] + edges[i + 1]) / 2);
+    const hk = Math.max(0.9 * Math.min(S.sd, S.iqr / 1.34) * Math.pow(S.N, -0.2), binW * 1.25), kx0 = edges[a], kx1 = edges[b + 1];
+    let kpath = "";
+    for (let s = 0; s <= 160; s++) {
+      const xv = kx0 + (kx1 - kx0) * s / 160; let dens = 0;
+      for (let i = a; i <= b; i++) if (counts[i]) { const u = (xv - kmids[i]) / hk; if (Math.abs(u) < 4) dens += counts[i] * Math.exp(-.5 * u * u); }
+      const pctv = dens / (S.N * hk * Math.sqrt(2 * Math.PI)) * binW * 100;
+      kpath += (s ? "L" : "M") + xOf(xv).toFixed(1) + " " + Math.max(mt, Y(pctv)).toFixed(1);
+    }
+    svg += `<path class="ln" pathLength="1" d="${kpath}" fill="none" stroke="${css("ink-2")}" stroke-width="2" stroke-linejoin="round"/>`;
+  }
   if (uneven) { for (let i = a; i <= b + 1; i++) if ((i - a) % Math.max(1, Math.ceil(nb / 8)) === 0 || i === b + 1) svg += `<text class="tick" x="${xOf(i)}" y="${h - 10}" text-anchor="middle">${edges[i]}</text>`; }
   else { const xt = niceTicks(edges[a], edges[b + 1], Math.max(3, Math.floor(iw / 80))); xt.ticks.filter((t) => t >= edges[a] && t <= edges[b + 1]).forEach((t) => { svg += `<text class="tick" x="${xOf(t)}" y="${h - 10}" text-anchor="middle">${fmt(t, stepDp(xt.step))}</text>`; }); }
   const by = 18, wLo = Math.max(S.min, S.fLo), wHi = Math.min(S.max, S.fHi);
@@ -920,10 +1070,11 @@ function renderHist() {
     r.addEventListener("mousemove", (e) => { const i = +r.dataset.i; showTip(`<b>${fmt(edges[i], uneven ? 1 : M.dp)} – ${fmt(edges[i + 1], uneven ? 1 : M.dp)} ${M.unit}</b><div class="r"><span>Observations</span><b>${fmtInt(counts[i])}</b></div><div class="r"><span>Share</span><span>${fmt(counts[i] / S.N * 100, 2)}%</span></div>`, e.clientX, e.clientY); });
     r.addEventListener("mouseleave", hideTip);
   });
-  $("#hist-sub").innerHTML = `${M.label} (${M.unit}) for every grid-day in the selection. Box plot above: whiskers at Tukey's fences, dark tick = median. ${uneven ? "Rain bins follow IMD-style intensity classes, so widths are equal on screen but not in mm." : ""}`;
+  $("#hist-sub").innerHTML = `${M.label} (${M.unit}) for every grid-day in the selection. Box plot above: whiskers at Tukey's fences, dark tick = median.${uneven ? "" : " Grey curve: kernel density estimate (KDE)."} ${uneven ? "Rain bins follow IMD-style intensity classes, so widths are equal on screen but not in mm." : ""}`;
   $("#hist-stats").innerHTML = [
     ["Observations", fmtInt(S.N)], ["Mean", `${fmt(S.mean, M.dp)} ${M.unit}`], ["Median", `≈ ${fmt(S.med, M.dp)} ${M.unit}`], ["Std deviation", `≈ ${fmt(S.sd, M.dp === 0 ? 1 : M.dp)}`],
     ["IQR (Q1–Q3)", `≈ ${fmt(S.q1, M.dp)}–${fmt(S.q3, M.dp)}`], ["Skewness", `≈ ${fmt(S.skew, 2)}`], ["Outliers", `≈ ${fmtInt(S.out)}`], ["Outlier share", `≈ ${fmt(S.out / S.N * 100, 1)}%`],
+    ["Mode (bin)", `≈ ${fmt(S.mode, M.dp === 0 ? 1 : M.dp)}`], ["Variance", `≈ ${fmt(S.sd * S.sd, 2)}`], ["Coeff. of variation", `≈ ${fmt(S.sd / Math.abs(S.mean || 1) * 100, 1)}%`], ["P5 – P95", `≈ ${fmt(S.p5, M.dp)}–${fmt(S.p95, M.dp)}`],
   ].map(([k, val]) => `<div><small>${k}</small><b class="num">${val}</b></div>`).join("");
   const shape = Math.abs(S.skew) < .5 ? "roughly symmetric, so the mean and median agree" : S.skew > 0 ? "right-skewed: a long tail of high values pulls the mean above the median, so the median is the better 'typical' value" : "left-skewed: a tail of low values pulls the mean below the median";
   $("#hist-insight").innerHTML = `<b>Reading it:</b> this distribution is ${shape}. ≈ ${fmt(S.out / S.N * 100, 1)}% of observations fall outside Tukey's fences. <span style="color:var(--muted)">Values marked ≈ are estimated from binned counts.</span>`;
@@ -1110,6 +1261,552 @@ function renderPipe() {
     `<b>Decode the label</b><p><code>Condition_encoded</code> turned out to be rain intensity. Checking the rainfall range inside each code gave: 3 = dry (&lt; 0.1 mm), 1 = light (0.1–2.5), 2 = moderate (2.5–7.6), 0 = heavy (≥ 7.6).</p>`,
     `<b>Aggregate for the browser</b><p>Cell × month means, district × day means, and binned histograms. This takes 766,500 rows down to about 2 MB while keeping every chart exact or clearly marked ≈.</p>`,
   ].map((h) => `<li><div>${h}</div></li>`).join("");
+}
+
+/* ---------- data science lab: maths ---------- */
+const meanOf = (a) => { let s = 0; for (let i = 0; i < a.length; i++) s += a[i]; return s / a.length; };
+const varOf = (a, m = meanOf(a)) => { let s = 0; for (let i = 0; i < a.length; i++) s += (a[i] - m) ** 2; return s / Math.max(1, a.length - 1); };
+const fmtSign = (x, dp = 1) => (x > 0 ? "+" : "") + fmt(x, dp);
+const dot = (beta, x) => { let s = 0; for (let i = 0; i < x.length; i++) s += beta[i] * x[i]; return s; };
+function mulberry32(seed) {
+  return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+}
+function solveLinear(A, b) {
+  const n = b.length, M2 = A.map((r, i) => [...r, b[i]]);
+  for (let c = 0; c < n; c++) {
+    let p = c; for (let r = c + 1; r < n; r++) if (Math.abs(M2[r][c]) > Math.abs(M2[p][c])) p = r;
+    [M2[c], M2[p]] = [M2[p], M2[c]];
+    const piv = M2[c][c] || 1e-12;
+    for (let r = 0; r < n; r++) if (r !== c) { const f = M2[r][c] / piv; if (f) for (let k = c; k <= n; k++) M2[r][k] -= f * M2[c][k]; }
+  }
+  return M2.map((r, i) => r[n] / (r[i] || 1e-12));
+}
+function ols(X, y) {
+  const p = X[0].length, XtX = Array.from({length:p}, () => new Array(p).fill(0)), Xty = new Array(p).fill(0);
+  for (let i = 0; i < X.length; i++) { const xi = X[i]; for (let a = 0; a < p; a++) { Xty[a] += xi[a] * y[i]; for (let b = a; b < p; b++) XtX[a][b] += xi[a] * xi[b]; } }
+  for (let a = 0; a < p; a++) { XtX[a][a] += 1e-9; for (let b = 0; b < a; b++) XtX[a][b] = XtX[b][a]; }
+  return solveLinear(XtX, Xty);
+}
+function scores(y, yhat) {
+  const m = meanOf(y); let sse = 0, sae = 0, sst = 0;
+  for (let i = 0; i < y.length; i++) { const e = y[i] - yhat[i]; sse += e * e; sae += Math.abs(e); sst += (y[i] - m) ** 2; }
+  return {rmse: Math.sqrt(sse / y.length), mae: sae / y.length, r2: 1 - sse / (sst || 1)};
+}
+function lgammaFn(z) {
+  const g = [676.5203681218851, -1259.1392167224028, 771.32342877765313, -176.61502916214059, 12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7];
+  if (z < 0.5) return Math.log(Math.PI / Math.abs(Math.sin(Math.PI * z))) - lgammaFn(1 - z);
+  z -= 1; let x = 0.99999999999980993; for (let i = 0; i < 8; i++) x += g[i] / (z + i + 1);
+  const t = z + 7.5; return 0.5 * Math.log(2 * Math.PI) + (z + 0.5) * Math.log(t) - t + Math.log(x);
+}
+function betacf(a, b, x) {
+  const FPMIN = 1e-300, qab = a + b, qap = a + 1, qam = a - 1; let c = 1, d = 1 - qab * x / qap;
+  if (Math.abs(d) < FPMIN) d = FPMIN; d = 1 / d; let h = d;
+  for (let m = 1; m <= 300; m++) {
+    const m2 = 2 * m; let aa = m * (b - m) * x / ((qam + m2) * (a + m2));
+    d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN; c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN; d = 1 / d; h *= d * c;
+    aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2));
+    d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN; c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN; d = 1 / d;
+    const del = d * c; h *= del; if (Math.abs(del - 1) < 3e-12) break;
+  }
+  return h;
+}
+function ibeta(x, a, b) {
+  if (x <= 0) return 0; if (x >= 1) return 1;
+  const bt = Math.exp(lgammaFn(a + b) - lgammaFn(a) - lgammaFn(b) + a * Math.log(x) + b * Math.log(1 - x));
+  return x < (a + 1) / (a + b + 2) ? bt * betacf(a, b, x) / a : 1 - bt * betacf(b, a, 1 - x) / b;
+}
+const tTwoSidedP = (t, df) => ibeta(df / (df + t * t), df / 2, 0.5);
+function welch(a, b) {
+  const ma = meanOf(a), mb = meanOf(b), va = varOf(a, ma), vb = varOf(b, mb), na = a.length, nb = b.length;
+  const se = Math.sqrt(va / na + vb / nb), t = (ma - mb) / (se || 1e-12);
+  const df = (va / na + vb / nb) ** 2 / ((va / na) ** 2 / (na - 1) + (vb / nb) ** 2 / (nb - 1) || 1e-12);
+  const p = tTwoSidedP(Math.abs(t), df), sp = Math.sqrt(((na - 1) * va + (nb - 1) * vb) / (na + nb - 2)) || 1e-12;
+  let lo = 0, hi = 60; for (let i = 0; i < 60; i++) { const mid = (lo + hi) / 2; if (tTwoSidedP(mid, df) > 0.05) lo = mid; else hi = mid; }
+  const tc = (lo + hi) / 2;
+  return {ma, mb, na, nb, t, df, p, d: (ma - mb) / sp, ci: [ma - mb - tc * se, ma - mb + tc * se]};
+}
+function eigSym(S) {
+  const n = S.length, A = S.map((r) => r.slice()), V = Array.from({length:n}, (_, i) => Array.from({length:n}, (__, j) => +(i === j)));
+  for (let sweep = 0; sweep < 80; sweep++) {
+    let off = 0; for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) off += A[i][j] ** 2;
+    if (off < 1e-14) break;
+    for (let p = 0; p < n; p++) for (let q = p + 1; q < n; q++) {
+      if (Math.abs(A[p][q]) < 1e-15) continue;
+      const th = (A[q][q] - A[p][p]) / (2 * A[p][q]), t = (th >= 0 ? 1 : -1) / (Math.abs(th) + Math.sqrt(th * th + 1)), c = 1 / Math.sqrt(t * t + 1), s = t * c;
+      for (let k = 0; k < n; k++) { const akp = A[k][p], akq = A[k][q]; A[k][p] = c * akp - s * akq; A[k][q] = s * akp + c * akq; }
+      for (let k = 0; k < n; k++) { const apk = A[p][k], aqk = A[q][k]; A[p][k] = c * apk - s * aqk; A[q][k] = s * apk + c * aqk; }
+      for (let k = 0; k < n; k++) { const vkp = V[k][p], vkq = V[k][q]; V[k][p] = c * vkp - s * vkq; V[k][q] = s * vkp + c * vkq; }
+    }
+  }
+  const vals = A.map((r, i) => r[i]), order = vals.map((_, i) => i).sort((x, y) => vals[y] - vals[x]);
+  return {values: order.map((i) => vals[i]), vectors: order.map((i) => V.map((row) => row[i]))};
+}
+const isoDate = (i) => `2022-${String(MONTH_OF[i]).padStart(2, "0")}-${String(i - MSTART[MONTH_OF[i] - 1] + 1).padStart(2, "0")}`;
+const CAT = {light:["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300"], dark:["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181", "#008300"]};
+const catColors = () => CAT[resolvedTheme() === "dark" ? "dark" : "light"];
+function shapePath(c, x, y, r) {
+  switch (c % 6) {
+    case 0: return `M${x - r} ${y}a${r} ${r} 0 1 0 ${2 * r} 0a${r} ${r} 0 1 0 ${-2 * r} 0`;
+    case 1: { const s = r * .88; return `M${x - s} ${y - s}h${2 * s}v${2 * s}h${-2 * s}z`; }
+    case 2: return `M${x} ${y - r * 1.2}L${x + r * 1.1} ${y + r * .8}L${x - r * 1.1} ${y + r * .8}z`;
+    case 3: return `M${x} ${y - r * 1.3}L${x + r * 1.1} ${y}L${x} ${y + r * 1.3}L${x - r * 1.1} ${y}z`;
+    case 4: { const a = r * .42; return `M${x - a} ${y - r}h${2 * a}v${r - a}h${r - a}v${2 * a}h${-(r - a)}v${r - a}h${-2 * a}v${-(r - a)}h${-(r - a)}v${-2 * a}h${r - a}z`; }
+    default: { let d = ""; for (let i = 0; i < 10; i++) { const ang = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * .5 : r * 1.25; d += (i ? "L" : "M") + (x + Math.cos(ang) * rr).toFixed(1) + " " + (y + Math.sin(ang) * rr).toFixed(1); } return d + "z"; }
+  }
+}
+const shapeSvg = (c, col) => `<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="${shapePath(c, 7, 7, 5)}" fill="${col}"/></svg>`;
+const metricTile = (k, val, sub) => `<div class="metric"><small>${k}</small><b>${val}</b>${sub ? `<span>${sub}</span>` : ""}</div>`;
+
+/* ---------- modelling lab ---------- */
+function renderHarmonic() {
+  const host = $("#harm"), w = host.clientWidth; if (!w) return;
+  const v = st.v, M = META[v], y = Array.from(dailySel(v)), K = st.K, TR = 304, N = 365;
+  const feat = (t) => { const r = [1]; for (let k = 1; k <= K; k++) r.push(Math.cos(2 * Math.PI * k * t / N), Math.sin(2 * Math.PI * k * t / N)); return r; };
+  const Xm = y.map((_, t) => feat(t)), beta = ols(Xm.slice(0, TR), y.slice(0, TR)), yhat = Xm.map((x) => dot(beta, x));
+  const mTr = scores(y.slice(0, TR), yhat.slice(0, TR)), mTe = scores(y.slice(TR), yhat.slice(TR));
+  const band = 1.96 * Math.sqrt(varOf(y.slice(0, TR).map((val, i) => val - yhat[i]), 0));
+  const trainMean = meanOf(y.slice(0, TR)), mClim = scores(y.slice(TR), y.slice(TR).map(() => trainMean)), mPers = scores(y.slice(TR), y.slice(TR).map((_, i) => y[TR + i - 1]));
+  let inside = 0; for (let i = TR; i < N; i++) if (Math.abs(y[i] - yhat[i]) <= band) inside++;
+  const h = 250, ml = 44, mr = 12, mt = 14, mb = 24, iw = w - ml - mr, ih = h - mt - mb;
+  let lo = Infinity, hi = -Infinity; for (let i = 0; i < N; i++) { lo = Math.min(lo, y[i], yhat[i] - band); hi = Math.max(hi, y[i], yhat[i] + band); }
+  const nt = niceTicks(lo, hi, 5), Xs = (i) => ml + i / (N - 1) * iw, Ys = (val) => mt + ih - (val - nt.lo) / (nt.hi - nt.lo) * ih;
+  const c1 = css(`${M.ramp}-1`);
+  let svg = `<svg class="${st.anim ? "anim" : ""}" viewBox="0 0 ${w} ${h}" height="${h}" role="img" aria-label="Harmonic model of daily ${M.label} with a held-out test period">`;
+  svg += `<rect x="${Xs(TR)}" y="${mt}" width="${Xs(N - 1) - Xs(TR)}" height="${ih}" fill="var(--accent-wash)"/><text class="clabel" x="${(Xs(TR) + Xs(N - 1)) / 2}" y="${mt + 14}" text-anchor="middle">Held out</text>`;
+  nt.ticks.forEach((t) => { svg += `<line x1="${ml}" x2="${w - mr}" y1="${Ys(t)}" y2="${Ys(t)}" stroke="${css("hair")}"/><text class="tick" x="${ml - 8}" y="${Ys(t) + 4}" text-anchor="end">${fmt(t, stepDp(nt.step))}</text>`; });
+  MSTART.forEach((s, m) => { if (m % 2 === 0) svg += `<text class="tick" x="${Xs(s + MDAYS[m] / 2)}" y="${h - 6}" text-anchor="middle">${MONTHS[m]}</text>`; });
+  let bandPath = ""; for (let i = 0; i < N; i++) bandPath += (i ? "L" : "M") + Xs(i).toFixed(1) + " " + Ys(yhat[i] + band).toFixed(1);
+  for (let i = N - 1; i >= 0; i--) bandPath += "L" + Xs(i).toFixed(1) + " " + Ys(yhat[i] - band).toFixed(1);
+  const line = (arr) => arr.map((val, i) => (i ? "L" : "M") + Xs(i).toFixed(1) + " " + Ys(val).toFixed(1)).join("");
+  svg += `<g class="fade"><path d="${bandPath}Z" fill="${c1}" opacity=".22"/></g>`;
+  svg += `<path class="ln ln-slow" pathLength="1" d="${line(y)}" fill="none" stroke="${c1}" stroke-width="1.1" opacity=".9"/>`;
+  svg += `<path class="ln" pathLength="1" d="${line(yhat)}" fill="none" stroke="${css("ink")}" stroke-width="2.2" stroke-linejoin="round"/>`;
+  svg += `<line x1="${Xs(TR)}" x2="${Xs(TR)}" y1="${mt}" y2="${mt + ih}" stroke="${css("axis")}"/>`;
+  host.innerHTML = svg + `</svg>`;
+  const dp = M.dp === 0 ? 1 : M.dp;
+  $("#harm-title").innerHTML = `Seasonal harmonic model · ${esc(M.short)} <small>${2 * K + 1} parameters, fitted on Jan–Oct</small>`;
+  $("#harm-metrics").innerHTML = [
+    metricTile("Train RMSE", fmt(mTr.rmse, dp), M.unit), metricTile("Test RMSE", fmt(mTe.rmse, dp), M.unit), metricTile("Test R²", fmt(mTe.r2, 2), `train ${fmt(mTr.r2, 2)}`),
+    metricTile("Inside 95% band", `${fmt(inside / (N - TR) * 100, 0)}%`, "of held-out days"), metricTile("Persistence", fmt(mPers.rmse, dp), "RMSE, yesterday's value"), metricTile("Climatology", fmt(mClim.rmse, dp), "RMSE, training mean"),
+  ].join("");
+  $("#harm-note").textContent = `Thin coloured line: observed daily ${M.label.toLowerCase()}. Dark line: y = a₀ + Σ(aₖ cos 2πkt/365 + bₖ sin 2πkt/365), fitted by least squares. Band: ±1.96 σ of training residuals. The model ${mTe.rmse < mClim.rmse ? "beats" : "does not beat"} the climatology baseline on unseen days${mTe.rmse > mPers.rmse ? "; yesterday's value is still the better one-day guess, because harmonics capture the season rather than individual weather events" : ""}.`;
+}
+function renderMLR() {
+  const host = $("#mlr"), w = host.clientWidth; if (!w) return;
+  const tgt = st.v, M = META[tgt], preds = VAR_ORDER.filter((x) => x !== tgt), days = selDays(), rows = [];
+  selDistricts().forEach((d) => { const dd = W.daily[D[d].name]; days.forEach((i) => rows.push([dd[tgt][i], ...preds.map((pv) => dd[pv][i])])); });
+  const rnd = mulberry32(42), order = rows.map((_, i) => i);
+  for (let i = order.length - 1; i > 0; i--) { const j = (rnd() * (i + 1)) | 0; [order[i], order[j]] = [order[j], order[i]]; }
+  const cut = Math.max(10, Math.round(order.length * .8)), tr = order.slice(0, cut).map((i) => rows[i]), te = order.slice(cut).map((i) => rows[i]);
+  const p = preds.length, mu = [], sdv = [];
+  for (let j = 0; j <= p; j++) { const col = tr.map((r) => r[j]); mu[j] = meanOf(col); sdv[j] = Math.sqrt(varOf(col, mu[j])) || 1; }
+  const zrow = (r) => r.map((x, j) => (x - mu[j]) / sdv[j]), design = (zr) => [1, ...zr.slice(1)];
+  const Ztr = tr.map(zrow), Zte = te.map(zrow), beta = ols(Ztr.map(design), Ztr.map((r) => r[0])), toY = (zv) => zv * sdv[0] + mu[0];
+  const yTr = tr.map((r) => r[0]), yTe = te.map((r) => r[0]);
+  const mTr = scores(yTr, Ztr.map((r) => toY(dot(beta, design(r))))), mTe = scores(yTe, Zte.map((r) => toY(dot(beta, design(r)))));
+  const adj = 1 - (1 - mTr.r2) * (tr.length - 1) / Math.max(1, tr.length - p - 1), mBase = scores(yTe, yTe.map(() => mu[0]));
+  let bj = 1, br = 0; for (let j = 1; j <= p; j++) { const r = pearson(yTr, tr.map((x) => x[j])); if (Math.abs(r) > Math.abs(br)) { br = r; bj = j; } }
+  const bS = ols(tr.map((r) => [1, r[bj]]), yTr), mSimple = scores(yTe, te.map((r) => bS[0] + bS[1] * r[bj]));
+  const vif = preds.map((_, a) => { const Xa = Ztr.map((r) => [1, ...r.slice(1).filter((__, b) => b !== a)]), ya = Ztr.map((r) => r[a + 1]); const ba = ols(Xa, ya); return 1 / Math.max(1e-6, 1 - scores(ya, Xa.map((x) => dot(ba, x))).r2); });
+  const coefs = preds.map((pv, j) => ({pv, b: beta[j + 1], vif: vif[j]})).sort((x, y) => Math.abs(y.b) - Math.abs(x.b));
+  const rowH = 30, h = coefs.length * rowH + 30, lab = 96, mr = 56, iw = w - lab - mr, maxB = Math.max(.05, ...coefs.map((c) => Math.abs(c.b)));
+  const X0 = lab + iw / 2, Xb = (b) => X0 + b / maxB * (iw / 2), posC = css("div-pos"), negC = css("div-neg");
+  let svg = `<svg class="${st.anim ? "anim" : ""}" viewBox="0 0 ${w} ${h}" height="${h}" role="img" aria-label="Standardised regression coefficients">`;
+  svg += `<line x1="${X0}" x2="${X0}" y1="4" y2="${h - 22}" stroke="${css("axis")}"/>`;
+  coefs.forEach((c, k) => {
+    const yy = 6 + k * rowH, bx = Xb(c.b);
+    svg += `<text class="tick" x="${lab - 8}" y="${yy + 12}" text-anchor="end">${META[c.pv].short}</text><text class="tick" x="${lab - 8}" y="${yy + 24}" text-anchor="end" style="font-size:10px;fill:${c.vif > 5 ? css("heat-2") : css("muted")}">VIF ${fmt(c.vif, 1)}</text>`;
+    svg += `<rect class="growx" style="--i:${k};transform-origin:${X0}px 0" x="${Math.min(X0, bx)}" y="${yy + 5}" width="${Math.max(1.5, Math.abs(bx - X0))}" height="16" rx="3" fill="${c.b >= 0 ? posC : negC}"/>`;
+    svg += `<text class="clabel" x="${w - 2}" y="${yy + 17}" text-anchor="end">${fmtSign(c.b, 2)}</text>`;
+  });
+  svg += `<text class="tick" x="${X0}" y="${h - 6}" text-anchor="middle">standardised coefficient β (0 = no effect)</text>`;
+  host.innerHTML = svg + `</svg>`;
+  const dp = M.dp === 0 ? 1 : M.dp, best = Math.min(mBase.rmse, mSimple.rmse, mTe.rmse);
+  const row = (name, m) => `<tr${m.rmse === best ? ' class="sel"' : ""} style="cursor:default"><td>${name}</td><td class="num">${fmt(m.rmse, dp)}</td><td class="num">${fmt(m.mae, dp)}</td><td class="num">${fmt(m.r2, 3)}</td></tr>`;
+  $("#mlr-table").innerHTML = `<table class="mini-table"><thead><tr><th>Model, scored on the test set</th><th>RMSE</th><th>MAE</th><th>R²</th></tr></thead><tbody>${row("Baseline: training mean", mBase)}${row(`Simple: ${META[preds[bj - 1]].short} only`, mSimple)}${row(`Multiple: ${p} predictors`, mTe)}</tbody></table>`;
+  $("#mlr-title").innerHTML = `Multiple regression → ${esc(M.short)} <small>${fmtInt(tr.length)} train · ${fmtInt(te.length)} test rows</small>`;
+  $("#mlr-note").textContent = `Bars show how many standard deviations ${M.short.toLowerCase()} moves when a predictor rises by one standard deviation, holding the others fixed. 80/20 random split (seed 42); training R² ${fmt(mTr.r2, 3)}, adjusted ${fmt(adj, 3)}. VIF above 5 (orange) means the predictor overlaps heavily with others, so its own coefficient is unstable even when the model predicts well.`;
+}
+
+/* ---------- clustering + PCA ---------- */
+const FEAT = [["temp", "Temp"], ["trange", "Range"], ["rh", "RH"], ["rain", "Rain"], ["wet", "Wet%"], ["gust", "Gust"], ["cloud", "Cloud"], ["vis", "Vis"]];
+const FEAT_WORDS = {temp:["Hot", "Cool"], trange:["Seasonal", "Steady"], rh:["Humid", "Dry-air"], rain:["Wet", "Low-rain"], wet:["Rainy", "Rain-shy"], gust:["Windy", "Sheltered"], cloud:["Cloudy", "Sunny"], vis:["Clear", "Hazy"]};
+let lastCluster = null;
+function districtFeatures() {
+  return D.map((d, i) => {
+    const mv = (v) => overMonths(Array.from({length:12}, (_, m) => DM[v][i * 12 + m]));
+    const tm = monthsArr().map((m) => DM.temp[i * 12 + m - 1]);
+    let tot = 0, wet = 0; st.months.forEach((m) => { const r = W.conds[d.name][m - 1]; tot += r[0] + r[1] + r[2] + r[3]; wet += r[1] + r[2] + r[3]; });
+    return [mv("temp"), Math.max(...tm) - Math.min(...tm), mv("rh"), mv("rain"), wet / tot * 100, mv("gust"), mv("cloud"), mv("vis")];
+  });
+}
+function kmeans(Z, k, seed = 7) {
+  const rnd = mulberry32(seed), n = Z.length, d2 = (a, b) => { let s = 0; for (let j = 0; j < a.length; j++) s += (a[j] - b[j]) ** 2; return s; };
+  let best = null;
+  for (let rep = 0; rep < 12; rep++) {
+    const C = [Z[(rnd() * n) | 0].slice()];
+    while (C.length < k) {
+      const dd = Z.map((z) => Math.min(...C.map((c) => d2(z, c)))), tot = dd.reduce((a, b) => a + b, 0);
+      let r = rnd() * tot, idx = 0; while (idx < n - 1 && (r -= dd[idx]) > 0) idx++;
+      C.push(Z[idx].slice());
+    }
+    const lab = new Array(n).fill(-1);
+    for (let it = 0; it < 80; it++) {
+      let moved = false;
+      Z.forEach((z, i) => { let bi = 0, bd = Infinity; C.forEach((c, ci) => { const dv = d2(z, c); if (dv < bd) { bd = dv; bi = ci; } }); if (lab[i] !== bi) { lab[i] = bi; moved = true; } });
+      C.forEach((c, ci) => { const mem = Z.filter((_, i) => lab[i] === ci); if (mem.length) for (let j = 0; j < c.length; j++) c[j] = meanOf(mem.map((m) => m[j])); });
+      if (!moved) break;
+    }
+    const inertia = Z.reduce((s, z, i) => s + d2(z, C[lab[i]]), 0);
+    if (!best || inertia < best.inertia) best = {lab, C, inertia};
+  }
+  return best;
+}
+function silhouette(Z, lab, k) {
+  const n = Z.length, dist = (a, b) => { let s = 0; for (let j = 0; j < a.length; j++) s += (a[j] - b[j]) ** 2; return Math.sqrt(s); };
+  let total = 0;
+  for (let i = 0; i < n; i++) {
+    const sums = new Array(k).fill(0), cnt = new Array(k).fill(0);
+    for (let j = 0; j < n; j++) if (j !== i) { sums[lab[j]] += dist(Z[i], Z[j]); cnt[lab[j]]++; }
+    if (!cnt[lab[i]]) continue;
+    const a = sums[lab[i]] / cnt[lab[i]]; let b = Infinity;
+    for (let c = 0; c < k; c++) if (c !== lab[i] && cnt[c]) b = Math.min(b, sums[c] / cnt[c]);
+    if (isFinite(b)) total += (b - a) / Math.max(a, b);
+  }
+  return total / n;
+}
+function renderClusters() {
+  const rows = districtFeatures(), n = rows.length, pdim = rows[0].length, mu = [], sdv = [];
+  for (let j = 0; j < pdim; j++) { const col = rows.map((r) => r[j]); mu[j] = meanOf(col); sdv[j] = Math.sqrt(varOf(col, mu[j])) || 1; }
+  const Z = rows.map((r) => r.map((x, j) => (x - mu[j]) / sdv[j])), k = Math.min(st.k, n - 1), raw = kmeans(Z, k);
+  const order = raw.C.map((_, i) => i).sort((a, b) => raw.C[b][0] - raw.C[a][0]), remap = [];
+  order.forEach((old, nw) => { remap[old] = nw; });
+  const lab = raw.lab.map((l) => remap[l]), C = order.map((o) => raw.C[o]), sil = silhouette(Z, lab, k), cols = catColors();
+  const names = C.map((c) => c.map((z, j) => [j, z]).sort((a, b) => Math.abs(b[1]) - Math.abs(a[1])).slice(0, 2).map(([j, z]) => FEAT_WORDS[FEAT[j][0]][z >= 0 ? 0 : 1]).join(" · "));
+  const counts = C.map((_, c) => lab.filter((l) => l === c).length);
+  lastCluster = {lab, names, k, sil, counts};
+  const Sm = Array.from({length:pdim}, (_, a) => Array.from({length:pdim}, (__, b) => { let s = 0; for (const z of Z) s += z[a] * z[b]; return s / (n - 1); }));
+  const eg = eigSym(Sm), tot = eg.values.reduce((s, x) => s + Math.max(0, x), 0) || 1;
+  const vecs = eg.vectors.slice(0, 2).map((vec, c) => { let s = 0; Z.forEach((z) => { s += z.reduce((acc, x, j) => acc + x * vec[j], 0) * z[c === 0 ? 0 : 2]; }); return s < 0 ? vec.map((x) => -x) : vec; });
+  const pcs = Z.map((z) => vecs.map((vec) => z.reduce((acc, x, j) => acc + x * vec[j], 0)));
+  $("#pca-var").textContent = `PC1 ${fmt(eg.values[0] / tot * 100, 0)}% · PC2 ${fmt(eg.values[1] / tot * 100, 0)}% of variance`;
+  drawPCA(pcs, lab, vecs, cols);
+  drawProfile(C, cols);
+  const ks = [1, 2, 3, 4, 5, 6, 7, 8].filter((kk) => kk < n), runs = ks.map((kk) => kmeans(Z, kk, 11));
+  drawElbow(ks, runs.map((r) => r.inertia), runs.map((r, i) => ks[i] > 1 ? silhouette(Z, r.lab, ks[i]) : null), k);
+  $("#cl-sub").textContent = `k-means (k-means++ seeding, 12 restarts) on 8 standardised climate features of all 40 districts, following the season filter. Silhouette ${fmt(sil, 2)}: ${sil > .5 ? "strong" : sil > .25 ? "reasonable" : "weak"} separation. Groups are ordered warmest to coolest and named after their two most distinctive features.`;
+  $("#sil-note").textContent = `silhouette at k = ${k}: ${fmt(sil, 2)}`;
+  $("#cl-members").innerHTML = C.map((_, c) => `<div class="cl-row"><span class="swatch">${shapeSvg(c, cols[c])}<b>${esc(names[c])}</b> <span>(${counts[c]})</span></span><span>${D.map((d, i) => lab[i] === c ? (i === st.district ? `<b>${esc(d.name)}</b>` : esc(d.name)) : null).filter(Boolean).join(", ")}</span></div>`).join("");
+}
+function drawPCA(pcs, lab, vecs, cols) {
+  const host = $("#pca"), w = host.clientWidth; if (!w) return;
+  const h = 330, m = 34, xs = pcs.map((p) => p[0]), ys = pcs.map((p) => p[1]);
+  const padRange = (lo, hi) => { const s = (hi - lo) || 1; return [Math.min(lo, 0) - s * .08, Math.max(hi, 0) + s * .08]; };
+  const [x0, x1] = padRange(Math.min(...xs), Math.max(...xs)), [y0, y1] = padRange(Math.min(...ys), Math.max(...ys));
+  const Xs = (val) => m + (val - x0) / (x1 - x0) * (w - 2 * m), Ys = (val) => h - m - (val - y0) / (y1 - y0) * (h - 2 * m);
+  const ext = Math.max(.5, Math.min(x1, -x0, y1, -y0));
+  let svg = `<svg class="${st.anim ? "anim" : ""}" viewBox="0 0 ${w} ${h}" height="${h}" role="img" aria-label="PCA projection of districts, shaped and coloured by cluster">`;
+  svg += `<line x1="${m}" x2="${w - m}" y1="${Ys(0)}" y2="${Ys(0)}" stroke="${css("hair")}"/><line x1="${Xs(0)}" x2="${Xs(0)}" y1="${m}" y2="${h - m}" stroke="${css("hair")}"/>`;
+  svg += `<text class="tick" x="${w - m}" y="${Ys(0) + 14}" text-anchor="end">PC1 →</text><text class="tick" x="${Xs(0) + 6}" y="${m - 8}">PC2 ↑</text>`;
+  const placed = [];
+  FEAT.forEach(([, label], j) => {
+    const ex = Xs(vecs[0][j] * ext * .85), ey = Ys(vecs[1][j] * ext * .85), right = ex >= Xs(0);
+    let ly = ey - 3;
+    while (placed.some((pl) => pl.right === right && Math.abs(pl.x - ex) < 40 && Math.abs(pl.y - ly) < 11)) ly += 11;
+    placed.push({x: ex, y: ly, right});
+    svg += `<g class="fade late2"><line x1="${Xs(0)}" y1="${Ys(0)}" x2="${ex}" y2="${ey}" stroke="${css("axis")}" stroke-width="1.2"/><text class="tick" x="${ex + (right ? 3 : -3)}" y="${ly}" text-anchor="${right ? "start" : "end"}" style="font-size:10px;paint-order:stroke;stroke:var(--surface);stroke-width:3px">${label}</text></g>`;
+  });
+  const surf = css("surface"), inkC = css("ink");
+  pcs.forEach((p, i) => { const sel = i === st.district; svg += `<path class="pop pt" data-i="${i}" style="--i:${i % 14};cursor:pointer" d="${shapePath(lab[i], Xs(p[0]), Ys(p[1]), sel ? 7 : 5.2)}" fill="${cols[lab[i]]}" stroke="${sel ? inkC : surf}" stroke-width="${sel ? 2 : 1.4}"/>`; });
+  const tags = new Set([xs.indexOf(Math.max(...xs)), xs.indexOf(Math.min(...xs)), ys.indexOf(Math.max(...ys)), ys.indexOf(Math.min(...ys))]);
+  if (st.district >= 0) tags.add(st.district);
+  tags.forEach((i) => { const x = Xs(pcs[i][0]), y = Ys(pcs[i][1]), left = x > w - 110; svg += `<text class="clabel" x="${left ? x - 10 : x + 10}" y="${y + 4}" text-anchor="${left ? "end" : "start"}" style="paint-order:stroke;stroke:var(--surface);stroke-width:3px">${esc(D[i].name)}</text>`; });
+  host.innerHTML = svg + `</svg>`;
+  host.querySelectorAll(".pt").forEach((el) => {
+    const i = +el.dataset.i;
+    el.addEventListener("mousemove", (e) => showTip(`<b>${esc(D[i].name)}</b><div class="r"><span>Group</span><span>${esc(lastCluster.names[lab[i]])}</span></div><div class="r"><span>PC1, PC2</span><span>${fmt(pcs[i][0], 2)}, ${fmt(pcs[i][1], 2)}</span></div><div style="opacity:.7">Click to filter to this district</div>`, e.clientX, e.clientY));
+    el.addEventListener("mouseleave", hideTip);
+    el.addEventListener("click", () => { st.district = st.district === i ? -1 : i; update(); });
+  });
+}
+function drawProfile(C, cols) {
+  const host = $("#cl-profile"), w = host.clientWidth; if (!w) return;
+  const lab = 24, top = 22, cw = (w - lab) / FEAT.length, rh = 26, h = top + C.length * rh + 4, dv = divFn();
+  let svg = `<svg class="${st.anim ? "anim" : ""}" viewBox="0 0 ${w} ${h}" height="${h}" role="img" aria-label="Cluster profile heatmap">`;
+  FEAT.forEach(([, label], j) => { svg += `<text class="tick" x="${lab + j * cw + cw / 2}" y="${top - 8}" text-anchor="middle" style="font-size:10px">${label}</text>`; });
+  C.forEach((c, r) => {
+    const yy = top + r * rh;
+    svg += `<path d="${shapePath(r, 10, yy + rh / 2, 5)}" fill="${cols[r]}"/>`;
+    c.forEach((z, j) => { const col = dv(Math.max(-1, Math.min(1, z / 2))), light = lum(col) > .36; svg += `<g class="pop" style="--i:${r + j}"><rect x="${lab + j * cw + 1}" y="${yy + 1}" width="${cw - 2}" height="${rh - 2}" rx="3" fill="${rgbStr(col)}"/><text x="${lab + j * cw + cw / 2}" y="${yy + rh / 2 + 4}" text-anchor="middle" style="font:500 10.5px var(--f-mono)" fill="${light ? "#101820" : "#F3F5F7"}">${fmtSign(z, 1)}</text></g>`; });
+  });
+  host.innerHTML = svg + `</svg>`;
+}
+function drawElbow(ks, inert, sils, k) {
+  const host = $("#elbow"), w = host.clientWidth; if (!w) return;
+  const h1 = 130, gap = 22, h2 = 118, h = h1 + gap + h2, ml = 42, mr = 10, iw = w - ml - mr, accentC = css("accent");
+  const Xs = (kk) => ml + (kk - ks[0]) / Math.max(1, ks[ks.length - 1] - ks[0]) * iw;
+  const yt = niceTicks(0, Math.max(...inert), 3), Y1 = (val) => 16 + (h1 - 30) - val / yt.hi * (h1 - 30);
+  let svg = `<svg class="${st.anim ? "anim" : ""}" viewBox="0 0 ${w} ${h}" height="${h}" role="img" aria-label="Elbow and silhouette charts for choosing k">`;
+  svg += `<text class="clabel" x="${ml}" y="10">Inertia</text>`;
+  yt.ticks.forEach((t) => { svg += `<line x1="${ml}" x2="${w - mr}" y1="${Y1(t)}" y2="${Y1(t)}" stroke="${css("hair")}"/><text class="tick" x="${ml - 6}" y="${Y1(t) + 4}" text-anchor="end">${fmt(t, 0)}</text>`; });
+  svg += `<path class="ln" pathLength="1" d="${ks.map((kk, i) => (i ? "L" : "M") + Xs(kk).toFixed(1) + " " + Y1(inert[i]).toFixed(1)).join("")}" fill="none" stroke="${css("ink-2")}" stroke-width="2"/>`;
+  ks.forEach((kk, i) => { svg += `<circle cx="${Xs(kk)}" cy="${Y1(inert[i])}" r="${kk === k ? 5.5 : 3.5}" fill="${kk === k ? accentC : css("ink-2")}" stroke="var(--surface)" stroke-width="2"/>`; });
+  const y0 = h1 + gap, base = y0 + h2 - 22, sMax = Math.max(.1, ...sils.filter((s) => s !== null)), Y2 = (val) => base - Math.max(0, val) / sMax * (h2 - 44), bw = Math.min(24, iw / ks.length * .55);
+  svg += `<text class="clabel" x="${ml}" y="${y0 + 2}">Silhouette</text><line x1="${ml}" x2="${w - mr}" y1="${base}" y2="${base}" stroke="${css("axis")}"/>`;
+  ks.forEach((kk, i) => { if (sils[i] === null) return; const yy = Y2(sils[i]); svg += `<rect class="grow" style="--i:${i}" x="${Xs(kk) - bw / 2}" y="${yy}" width="${bw}" height="${Math.max(1, base - yy)}" rx="3" fill="${kk === k ? accentC : css("axis")}"/><text class="tick" x="${Xs(kk)}" y="${yy - 4}" text-anchor="middle" style="font-size:10px">${fmt(sils[i], 2)}</text>`; });
+  ks.forEach((kk) => { svg += `<text class="tick" x="${Xs(kk)}" y="${h - 4}" text-anchor="middle">k=${kk}</text>`; });
+  host.innerHTML = svg + `</svg>`;
+}
+
+/* ---------- anomalies + hypothesis test ---------- */
+function anomalyData(v) {
+  const y = dailySel(v), base = new Float64Array(365);
+  for (let i = 0; i < 365; i++) { let s = 0, c = 0; for (let k = -7; k <= 7; k++) { const j = i + k; if (k !== 0 && j >= 0 && j < 365) { s += y[j]; c++; } } base[i] = s / c; }
+  const res = Array.from(y, (x, i) => x - base[i]), mu = meanOf(res), sd = Math.sqrt(varOf(res, mu)) || 1, z = res.map((r) => (r - mu) / sd);
+  const flagged = z.map((zz, i) => ({i, z: zz, y: y[i], base: base[i]})).filter((o) => Math.abs(o.z) >= 2.5).sort((a, b) => Math.abs(b.z) - Math.abs(a.z));
+  return {y, base, z, flagged};
+}
+function renderAnomalies() {
+  const host = $("#anom"), w = host.clientWidth; if (!w) return;
+  const v = st.v, M = META[v], A = anomalyData(v), h = 190, ml = 42, mr = 10, mt = 12, mb = 22, iw = w - ml - mr, ih = h - mt - mb;
+  const zmax = Math.max(4, ...A.z.map(Math.abs)), Ys = (zz) => mt + ih / 2 - zz / zmax * (ih / 2), bw = iw / 365;
+  const hotC = css("heat-2"), coolC = css("rain-2"), axC = css("axis");
+  let svg = `<svg class="${st.anim ? "anim" : ""}" viewBox="0 0 ${w} ${h}" height="${h}" role="img" aria-label="Daily z-scores with anomaly thresholds">`;
+  [-2.5, 0, 2.5].forEach((t) => { svg += `<line x1="${ml}" x2="${w - mr}" y1="${Ys(t)}" y2="${Ys(t)}" stroke="${t ? css("muted") : axC}" opacity="${t ? .75 : 1}"/><text class="tick" x="${ml - 6}" y="${Ys(t) + 4}" text-anchor="end">${t > 0 ? "+2.5σ" : t < 0 ? "−2.5σ" : "0"}</text>`; });
+  A.z.forEach((zz, i) => { const big = Math.abs(zz) >= 2.5, y0 = Ys(0), y1 = Ys(zz); svg += `<rect${big ? ` class="grow" style="--i:${Math.round(i / 30)};transform-origin:50% ${zz > 0 ? "100%" : "0%"}"` : ""} x="${(ml + i * bw).toFixed(2)}" y="${Math.min(y0, y1).toFixed(2)}" width="${Math.max(1, bw - .25).toFixed(2)}" height="${Math.max(.5, Math.abs(y1 - y0)).toFixed(2)}" fill="${big ? (zz > 0 ? hotC : coolC) : axC}"/>`; });
+  MSTART.forEach((s, m) => { svg += `<text class="tick" x="${ml + (s + MDAYS[m] / 2) * bw}" y="${h - 6}" text-anchor="middle">${iw < 520 ? MONTHS[m][0] : MONTHS[m]}</text>`; });
+  host.innerHTML = svg + `<rect class="hit" x="${ml}" y="${mt}" width="${iw}" height="${ih}" fill="transparent"/></svg>`;
+  host.querySelector(".hit").addEventListener("mousemove", (e) => { const i = Math.max(0, Math.min(364, Math.floor((e.clientX - host.getBoundingClientRect().left - ml) / bw))); showTip(`<b>${dayLabel(i)} 2022</b><div class="r"><span>${M.short}</span><b>${fmt(A.y[i], M.dp)} ${M.unit}</b></div><div class="r"><span>Mean of neighbours</span><span>${fmt(A.base[i], M.dp)} ${M.unit}</span></div><div class="r"><span>z-score</span><span>${fmtSign(A.z[i], 2)}</span></div>`, e.clientX, e.clientY); });
+  host.querySelector(".hit").addEventListener("mouseleave", hideTip);
+  $("#anom-sub").textContent = `Each day's z-score against the mean of the 7 days either side of it (the day itself left out). ${A.flagged.length} day${A.flagged.length === 1 ? "" : "s"} beyond ±2.5σ for ${st.district < 0 ? "the state" : D[st.district].name}; they are also circled on the time series and dotted on the calendar.`;
+  $("#anom-table").innerHTML = A.flagged.length ? `<table class="mini-table"><thead><tr><th>Date</th><th>${esc(M.short)} ${M.unit}</th><th>Expected</th><th>z</th><th style="text-align:left">Type</th></tr></thead><tbody>${A.flagged.slice(0, 12).map((o) => `<tr style="cursor:default"><td>${dayLabel(o.i)} 2022</td><td class="num">${fmt(o.y, M.dp)}</td><td class="num">${fmt(o.base, M.dp)}</td><td class="num">${fmtSign(o.z, 2)}</td><td style="text-align:left"><span class="chip ${o.z > 0 ? "warn" : "cool"}">${o.z > 0 ? "▲ Spike" : "▼ Dip"}</span></td></tr>`).join("")}</tbody></table>` : `<p class="caption" style="padding:10px 0">No day crosses ±2.5σ for this selection.</p>`;
+}
+function renderTest() {
+  const host = $("#test-chart"), w = host.clientWidth; if (!w) return;
+  const v = st.v, M = META[v], y = dailySel(v), SA = SEASONS.find((s) => s.id === st.ta), SB = SEASONS.find((s) => s.id === st.tb);
+  $("#test-sub").textContent = `Welch's two-sample t-test on daily ${M.label.toLowerCase()} for ${st.district < 0 ? "the state" : D[st.district].name}.`;
+  if (st.ta === st.tb) { host.innerHTML = ""; $("#test-metrics").innerHTML = ""; $("#test-insight").innerHTML = `<b>Pick two different seasons</b> to run the test.`; return; }
+  const pick = (s) => { const out = []; for (let i = 0; i < 365; i++) if (s.m.includes(MONTH_OF[i])) out.push(y[i]); return out; };
+  const a = pick(SA), b = pick(SB), r = welch(a, b), dp = M.dp === 0 ? 1 : M.dp;
+  const q = (arr, pp) => { const s = [...arr].sort((m1, m2) => m1 - m2), x = (s.length - 1) * pp, i = Math.floor(x); return s[i] + ((s[i + 1] ?? s[i]) - s[i]) * (x - i); };
+  const all = a.concat(b), nt = niceTicks(Math.min(...all), Math.max(...all), 5), ml = 96, mr = 14, h = 172, iw = w - ml - mr;
+  const Xs = (val) => ml + (val - nt.lo) / (nt.hi - nt.lo) * iw, rnd = mulberry32(3), inkC = css("ink");
+  let svg = `<svg class="${st.anim ? "anim" : ""}" viewBox="0 0 ${w} ${h}" height="${h}" role="img" aria-label="Box plots comparing two seasons">`;
+  nt.ticks.forEach((t) => { svg += `<line x1="${Xs(t)}" x2="${Xs(t)}" y1="10" y2="${h - 26}" stroke="${css("hair")}"/><text class="tick" x="${Xs(t)}" y="${h - 10}" text-anchor="middle">${fmt(t, stepDp(nt.step))}</text>`; });
+  [[SA, a, css("rain-2"), 46], [SB, b, css("heat-2"), 112]].forEach(([S, arr, col, cy], g) => {
+    const p5 = q(arr, .05), p25 = q(arr, .25), p50 = q(arr, .5), p75 = q(arr, .75), p95 = q(arr, .95), mu = meanOf(arr);
+    svg += `<text class="clabel" x="${ml - 10}" y="${cy + 4}" text-anchor="end">${esc(S.label)}</text>`;
+    svg += `<g class="fade${g ? " late2" : ""}">${arr.map((val) => `<circle cx="${Xs(val).toFixed(1)}" cy="${(cy + (rnd() - .5) * 36).toFixed(1)}" r="2.2" fill="${col}" opacity=".28"/>`).join("")}</g>`;
+    svg += `<line x1="${Xs(p5)}" x2="${Xs(p95)}" y1="${cy}" y2="${cy}" stroke="${css("ink-2")}" stroke-width="1.4"/><rect x="${Xs(p25)}" y="${cy - 11}" width="${Math.max(2, Xs(p75) - Xs(p25))}" height="22" rx="4" fill="${col}" fill-opacity=".35" stroke="${col}" stroke-width="1.5"/><line x1="${Xs(p50)}" x2="${Xs(p50)}" y1="${cy - 11}" y2="${cy + 11}" stroke="${inkC}" stroke-width="2.4"/><circle cx="${Xs(mu)}" cy="${cy}" r="4" fill="${css("surface")}" stroke="${inkC}" stroke-width="2"/>`;
+  });
+  host.innerHTML = svg + `</svg>`;
+  const absd = Math.abs(r.d), size = absd < .2 ? "negligible" : absd < .5 ? "small" : absd < .8 ? "medium" : "large", pTxt = r.p < .001 ? "< 0.001" : fmt(r.p, 3);
+  $("#test-metrics").innerHTML = [
+    metricTile(`Mean · ${esc(SA.label)}`, `${fmt(r.ma, dp)} ${M.unit}`, `n = ${r.na} days`), metricTile(`Mean · ${esc(SB.label)}`, `${fmt(r.mb, dp)} ${M.unit}`, `n = ${r.nb} days`),
+    metricTile("Difference", `${fmtSign(r.ma - r.mb, dp)} ${M.unit}`, `95% CI ${fmt(r.ci[0], dp)} to ${fmt(r.ci[1], dp)}`), metricTile("Welch t", fmt(r.t, 2), `df ≈ ${fmt(r.df, 0)}`),
+    metricTile("p-value", pTxt, r.p < .05 ? "significant at 5%" : "not significant"), metricTile("Cohen's d", fmt(r.d, 2), `${size} effect`),
+  ].join("");
+  $("#test-insight").innerHTML = `<b>${r.p < .05 ? "The seasons differ." : "No clear difference."}</b> ${esc(SA.label)} averages ${fmt(r.ma, dp)} ${M.unit} against ${fmt(r.mb, dp)} ${M.unit} for ${esc(SB.label)} (t = ${fmt(r.t, 2)}, p ${r.p < .001 ? "< 0.001" : "= " + fmt(r.p, 3)}), a ${size} effect. <span style="color:var(--muted)">Box: middle 50%; whiskers: 5th–95th percentile; line: median; ring: mean. Neighbouring days are correlated, so the true uncertainty is wider than the test assumes; weigh the effect size alongside p.</span>`;
+}
+
+/* ---------- calendar + wind rose ---------- */
+function renderCalendar() {
+  const host = $("#calendar"), w = host.clientWidth; if (!w) return;
+  const v = st.v, M = META[v], y = dailySel(v), A = anomalyData(v), flagged = new Set(A.flagged.map((o) => o.i));
+  let lo = Infinity, hi = -Infinity; for (let i = 0; i < 365; i++) { lo = Math.min(lo, y[i]); hi = Math.max(hi, y[i]); }
+  const ml = 34, mt = 16, gap = 2, cell = Math.max(7, Math.min(24, (w - ml) / 31 - gap)), h = mt + 12 * (cell + gap) + 2, ramp = rampFn(M.ramp), inkC = css("ink");
+  let svg = `<svg class="${st.anim ? "anim" : ""}" viewBox="0 0 ${w} ${h}" height="${h}" role="img" aria-label="Calendar heatmap of daily ${M.label} in 2022">`;
+  [1, 5, 10, 15, 20, 25, 31].forEach((dd) => { svg += `<text class="tick" x="${ml + (dd - 1) * (cell + gap) + cell / 2}" y="${mt - 5}" text-anchor="middle" style="font-size:10px">${dd}</text>`; });
+  MONTHS.forEach((mn, m) => {
+    const yy = mt + m * (cell + gap), op = st.months.has(m + 1) ? 1 : .3;
+    svg += `<text class="tick" x="${ml - 6}" y="${yy + cell / 2 + 4}" text-anchor="end">${mn}</text>`;
+    for (let dd = 0; dd < MDAYS[m]; dd++) {
+      const i = MSTART[m] + dd, x = ml + dd * (cell + gap);
+      svg += `<rect class="pop" style="--i:${Math.round(i / 8)}" data-d="${i}" x="${x.toFixed(1)}" y="${yy.toFixed(1)}" width="${cell.toFixed(1)}" height="${cell.toFixed(1)}" rx="${Math.min(4, cell / 4).toFixed(1)}" fill="${rgbStr(ramp((y[i] - lo) / (hi - lo || 1)))}" opacity="${op}"/>`;
+      if (flagged.has(i)) svg += `<circle cx="${(x + cell / 2).toFixed(1)}" cy="${(yy + cell / 2).toFixed(1)}" r="${Math.max(1.6, cell * .16).toFixed(1)}" fill="${inkC}" pointer-events="none"/>`;
+    }
+  });
+  host.innerHTML = svg + `</svg>`;
+  const sv = host.querySelector("svg");
+  sv.addEventListener("mousemove", (e) => { const cellEl = e.target.closest("rect[data-d]"); if (!cellEl) { hideTip(); return; } const i = +cellEl.dataset.d; showTip(`<b>${dayLabel(i)} 2022</b><div class="r"><span>${M.short}</span><b>${fmt(y[i], M.dp)} ${M.unit}</b></div><div class="r"><span>vs neighbours</span><span>${fmtSign(A.z[i], 2)}σ</span></div>${flagged.has(i) ? `<div style="opacity:.8">Flagged as an anomaly</div>` : ""}`, e.clientX, e.clientY); });
+  sv.addEventListener("mouseleave", hideTip);
+  const stops = [0, .33, .66, 1].map((t) => rgbStr(ramp(t)));
+  $("#cal-ramp").innerHTML = `<span>${fmt(lo, M.dp)}</span><div class="bar" style="background:linear-gradient(90deg,${stops.join(",")})"></div><span>${fmt(hi, M.dp)} ${M.unit}</span>`;
+  $("#cal-sub").textContent = `Daily ${M.label.toLowerCase()} for ${st.district < 0 ? "the state" : D[st.district].name}. Each square is one day; dots mark anomalies, and faded rows are outside the season filter.`;
+}
+const ROSE_NAMES = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
+const ROSE_BINS = ["< 10 km/h", "10–20 km/h", "20–30 km/h", "≥ 30 km/h"];
+function renderRose() {
+  const host = $("#rose"), w = host.clientWidth; if (!w) return;
+  if (!W.rose) { host.innerHTML = `<p class="caption">Wind direction data is not in this build.</p>`; return; }
+  const counts = Array.from({length:16}, () => [0, 0, 0, 0]); let total = 0;
+  selDistricts().forEach((d) => st.months.forEach((m) => W.rose[D[d].name][m - 1].forEach((sec, s) => sec.forEach((c, b) => { counts[s][b] += c; total += c; }))));
+  const size = Math.min(w, 400), h = size, cx = w / 2, cy = h / 2, R = size / 2 - 34;
+  const pct = counts.map((sec) => sec.map((c) => c / (total || 1) * 100)), secTot = pct.map((s) => s[0] + s[1] + s[2] + s[3]), maxP = Math.max(...secTot) || 1;
+  const rs = (pv) => Math.sqrt(Math.max(0, pv) / maxP) * R, ramp = rampFn("wind"), cols = [.28, .52, .76, 1].map((t) => rgbStr(ramp(t)));
+  const pt = (r, deg) => { const a = deg * Math.PI / 180; return [cx + r * Math.sin(a), cy - r * Math.cos(a)]; };
+  const ps = (r, deg) => pt(r, deg).map((n) => n.toFixed(2)).join(" ");
+  let svg = `<svg class="${st.anim ? "anim" : ""}" viewBox="0 0 ${w} ${h}" height="${h}" role="img" aria-label="Wind rose of direction and speed">`;
+  const rt = niceTicks(0, maxP, 3);
+  rt.ticks.filter((t) => t > 0 && t <= maxP * 1.001).forEach((t) => { svg += `<circle cx="${cx}" cy="${cy}" r="${rs(t).toFixed(2)}" fill="none" stroke="${css("hair")}"/><text class="tick" x="${cx + 4}" y="${(cy - rs(t) - 3).toFixed(1)}" style="font-size:10px">${fmt(t, stepDp(rt.step))}%</text>`; });
+  ["N", "E", "S", "W"].forEach((nm, k) => { const [ex, ey] = pt(R, k * 90), [lx, ly] = pt(R + 16, k * 90); svg += `<line x1="${cx}" y1="${cy}" x2="${ex.toFixed(1)}" y2="${ey.toFixed(1)}" stroke="${css("hair")}"/><text class="clabel" x="${lx.toFixed(1)}" y="${(ly + 4).toFixed(1)}" text-anchor="middle">${nm}</text>`; });
+  counts.forEach((_, s) => {
+    const a0 = s * 22.5 - 11.25 + 1.5, a1 = s * 22.5 + 11.25 - 1.5; let cum = 0, g = "";
+    for (let b = 0; b < 4; b++) { const r0 = rs(cum), r1 = rs(cum + pct[s][b]); cum += pct[s][b]; if (r1 - r0 < .2) continue; g += `<path d="M${ps(r0, a0)}L${ps(r1, a0)}A${r1.toFixed(2)} ${r1.toFixed(2)} 0 0 1 ${ps(r1, a1)}L${ps(r0, a1)}A${r0.toFixed(2)} ${r0.toFixed(2)} 0 0 0 ${ps(r0, a0)}Z" fill="${cols[b]}" stroke="var(--surface)" stroke-width="1"/>`; }
+    svg += `<g class="rgrow" data-s="${s}" style="--i:${s};transform-origin:${cx}px ${cy}px">${g}<path d="M${cx} ${cy}L${ps(R, a0 - 1.5)}A${R} ${R} 0 0 1 ${ps(R, a1 + 1.5)}Z" fill="transparent"/></g>`;
+  });
+  host.innerHTML = svg + `</svg>`;
+  host.querySelectorAll("g[data-s]").forEach((g) => {
+    const s = +g.dataset.s;
+    g.addEventListener("mousemove", (e) => showTip(`<b>From ${ROSE_NAMES[s]}</b><div class="r"><span>All speeds</span><b>${fmt(secTot[s], 1)}%</b></div>${ROSE_BINS.map((bn, b) => `<div class="r"><span><i style="background:${cols[b]}"></i>${bn}</span><span>${fmt(pct[s][b], 1)}%</span></div>`).join("")}`, e.clientX, e.clientY));
+    g.addEventListener("mouseleave", hideTip);
+  });
+  const pv = secTot.indexOf(maxP), calm = pct.reduce((acc, sec) => acc + sec[0], 0);
+  $("#rose-sub").textContent = `Share of grid-days by the direction the 10 m wind blows from, stacked by speed; petal area is proportional to frequency. Prevailing: from ${ROSE_NAMES[pv]} (${fmt(maxP, 1)}%). ${fmt(calm, 0)}% of days stay under 10 km/h.`;
+  $("#rose-legend").innerHTML = ROSE_BINS.map((bn, b) => `<span><i style="background:${cols[b]}"></i>${bn}</span>`).join("");
+}
+
+/* ---------- live feed + insights ---------- */
+const DLL = D.map((_, d) => { let la = 0, lo = 0, c = 0; for (let p = 0; p < NP; p++) if (P.did[p] === d) { la += P.lat[p]; lo += P.lon[p]; c++; } return [la / c, lo / c]; });
+const WMO = {0:"Clear sky", 1:"Mainly clear", 2:"Partly cloudy", 3:"Overcast", 45:"Fog", 48:"Rime fog", 51:"Light drizzle", 53:"Drizzle", 55:"Dense drizzle", 56:"Freezing drizzle", 57:"Freezing drizzle", 61:"Light rain", 63:"Rain", 65:"Heavy rain", 66:"Freezing rain", 67:"Freezing rain", 71:"Light snow", 73:"Snow", 75:"Heavy snow", 77:"Snow grains", 80:"Rain showers", 81:"Rain showers", 82:"Violent rain showers", 85:"Snow showers", 86:"Snow showers", 95:"Thunderstorm", 96:"Thunderstorm with hail", 99:"Thunderstorm with hail"};
+const liveCache = new Map();
+let liveReq = 0, liveNow = null;
+const liveTarget = () => { if (st.district >= 0) return st.district; const c = D.findIndex((d) => d.name === "Chennai"); return c >= 0 ? c : 0; };
+async function fetchLive(d) {
+  const hit = liveCache.get(d); if (hit && Date.now() - hit.t < 600000) return hit.data;
+  const [la, lo] = DLL[d], q = `latitude=${la.toFixed(3)}&longitude=${lo.toFixed(3)}&timezone=Asia%2FKolkata`;
+  const wxUrl = `https://api.open-meteo.com/v1/forecast?${q}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,cloud_cover,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m,uv_index,is_day&hourly=temperature_2m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_probability_max&forecast_days=7`;
+  const aqUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?${q}&current=european_aqi,pm2_5,pm10`;
+  const ctrl = new AbortController(), timer = setTimeout(() => ctrl.abort(), 9000);
+  try {
+    const [wr, ar] = await Promise.all([fetch(wxUrl, {signal: ctrl.signal}), fetch(aqUrl, {signal: ctrl.signal}).catch(() => null)]);
+    if (!wr.ok) throw new Error(`Forecast request failed (${wr.status})`);
+    const data = {wx: await wr.json(), aq: ar && ar.ok ? await ar.json() : null};
+    liveCache.set(d, {t: Date.now(), data});
+    return data;
+  } finally { clearTimeout(timer); }
+}
+function wxIcon(code, isDay) {
+  const sun = `<g class="wx-sun"><circle cx="40" cy="34" r="12" fill="#F2B84B"/>${Array.from({length:8}, (_, k) => { const a = k * Math.PI / 4; return `<line x1="${(40 + Math.cos(a) * 18).toFixed(1)}" y1="${(34 + Math.sin(a) * 18).toFixed(1)}" x2="${(40 + Math.cos(a) * 24).toFixed(1)}" y2="${(34 + Math.sin(a) * 24).toFixed(1)}" stroke="#F2B84B" stroke-width="3" stroke-linecap="round"/>`; }).join("")}</g>`;
+  const moon = `<path d="M46 16a18 18 0 1 0 16 26A15 15 0 0 1 46 16z" fill="#C9D6F2"/>`;
+  const cloud = `<g class="wx-cloud"><path d="M24 64h36a12 12 0 0 0 1-24 16 16 0 0 0-30-5 11 11 0 0 0-7 29z" fill="var(--muted)"/></g>`;
+  const drops = `<g><line class="wx-drop" x1="32" y1="70" x2="29" y2="78" stroke="#6FAAEB" stroke-width="3" stroke-linecap="round"/><line class="wx-drop" x1="44" y1="70" x2="41" y2="78" stroke="#6FAAEB" stroke-width="3" stroke-linecap="round"/><line class="wx-drop" x1="56" y1="70" x2="53" y2="78" stroke="#6FAAEB" stroke-width="3" stroke-linecap="round"/></g>`;
+  const bolt = `<path class="wx-bolt" d="M46 62l-9 13h7l-4 10 12-15h-7l5-8z" fill="#F2B84B"/>`;
+  const fog = `<g stroke="var(--muted)" stroke-width="3" stroke-linecap="round"><line x1="18" y1="70" x2="62" y2="70"/><line x1="24" y1="78" x2="68" y2="78"/></g>`;
+  const glow = isDay ? sun : moon;
+  let body;
+  if (code <= 1) body = glow;
+  else if (code === 2) body = glow + cloud;
+  else if (code === 3) body = cloud;
+  else if (code === 45 || code === 48) body = cloud + fog;
+  else if (code >= 95) body = cloud + drops + bolt;
+  else body = cloud + drops;
+  return `<svg class="wx-ico" viewBox="0 0 84 90" aria-hidden="true">${body}</svg>`;
+}
+function drawLive(d, data) {
+  const c = data.wx.current, dly = data.wx.daily, hr = data.wx.hourly, aq = data.aq && data.aq.current;
+  const tm = /^(\d{4})-(\d\d)-(\d\d)T(\d\d):(\d\d)/.exec(c.time) || [0, 2022, 1, 1, 0, 0], mo = +tm[2], dom = +tm[3];
+  const doy = Math.min(364, MSTART[mo - 1] + Math.min(dom, MDAYS[mo - 1]) - 1), ref = W.daily[D[d].name].temp[doy];
+  const todayMean = (dly.temperature_2m_max[0] + dly.temperature_2m_min[0]) / 2, diff = todayMean - ref;
+  liveNow = {d, todayMean, diff, temp: c.temperature_2m, cond: WMO[c.weather_code] || "unknown conditions"};
+  const mins = (s) => { const x = /T(\d\d):(\d\d)/.exec(s); return x ? +x[1] * 60 + +x[2] : 0; }, hhmm = (m) => `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(Math.round(m % 60)).padStart(2, "0")}`;
+  const rise = mins(dly.sunrise[0]), set = mins(dly.sunset[0]), nowM = +tm[4] * 60 + +tm[5], dayPct = Math.max(0, Math.min(100, (nowM - rise) / Math.max(1, set - rise) * 100));
+  const uv = c.uv_index ?? 0, uvCat = uv < 3 ? "Low" : uv < 6 ? "Moderate" : uv < 8 ? "High" : uv < 11 ? "Very high" : "Extreme";
+  const aqi = aq ? aq.european_aqi : null, aqCat = aqi == null ? "Unavailable" : aqi <= 20 ? "Good" : aqi <= 40 ? "Fair" : aqi <= 60 ? "Moderate" : aqi <= 80 ? "Poor" : aqi <= 100 ? "Very poor" : "Extremely poor";
+  const aqCol = aqi == null ? css("muted") : aqi <= 20 ? "#0ca30c" : aqi <= 40 ? "#6fb52c" : aqi <= 60 ? "#e0a800" : aqi <= 80 ? "#ec835a" : aqi <= 100 ? "#d03b3b" : "#8a2a4a";
+  const dirName = ROSE_NAMES[Math.round((((c.wind_direction_10m % 360) + 360) % 360) / 22.5) % 16];
+  const start = Math.max(0, hr.time.findIndex((t) => t.slice(0, 13) === c.time.slice(0, 13))), next = hr.temperature_2m.slice(start, start + 25);
+  const sw = 280, sh = 70, nlo = Math.min(...next), nhi = Math.max(...next), SX = (i) => 6 + i / 24 * (sw - 12), SY = (t) => sh - 18 - (t - nlo) / (nhi - nlo || 1) * (sh - 30);
+  const sl = next.map((t, i) => (i ? "L" : "M") + SX(i).toFixed(1) + " " + SY(t).toFixed(1)).join(""), hiIdx = next.indexOf(nhi), inkC = css("ink");
+  const spark = `<svg viewBox="0 0 ${sw} ${sh}" width="100%" height="${sh}" role="img" aria-label="Temperature over the next 24 hours"><defs><linearGradient id="lvg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" style="stop-color:var(--grad-b);stop-opacity:.5"/><stop offset="1" style="stop-color:var(--grad-b);stop-opacity:0"/></linearGradient></defs><path d="${sl}L${SX(next.length - 1).toFixed(1)} ${sh - 16}L${SX(0)} ${sh - 16}Z" fill="url(#lvg)"/><path d="${sl}" fill="none" stroke="${inkC}" stroke-width="2" stroke-linejoin="round"/><circle cx="${SX(0)}" cy="${SY(next[0]).toFixed(1)}" r="4" fill="${inkC}"/><text class="tick" x="6" y="${sh - 3}">now</text><text class="tick" x="${sw / 2}" y="${sh - 3}" text-anchor="middle">+12 h</text><text class="tick" x="${sw - 6}" y="${sh - 3}" text-anchor="end">+24 h</text><text class="tick" x="${SX(hiIdx).toFixed(1)}" y="${(SY(nhi) - 6).toFixed(1)}" text-anchor="middle">${fmt(nhi, 0)}°</text></svg>`;
+  const wkLo = Math.min(...dly.temperature_2m_min), wkHi = Math.max(...dly.temperature_2m_max), span = wkHi - wkLo || 1;
+  const fc = dly.time.map((t, i) => {
+    const nm = i === 0 ? "Today" : new Date(t + "T12:00").toLocaleDateString("en-IN", {weekday:"short"}), rain = dly.precipitation_probability_max ? dly.precipitation_probability_max[i] : null;
+    return `<div class="fc-day" title="${esc(WMO[dly.weather_code[i]] || "")}"><span>${nm}</span><b style="color:var(--ink)">${fmt(dly.temperature_2m_max[i], 0)}°</b><div class="fc-bar"><i style="top:${((wkHi - dly.temperature_2m_max[i]) / span * 100).toFixed(1)}%;bottom:${((dly.temperature_2m_min[i] - wkLo) / span * 100).toFixed(1)}%"></i></div><span>${fmt(dly.temperature_2m_min[i], 0)}°</span>${rain != null ? `<span style="font-size:10.5px">${fmt(rain, 0)}% rain</span>` : ""}</div>`;
+  }).join("");
+  const compass = `<svg class="compass" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="19" fill="none" stroke="${css("hair")}" stroke-width="2"/><text x="22" y="10" text-anchor="middle" style="font:600 7px var(--f-mono);fill:var(--muted)">N</text><g style="transform-origin:22px 22px;transform:rotate(${((c.wind_direction_10m + 180) % 360).toFixed(0)}deg)"><path d="M22 9l5 13h-10z" fill="${css("accent")}"/><path d="M22 35l-5-13h10z" fill="${css("axis")}"/></g></svg>`;
+  $("#live-now").innerHTML = `<div class="live-now">
+    <div style="display:flex;align-items:center;gap:12px">${wxIcon(c.weather_code, c.is_day !== 0)}<div><div class="live-temp">${fmt(c.temperature_2m, 1)}<small>°C</small></div><div class="live-cond">${esc(WMO[c.weather_code] || "Conditions unavailable")}</div><div class="caption">Feels like ${fmt(c.apparent_temperature, 1)} °C · near ${esc(D[d].name)}</div></div></div>
+    <div>${spark}<div class="daylight" title="How far through the day we are"><i style="width:${dayPct.toFixed(1)}%"></i></div><div class="caption" style="display:flex;justify-content:space-between;margin-top:4px;gap:8px"><span>Sunrise ${hhmm(rise)}</span><span>${fmt((set - rise) / 60, 1)} h of daylight</span><span>Sunset ${hhmm(set)}</span></div></div>
+    <div class="live-grid">
+      ${metricTile("Humidity", `${fmt(c.relative_humidity_2m, 0)}%`, "relative")}
+      <div class="metric" style="flex-direction:row;align-items:center;gap:10px">${compass}<div style="display:flex;flex-direction:column;min-width:0"><small>Wind</small><b>${fmt(c.wind_speed_10m, 0)} km/h</b><span>from ${dirName}, gusts ${fmt(c.wind_gusts_10m, 0)}</span></div></div>
+      ${metricTile("Pressure", `${fmt(c.pressure_msl, 0)} hPa`, "at sea level")}
+      ${metricTile("Cloud cover", `${fmt(c.cloud_cover, 0)}%`, `${fmt(c.precipitation, 1)} mm falling now`)}
+      ${metricTile("UV index", fmt(uv, 1), uvCat)}
+      <div class="metric"><small>Air quality (EU AQI)</small><b>${aqi == null ? "–" : fmt(aqi, 0)}</b><span><i style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${aqCol};margin-right:5px"></i>${aqCat}${aq ? ` · PM2.5 ${fmt(aq.pm2_5, 1)} · PM10 ${fmt(aq.pm10, 0)}` : ""}</span></div>
+      ${metricTile("Today vs 2022", `${fmtSign(diff, 1)} °C`, `forecast mean ${fmt(todayMean, 1)} vs ${fmt(ref, 1)} °C on ${dayLabel(doy)} 2022`)}
+    </div>
+    <div style="grid-column:1 / -1"><div class="sub-h">Next 7 days <small>daily high, low and chance of rain</small></div><div class="forecast">${fc}</div></div>
+  </div>`;
+  $("#live-state").innerHTML = `<i class="dot-live"></i> Live · ${tm[4]}:${tm[5]} IST`;
+}
+function renderLive() {
+  const d = liveTarget(), req = ++liveReq, box = $("#live-now"), stateEl = $("#live-state");
+  $("#live-sub").textContent = st.district >= 0 ? `Current conditions near the centre of ${D[d].name} from the Open-Meteo forecast API, set against the same date in the 2022 dataset.` : `Showing ${D[d].name}; pick a district in the filter bar to move the live feed. Current conditions come from the Open-Meteo forecast API.`;
+  if (box.dataset.d !== String(d)) { box.innerHTML = `<p class="caption" style="padding:24px 0">Fetching live conditions for ${esc(D[d].name)}…</p>`; stateEl.innerHTML = `<i class="dot-live dot-off"></i> Connecting`; }
+  fetchLive(d).then((data) => { if (req !== liveReq) return; box.dataset.d = String(d); drawLive(d, data); renderInsights(); })
+    .catch(() => {
+      if (req !== liveReq) return;
+      box.dataset.d = ""; liveNow = null; stateEl.innerHTML = `<i class="dot-live dot-off"></i> Offline`;
+      box.innerHTML = `<div class="insight"><b>The live feed can't load here.</b> This view blocks outside network requests, or the connection is offline. Open the <a href="https://smeetk-alt.github.io/FDS-dashboard/dashboard/" target="_blank" rel="noopener">GitHub Pages version</a> for live conditions, the 7-day forecast and air quality.</div>`;
+      renderInsights();
+    });
+}
+function renderInsights() {
+  const ul = $("#insights"); if (!ul) return;
+  const items = [], t = dailySel("temp"), days = selDays(), roll = new Float64Array(365);
+  for (let i = 0; i < 365; i++) { let s = 0, c = 0; for (let k = -3; k <= 3; k++) { const j = i + k; if (j >= 0 && j < 365) { s += t[j]; c++; } } roll[i] = s / c; }
+  let pk = days[0]; days.forEach((i) => { if (roll[i] > roll[pk]) pk = i; });
+  items.push(["°C", `The hottest week peaked at <b>${fmt(roll[pk], 1)} °C</b> around ${dayLabel(pk)}.`]);
+  const cs = condsSel(); let wm = monthsArr()[0], ws = -1;
+  monthsArr().forEach((m) => { const r = cs[m - 1], s = (r[1] + r[2] + r[3]) / (r[0] + r[1] + r[2] + r[3]); if (s > ws) { ws = s; wm = m; } });
+  items.push(["mm", `Rain fell on <b>${fmt(ws * 100, 0)}%</b> of grid-days in ${MONTHS[wm - 1]}${st.months.size > 1 ? ", the wettest month in view" : ""}.`]);
+  const {R} = corrMatrix(); let bi = 0, bj = 1;
+  for (let i = 0; i < R.length; i++) for (let j = i + 1; j < R.length; j++) if (Math.abs(R[i][j]) > Math.abs(R[bi][bj])) { bi = i; bj = j; }
+  items.push(["r", `Strongest link: <b>${META[VAR_ORDER[bi]].short} × ${META[VAR_ORDER[bj]].short}</b> (r = ${fmt(R[bi][bj], 2)}).`]);
+  const an = anomalyData(st.v), vs = META[st.v].short.toLowerCase();
+  items.push(["z", an.flagged.length ? `<b>${an.flagged.length}</b> unusual days in ${vs}; the biggest was ${dayLabel(an.flagged[0].i)} (${fmtSign(an.flagged[0].z, 1)}σ).` : `No day in ${vs} strays beyond ±2.5σ.`]);
+  if (lastCluster) items.push(["k", st.district >= 0 ? `${esc(D[st.district].name)} sits in the <b>${esc(lastCluster.names[lastCluster.lab[st.district]])}</b> climate group with ${lastCluster.counts[lastCluster.lab[st.district]] - 1} other districts.` : `k-means finds <b>${lastCluster.k}</b> climate groups; the warmest is “${esc(lastCluster.names[0])}”.`]);
+  if (liveNow) items.push(["now", `Near ${esc(D[liveNow.d].name)} right now: <b>${esc(liveNow.cond.toLowerCase())}</b> at ${fmt(liveNow.temp, 1)} °C. Today's forecast mean is ${fmtSign(liveNow.diff, 1)} °C against the same date in 2022.`]);
+  ul.innerHTML = items.map(([ico, html]) => `<li><span class="ins-ico" aria-hidden="true">${ico}</span><span>${html}</span></li>`).join("");
+}
+
+/* ---------- controls, export, section rail ---------- */
+function buildLab() {
+  st.K = 3; st.k = 4; st.ta = "sw"; st.tb = "ne";
+  const hk = $("#harm-k"), ck = $("#clus-k");
+  hk.value = String(st.K); ck.value = String(st.k);
+  hk.addEventListener("change", () => { st.K = +hk.value; st.anim = MOTION; renderHarmonic(); st.anim = false; });
+  ck.addEventListener("change", () => { st.k = +ck.value; st.anim = MOTION; renderClusters(); st.anim = false; renderInsights(); });
+  const opts = SEASONS.filter((s) => s.id !== "all").map((s) => `<option value="${s.id}">${s.label} (${s.sub})</option>`).join("");
+  ["a", "b"].forEach((key) => {
+    const sel = $("#test-" + key); sel.innerHTML = opts; sel.value = st["t" + key];
+    sel.addEventListener("change", () => { st["t" + key] = sel.value; st.anim = MOTION; renderTest(); st.anim = false; });
+  });
+}
+function buildExport() {
+  const box = $("#export"); if (!box) return;
+  let framed = true; try { framed = window.self !== window.top; } catch (e) { framed = true; }
+  if (framed) { box.remove(); return; }
+  box.addEventListener("click", (e) => {
+    const btn = e.target.closest("button"); if (!btn) return;
+    const days = selDays(), rows = [];
+    selDistricts().forEach((d) => { const dd = W.daily[D[d].name]; days.forEach((i) => { const row = {district: D[d].name, state: D[d].state, date: isoDate(i)}; VAR_ORDER.forEach((v) => { row[`${v}_${META[v].unit.replace(/[^a-z%]/gi, "") || "value"}`] = +dd[v][i].toFixed(3); }); rows.push(row); }); });
+    const fmtKey = btn.dataset.fmt, name = `tamil-nadu-weather-2022-${st.district < 0 ? "all-districts" : D[st.district].name.toLowerCase().replace(/\s+/g, "-")}-${st.season}`;
+    let blob;
+    if (fmtKey === "json") blob = new Blob([JSON.stringify(rows, null, 1)], {type:"application/json"});
+    else { const head = Object.keys(rows[0]); blob = new Blob([[head.join(","), ...rows.map((r) => head.map((k) => { const val = String(r[k]); return /[",\n]/.test(val) ? `"${val.replace(/"/g, '""')}"` : val; }).join(","))].join("\n")], {type:"text/csv"}); }
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `${name}.${fmtKey}`;
+    document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 800);
+  });
+}
+function buildRail() {
+  const links = [...document.querySelectorAll(".rail a")]; if (!links.length) return;
+  links.forEach((a) => a.addEventListener("click", (e) => { const el = document.querySelector(a.getAttribute("href")); if (!el) return; e.preventDefault(); scrollTo({top: el.getBoundingClientRect().top + scrollY - 160, behavior: MOTION ? "smooth" : "auto"}); }));
+  const byId = new Map(links.map((a) => [a.getAttribute("href").slice(1), a]));
+  const io = new IntersectionObserver((entries) => entries.forEach((en) => { if (en.isIntersecting) { links.forEach((l) => l.classList.remove("on")); const a = byId.get(en.target.id); if (a) a.classList.add("on"); } }), {rootMargin:"-40% 0px -55% 0px"});
+  byId.forEach((_, id) => { const el = document.getElementById(id); if (el) io.observe(el); });
 }
 
 /* ---------- motion ---------- */
@@ -1442,6 +2139,7 @@ function update(anim = true) {
   renderedTheme = resolvedTheme();
   corrCache = null; hideTip();
   syncFilters(); renderKPIs(); renderMap(); renderSeries(); renderConds(); renderHist(); renderCorr(); renderScatter(); renderRank();
+  renderCalendar(); renderRose(); renderHarmonic(); renderMLR(); renderClusters(); renderAnomalies(); renderTest(); renderInsights(); renderLive();
   if (st.anim && sheenReady) sheenFx();
   if (st.anim) sheenReady = true;
   st.anim = false;
@@ -1451,6 +2149,7 @@ buildFilters(); renderMeta(); renderDesc(); renderPipe();
 if (MOTION) splitTitle();
 themeToggle(); buildTicker(); plumeFx(); cursorFx(); magnetFx(); spotlightFx(); progressFx(); smoothScroll();
 rippleFx(); tiltFx(); toTopFx();
+buildLab(); buildExport(); buildRail();
 const ready = new Promise((res) => {
   let ok = false;
   const go = () => { if (ok) return; ok = true; update(MOTION); res(); };
