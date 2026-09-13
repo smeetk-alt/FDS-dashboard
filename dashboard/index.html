@@ -375,7 +375,7 @@ html:not(.js-anim) .ticker{overflow-x:auto}
         <p class="sub" id="map-sub"></p></div></div>
       <div class="map-wrap"><canvas id="map" role="img" aria-label="Grid map of the selected variable"></canvas></div>
       <div class="ramp" id="map-ramp"></div>
-      <div class="caption">Each square is one 0.12° grid cell (≈ 13 km). Colour scale is shared across the whole state so districts stay comparable. Click a cell to filter to its district.</div>
+      <div class="caption">A smooth surface interpolated (bicubic) from 2,100 grid cells spaced 0.12° apart (≈ 13 km); faint contours mark each tenth of the colour scale. Hover shows the exact value of the nearest cell. The scale is shared across the state so districts stay comparable. Click to filter to a district.</div>
     </section>
 
     <section class="panel right-top" aria-labelledby="h-series">
@@ -666,12 +666,47 @@ function renderMap() {
   const off = document.createElement("canvas"); off.width = mapCv.width; off.height = mapCv.height;
   const ctx = off.getContext("2d"); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   const ramp = rampFn(M.ramp), sel = st.district;
-  for (let p = 0; p < NP; p++) {
-    ctx.globalAlpha = sel < 0 || P.did[p] === sel ? 1 : 0.22;
-    ctx.fillStyle = rgbStr(ramp((vals[p] - lo) / (hi - lo || 1)));
-    ctx.fillRect(GI[p] * cellW, (NJ - 1 - GJ[p]) * cellH, cellW + 0.6, cellH + 0.6);
+  const LUT = new Uint8Array(256 * 3);
+  for (let k = 0; k < 256; k++) { const c = ramp(k / 255); LUT[k * 3] = c[0]; LUT[k * 3 + 1] = c[1]; LUT[k * 3 + 2] = c[2]; }
+  const grid = new Float64Array(NI * NJ).fill(NaN), gdid = new Int16Array(NI * NJ).fill(-1);
+  for (let p = 0; p < NP; p++) { const k = GI[p] + (NJ - 1 - GJ[p]) * NI; grid[k] = vals[p]; gdid[k] = P.did[p]; }
+  // pad by two cells with edge values so the 4x4 bicubic kernel never reads outside the grid
+  const PI = NI + 4, PJ = NJ + 4, pad = new Float64Array(PI * PJ);
+  for (let rr = 0; rr < PJ; rr++) for (let ii = 0; ii < PI; ii++) {
+    const i = Math.min(NI - 1, Math.max(0, ii - 2)), r = Math.min(NJ - 1, Math.max(0, rr - 2)), v = grid[i + r * NI];
+    pad[ii + rr * PI] = v === v ? v : lo;
   }
-  ctx.globalAlpha = 1;
+  const Wc = Math.max(1, Math.round(cw)), Hc = Math.max(1, Math.round(H)), span = hi - lo || 1;
+  const img = new ImageData(Wc, Hc), px = img.data, band = new Uint8Array(Wc * Hc);
+  const cr = (t) => [((-t + 2) * t - 1) * t / 2, ((3 * t - 5) * t * t) / 2 + 1, ((-3 * t + 4) * t + 1) * t / 2, (t - 1) * t * t / 2];
+  const xi = new Int32Array(Wc), xw = new Float64Array(Wc * 4), xn = new Int32Array(Wc);
+  for (let x = 0; x < Wc; x++) {
+    const g = (x + .5) / cellW - .5, i0 = Math.floor(g);
+    xi[x] = i0; xw.set(cr(g - i0), x * 4); xn[x] = Math.min(NI - 1, Math.max(0, Math.round(g)));
+  }
+  for (let y = 0; y < Hc; y++) {
+    const gr = (y + .5) / cellH - .5, r0 = Math.floor(gr), wy = cr(gr - r0), rn = Math.min(NJ - 1, Math.max(0, Math.round(gr)));
+    const b0 = (r0 + 1) * PI, b1 = b0 + PI, b2 = b1 + PI, b3 = b2 + PI;
+    for (let x = 0; x < Wc; x++) {
+      const c0 = xi[x] + 1, o = x * 4, w0 = xw[o], w1 = xw[o + 1], w2 = xw[o + 2], w3 = xw[o + 3];
+      const v = wy[0] * (w0 * pad[b0 + c0] + w1 * pad[b0 + c0 + 1] + w2 * pad[b0 + c0 + 2] + w3 * pad[b0 + c0 + 3])
+              + wy[1] * (w0 * pad[b1 + c0] + w1 * pad[b1 + c0 + 1] + w2 * pad[b1 + c0 + 2] + w3 * pad[b1 + c0 + 3])
+              + wy[2] * (w0 * pad[b2 + c0] + w1 * pad[b2 + c0 + 1] + w2 * pad[b2 + c0 + 2] + w3 * pad[b2 + c0 + 3])
+              + wy[3] * (w0 * pad[b3 + c0] + w1 * pad[b3 + c0 + 1] + w2 * pad[b3 + c0 + 2] + w3 * pad[b3 + c0 + 3]);
+      let t = (v - lo) / span; t = t < 0 ? 0 : t > 1 ? 1 : t;
+      const ci = (t * 255 + .5) | 0, q = (y * Wc + x) * 4;
+      band[y * Wc + x] = Math.min(9, (t * 10) | 0);
+      px[q] = LUT[ci * 3]; px[q + 1] = LUT[ci * 3 + 1]; px[q + 2] = LUT[ci * 3 + 2];
+      px[q + 3] = sel < 0 || gdid[xn[x] + rn * NI] === sel ? 255 : 56;
+    }
+  }
+  // faint contour wherever the colour band changes between neighbouring pixels
+  for (let y = 0; y < Hc - 1; y++) for (let x = 0; x < Wc - 1; x++) {
+    const k = y * Wc + x;
+    if (band[k] !== band[k + 1] || band[k] !== band[k + Wc]) { const q = k * 4; px[q] *= .78; px[q + 1] *= .78; px[q + 2] *= .78; }
+  }
+  const tmp = document.createElement("canvas"); tmp.width = Wc; tmp.height = Hc; tmp.getContext("2d").putImageData(img, 0, 0);
+  ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high"; ctx.drawImage(tmp, 0, 0, cw, H);
   if (sel >= 0) {
     ctx.strokeStyle = css("ink"); ctx.lineWidth = 1.6; ctx.beginPath();
     for (let p = 0; p < NP; p++) {
