@@ -14,6 +14,8 @@ Or download the repository and open **`dashboard/index.html`** in any modern bro
 
 An alternative layout is in **`versions/heatwave-watch/index.html`** (see below).
 
+**Design:** a royal metallic colour system with **primary rose gold** (selected filters, links, focus), **secondary silver** (Present button, section labels) and **tertiary gold** (key figures and highlights), in light and dark modes. Headings use Playfair Display, body text Manrope and figures JetBrains Mono. The logo (`dashboard/favicon.svg`) is a sun over wind lines inside a rose gold ring.
+
 ## What the dashboard covers
 
 | Panel | Data-science fundamental |
