@@ -10,6 +10,8 @@ An interactive data-science dashboard built on a full year of gridded daily weat
 
 Or download the repository and open **`dashboard/index.html`** in any modern browser; no server or install is needed. An internet connection is used for the Google Fonts and the live weather panel (Open-Meteo, no API key); everything else works offline. **Export CSV** and **Export JSON** in the filter bar download the district-day rows for the current selection.
 
+**Presenting it:** press **▶ Present** in the filter bar for an 11-step guided tour that spotlights each section with talking points. Use the arrow keys (or Page Up / Page Down on a clicker) to move and Esc to exit.
+
 An alternative layout is in **`versions/heatwave-watch/index.html`** (see below).
 
 ## What the dashboard covers
@@ -29,7 +31,8 @@ An alternative layout is in **`versions/heatwave-watch/index.html`** (see below)
 | Right now, and what stands out | Live data and an insight engine: current conditions, 24-hour trend, 7-day forecast and air quality from Open-Meteo, compared with the same date in 2022, plus automatically generated findings for the selection |
 | Every day of 2022 | Calendar heatmap of all 365 days with anomaly markers |
 | Where the wind comes from | Directional statistics: wind rose by direction and speed class |
-| Modelling lab | Machine learning with validation: a harmonic seasonal model tested on a held-out Nov–Dec period against persistence and climatology baselines, and multiple regression with an 80/20 split, standardised coefficients, VIF and a model comparison table |
+| Modelling lab | Machine learning with validation: a harmonic seasonal model tested on a held-out Nov–Dec period, upgraded with an AR(1) residual term for one-day-ahead forecasts and compared against persistence and climatology baselines; multiple regression with an 80/20 split, standardised coefficients, VIF and a model comparison table |
+| Can we tell a rainy day? | Classification: logistic regression (IRLS) predicting rainy district-days, ROC curve and AUC, a confusion matrix with a live decision-threshold slider, precision/recall/F1, odds ratios and a what-if simulator |
 | Districts that behave alike | Unsupervised learning: k-means clustering of districts, elbow and silhouette analysis, cluster profiles and a PCA biplot |
 | Days that broke the pattern | Anomaly detection with leave-one-out rolling z-scores |
 | Is the difference real? | Hypothesis testing: Welch's t-test with p-value, 95% confidence interval and Cohen's d |

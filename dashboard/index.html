@@ -379,6 +379,30 @@ html:not(.js-anim) .ticker{overflow-x:auto}
 .export button:hover{border-color:var(--axis);color:var(--ink)}
 @media (max-width:1100px){.two-col,.three-col,.live{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){.wx-sun,.wx-cloud,.wx-drop,.wx-bolt,.dot-live{animation:none}}
+.slider{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center;font-size:12.5px;color:var(--ink-2)}
+.slider b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.slider input{grid-column:1 / -1;width:100%;accent-color:var(--accent);cursor:pointer}
+.cm{display:grid;grid-template-columns:22px 1fr 1fr;gap:6px}
+.cm-h{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);text-align:center}
+.cm-v{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);writing-mode:vertical-rl;transform:rotate(180deg);text-align:center;align-self:center}
+.cm-cell{border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:1px;min-width:0}
+.cm-cell small{font-size:11px;color:var(--ink-2)}
+.cm-cell b{font-size:22px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.cm-cell span{font-size:11px;color:var(--ink-2)}
+.present{margin-left:auto;border:0;border-radius:999px;padding:7px 15px;font-weight:600;font-size:13px;cursor:pointer;background:linear-gradient(120deg,var(--grad-a),var(--grad-b));color:var(--grad-ink);min-height:34px;white-space:nowrap}
+.present ~ .export{margin-left:0}
+.present ~ .theme-toggle{margin-left:0}
+.tour-hole{position:fixed;z-index:120;border-radius:14px;pointer-events:none;box-shadow:0 0 0 9999px rgba(4,8,16,.74),0 0 0 2px var(--grad-b),0 0 30px 4px color-mix(in srgb,var(--grad-b) 45%,transparent);transition:top .3s cubic-bezier(.2,.75,.2,1),left .3s cubic-bezier(.2,.75,.2,1),width .3s,height .3s}
+.tour-card{position:fixed;z-index:121;width:min(400px,calc(100vw - 32px));background:var(--surface);border:1px solid var(--hair);border-radius:12px;padding:16px 18px;box-shadow:0 24px 60px -24px rgba(0,0,0,.7);transition:top .3s cubic-bezier(.2,.75,.2,1),left .3s cubic-bezier(.2,.75,.2,1)}
+.tour-step{font:600 11px var(--f-mono);letter-spacing:.08em;color:var(--accent)}
+.tour-card h3{font-size:19px;font-weight:700;margin:4px 0 6px}
+.tour-card p{margin:0;font-size:13.5px;color:var(--ink-2)}
+.tour-nav{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:14px}
+.tour-nav button{border:1px solid var(--hair);background:var(--surface);color:var(--ink);border-radius:7px;padding:6px 12px;cursor:pointer;font-weight:500;font-size:13px}
+.tour-nav button.linkish{border:0;padding:4px 2px;color:var(--accent);text-decoration:underline;text-underline-offset:3px;background:none}
+.tour-nav button.primary{background:linear-gradient(120deg,var(--grad-a),var(--grad-b));color:var(--grad-ink);border-color:transparent;font-weight:600}
+.tour-nav button:disabled{opacity:.4;cursor:default}
+@media (max-width:700px){.present{margin-left:0}}
 @media (max-width:700px){.theme-toggle{margin-left:0}}
 </style>
 <script>
@@ -422,6 +446,7 @@ html:not(.js-anim) .ticker{overflow-x:auto}
         <div class="seg" id="f-var" role="group" aria-labelledby="lbl-var"></div>
       </div>
       <button class="reset" id="f-reset" type="button">Reset filters</button>
+      <button class="present" id="present" type="button" aria-label="Start the guided presentation">▶ Present</button>
       <div class="export" id="export" role="group" aria-label="Export the current selection"><button type="button" data-fmt="csv">Export CSV</button><button type="button" data-fmt="json">Export JSON</button></div>
       <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch colour theme">
         <span class="icons" aria-hidden="true">
@@ -524,6 +549,19 @@ html:not(.js-anim) .ticker{overflow-x:auto}
       </div>
     </section>
 
+    <section class="panel span-12" id="sec-class" aria-labelledby="h-class">
+      <div class="ph"><div><div class="eyebrow">Classification · logistic regression</div><h2 id="h-class">Can we tell a rainy day?</h2>
+        <p class="sub">A logistic regression learns to separate rainy district-days from dry ones using the other seven weather variables. It trains on 80% of rows and is scored on the 20% it never saw.</p></div></div>
+      <div class="three-col">
+        <div><div class="sub-h">ROC curve <small id="auc-note"></small></div><div class="chart" id="roc"></div></div>
+        <div><div class="sub-h">Confusion matrix <small id="thr-note"></small></div><div id="cm"></div>
+          <label class="slider" style="margin-top:12px"><span>Decision threshold: predict rain above this probability</span><b id="thr-val">0.50</b><input type="range" id="thr" min="0.05" max="0.95" step="0.01" value="0.5"></label>
+          <div class="metric-row" id="cls-metrics"></div></div>
+        <div><div class="sub-h">What-if simulator <small>drag the sliders</small></div><div id="gauge"></div><div id="whatif" style="display:flex;flex-direction:column;gap:10px;margin-top:6px"></div><div class="cluster-chips" id="odds"></div></div>
+      </div>
+      <p class="caption" id="cls-note"></p>
+    </section>
+
     <section class="panel span-12" id="sec-clusters" aria-labelledby="h-clusters">
       <div class="ph"><div><div class="eyebrow">Unsupervised learning · PCA</div><h2 id="h-clusters">Districts that behave alike</h2>
         <p class="sub" id="cl-sub"></p></div>
@@ -583,6 +621,7 @@ html:not(.js-anim) .ticker{overflow-x:auto}
   <a href="#sec-dist"><span>Distribution and correlation</span><i></i></a>
   <a href="#sec-reg"><span>Regression and ranking</span><i></i></a>
   <a href="#sec-models"><span>Modelling lab</span><i></i></a>
+  <a href="#sec-class"><span>Classification</span><i></i></a>
   <a href="#sec-clusters"><span>Clustering</span><i></i></a>
   <a href="#sec-anom"><span>Anomalies and tests</span><i></i></a>
   <a href="#sec-data"><span>Statistics and cleaning</span><i></i></a>
@@ -1367,6 +1406,10 @@ function renderHarmonic() {
   const band = 1.96 * Math.sqrt(varOf(y.slice(0, TR).map((val, i) => val - yhat[i]), 0));
   const trainMean = meanOf(y.slice(0, TR)), mClim = scores(y.slice(TR), y.slice(TR).map(() => trainMean)), mPers = scores(y.slice(TR), y.slice(TR).map((_, i) => y[TR + i - 1]));
   let inside = 0; for (let i = TR; i < N; i++) if (Math.abs(y[i] - yhat[i]) <= band) inside++;
+  // AR(1) on residuals: tomorrow's error tends to look like today's, so carry a share (phi) of it forward
+  const resid = y.map((val, i) => val - yhat[i]);
+  let sxy = 0, sxx = 0; for (let i = 1; i < TR; i++) { sxy += resid[i] * resid[i - 1]; sxx += resid[i - 1] ** 2; }
+  const phi = sxx ? sxy / sxx : 0, arFc = y.map((_, i) => i === 0 ? yhat[0] : yhat[i] + phi * resid[i - 1]), mAr = scores(y.slice(TR), arFc.slice(TR));
   const h = 250, ml = 44, mr = 12, mt = 14, mb = 24, iw = w - ml - mr, ih = h - mt - mb;
   let lo = Infinity, hi = -Infinity; for (let i = 0; i < N; i++) { lo = Math.min(lo, y[i], yhat[i] - band); hi = Math.max(hi, y[i], yhat[i] + band); }
   const nt = niceTicks(lo, hi, 5), Xs = (i) => ml + i / (N - 1) * iw, Ys = (val) => mt + ih - (val - nt.lo) / (nt.hi - nt.lo) * ih;
@@ -1382,14 +1425,15 @@ function renderHarmonic() {
   svg += `<path class="ln ln-slow" pathLength="1" d="${line(y)}" fill="none" stroke="${c1}" stroke-width="1.1" opacity=".9"/>`;
   svg += `<path class="ln" pathLength="1" d="${line(yhat)}" fill="none" stroke="${css("ink")}" stroke-width="2.2" stroke-linejoin="round"/>`;
   svg += `<line x1="${Xs(TR)}" x2="${Xs(TR)}" y1="${mt}" y2="${mt + ih}" stroke="${css("axis")}"/>`;
+  svg += `<path class="ln" pathLength="1" d="${arFc.slice(TR).map((val, k) => (k ? "L" : "M") + Xs(TR + k).toFixed(1) + " " + Ys(val).toFixed(1)).join("")}" fill="none" stroke="${css("accent")}" stroke-width="1.8" stroke-linejoin="round"/>`;
   host.innerHTML = svg + `</svg>`;
   const dp = M.dp === 0 ? 1 : M.dp;
   $("#harm-title").innerHTML = `Seasonal harmonic model · ${esc(M.short)} <small>${2 * K + 1} parameters, fitted on Jan–Oct</small>`;
   $("#harm-metrics").innerHTML = [
     metricTile("Train RMSE", fmt(mTr.rmse, dp), M.unit), metricTile("Test RMSE", fmt(mTe.rmse, dp), M.unit), metricTile("Test R²", fmt(mTe.r2, 2), `train ${fmt(mTr.r2, 2)}`),
-    metricTile("Inside 95% band", `${fmt(inside / (N - TR) * 100, 0)}%`, "of held-out days"), metricTile("Persistence", fmt(mPers.rmse, dp), "RMSE, yesterday's value"), metricTile("Climatology", fmt(mClim.rmse, dp), "RMSE, training mean"),
+    metricTile("Inside 95% band", `${fmt(inside / (N - TR) * 100, 0)}%`, "of held-out days"), metricTile("Harmonic + AR(1)", fmt(mAr.rmse, dp), `RMSE one day ahead, φ ${fmt(phi, 2)}`), metricTile("Persistence", fmt(mPers.rmse, dp), "RMSE, yesterday's value"), metricTile("Climatology", fmt(mClim.rmse, dp), "RMSE, training mean"),
   ].join("");
-  $("#harm-note").textContent = `Thin coloured line: observed daily ${M.label.toLowerCase()}. Dark line: y = a₀ + Σ(aₖ cos 2πkt/365 + bₖ sin 2πkt/365), fitted by least squares. Band: ±1.96 σ of training residuals. The model ${mTe.rmse < mClim.rmse ? "beats" : "does not beat"} the climatology baseline on unseen days${mTe.rmse > mPers.rmse ? "; yesterday's value is still the better one-day guess, because harmonics capture the season rather than individual weather events" : ""}.`;
+  $("#harm-note").textContent = `Thin coloured line: observed daily ${M.label.toLowerCase()}. Dark line: y = a₀ + Σ(aₖ cos 2πkt/365 + bₖ sin 2πkt/365), fitted by least squares. Band: ±1.96 σ of training residuals. Blue line in the held-out period: the same model plus an AR(1) term that carries ${fmt(phi * 100, 0)}% of yesterday's error into today. On unseen days the season-only model ${mTe.rmse < mClim.rmse ? "beats" : "does not beat"} climatology, and adding AR(1) ${mAr.rmse < mPers.rmse ? "also beats" : "still trails"} the persistence guess (${fmt(mAr.rmse, dp)} vs ${fmt(mPers.rmse, dp)} ${M.unit} RMSE): the harmonics capture the season, the AR term captures weather memory.`;
 }
 function renderMLR() {
   const host = $("#mlr"), w = host.clientWidth; if (!w) return;
@@ -1772,9 +1816,180 @@ function renderInsights() {
   ul.innerHTML = items.map(([ico, html]) => `<li><span class="ins-ico" aria-hidden="true">${ico}</span><span>${html}</span></li>`).join("");
 }
 
+/* ---------- classification lab ---------- */
+let clsModel = null;
+const sigmoid = (z) => 1 / (1 + Math.exp(-z));
+const quantileSorted = (s, p) => { const x = (s.length - 1) * p, i = Math.floor(x); return s[i] + ((s[i + 1] ?? s[i]) - s[i]) * (x - i); };
+function renderClassifier() {
+  const host = $("#roc"); if (!host.clientWidth) return;
+  const feats = VAR_ORDER.filter((v) => v !== "rain"), days = selDays(), rows = [];
+  selDistricts().forEach((d) => { const dd = W.daily[D[d].name]; days.forEach((i) => rows.push([dd.rain[i] >= 0.1 ? 1 : 0, ...feats.map((f) => dd[f][i])])); });
+  const posN = rows.reduce((s, r) => s + r[0], 0), negN = rows.length - posN;
+  if (posN < 30 || negN < 30) {
+    clsModel = null;
+    ["#roc", "#cm", "#cls-metrics", "#whatif", "#odds", "#gauge"].forEach((s) => { $(s).innerHTML = ""; });
+    $("#auc-note").textContent = ""; $("#thr-note").textContent = "";
+    $("#cls-note").innerHTML = `<b>Not enough ${posN < 30 ? "rainy" : "dry"} days in this selection to train a fair classifier</b> (${fmtInt(posN)} rainy, ${fmtInt(negN)} dry). Widen the season or district filter.`;
+    return;
+  }
+  const rnd = mulberry32(7), order = rows.map((_, i) => i);
+  for (let i = order.length - 1; i > 0; i--) { const j = (rnd() * (i + 1)) | 0; [order[i], order[j]] = [order[j], order[i]]; }
+  const cut = Math.round(order.length * .8), tr = order.slice(0, cut).map((i) => rows[i]), te = order.slice(cut).map((i) => rows[i]), p = feats.length;
+  const mu = [], sd = [], lo = [], hi = [];
+  for (let j = 0; j < p; j++) { const col = tr.map((r) => r[j + 1]), srt = [...col].sort((a, b) => a - b); mu[j] = meanOf(col); sd[j] = Math.sqrt(varOf(col, mu[j])) || 1; lo[j] = quantileSorted(srt, .01); hi[j] = quantileSorted(srt, .99); }
+  const design = (r) => [1, ...r.slice(1).map((x, j) => (x - mu[j]) / sd[j])];
+  const Xtr = tr.map(design), ytr = tr.map((r) => r[0]), Xte = te.map(design), yte = te.map((r) => r[0]);
+  let beta = new Array(p + 1).fill(0);
+  // Newton-Raphson (iteratively reweighted least squares) with a small L2 penalty for stability
+  for (let it = 0; it < 30; it++) {
+    const g = new Array(p + 1).fill(0), H = Array.from({length:p + 1}, () => new Array(p + 1).fill(0));
+    for (let i = 0; i < Xtr.length; i++) { const x = Xtr[i], pr = sigmoid(dot(beta, x)), wt = pr * (1 - pr), e = ytr[i] - pr; for (let a = 0; a <= p; a++) { g[a] += x[a] * e; const xa = x[a] * wt; for (let b = a; b <= p; b++) H[a][b] += xa * x[b]; } }
+    for (let a = 0; a <= p; a++) { for (let b = 0; b < a; b++) H[a][b] = H[b][a]; H[a][a] += 1e-3; if (a) g[a] -= 1e-3 * beta[a]; }
+    const step = solveLinear(H, g); let big = 0;
+    beta = beta.map((b, i) => { big = Math.max(big, Math.abs(step[i])); return b + step[i]; });
+    if (big < 1e-7) break;
+  }
+  const probs = Xte.map((x) => sigmoid(dot(beta, x))), P1 = yte.reduce((s, v) => s + v, 0), N0 = yte.length - P1;
+  const idx = probs.map((_, i) => i).sort((a, b) => probs[b] - probs[a]), roc = [[0, 0]];
+  let tp = 0, fp = 0, auc = 0;
+  idx.forEach((i, k) => { if (yte[i]) tp++; else fp++; if (k === idx.length - 1 || probs[idx[k + 1]] !== probs[i]) { const pt = [fp / N0, tp / P1], prev = roc[roc.length - 1]; auc += (pt[0] - prev[0]) * (pt[1] + prev[1]) / 2; roc.push(pt); } });
+  const ord = feats.map((_, j) => j).sort((a, b) => Math.abs(beta[b + 1]) - Math.abs(beta[a + 1]));
+  clsModel = {beta, mu, sd, lo, hi, feats, probs, yte, roc, auc, ord, base: Math.max(P1, N0) / yte.length, lastP: null};
+  drawROC(); drawCls(); buildWhatIf();
+  $("#auc-note").textContent = `AUC ${fmt(auc, 3)} on ${fmtInt(yte.length)} test rows`;
+  $("#cls-note").textContent = `Rainy means a district-day with mean rainfall of at least 0.1 mm, the dataset's own dry/light-rain boundary (${fmt(posN / rows.length * 100, 0)}% of rows here). Features are standardised on the training rows and the model is fitted by iteratively reweighted least squares with light L2 regularisation. AUC 0.5 is a coin toss; 1.0 is perfect separation.`;
+}
+function drawROC() {
+  const m = clsModel, host = $("#roc"), w = host.clientWidth; if (!w || !m) return;
+  const h = Math.round(Math.min(320, w * .88)), ml = 50, mr = 10, mt = 10, mb = 36, iw = w - ml - mr, ih = h - mt - mb;
+  const X = (val) => ml + val * iw, Y = (val) => mt + ih - val * ih, stepN = Math.max(1, Math.ceil(m.roc.length / 400));
+  const pts = m.roc.filter((_, i) => i % stepN === 0 || i === m.roc.length - 1);
+  const line = pts.map((pt, i) => (i ? "L" : "M") + X(pt[0]).toFixed(1) + " " + Y(pt[1]).toFixed(1)).join("");
+  let svg = `<svg class="${st.anim ? "anim" : ""}" viewBox="0 0 ${w} ${h}" height="${h}" role="img" aria-label="ROC curve, AUC ${fmt(m.auc, 2)}"><defs><linearGradient id="rocg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" style="stop-color:var(--grad-b);stop-opacity:.45"/><stop offset="1" style="stop-color:var(--grad-a);stop-opacity:.06"/></linearGradient></defs>`;
+  [0, .25, .5, .75, 1].forEach((t) => { svg += `<line x1="${ml}" x2="${w - mr}" y1="${Y(t)}" y2="${Y(t)}" stroke="${css("hair")}"/><text class="tick" x="${ml - 6}" y="${Y(t) + 4}" text-anchor="end">${t}</text><text class="tick" x="${X(t)}" y="${mt + ih + 15}" text-anchor="middle">${t}</text>`; });
+  const ang = -Math.atan2(ih, iw) * 180 / Math.PI;
+  svg += `<line x1="${X(0)}" y1="${Y(0)}" x2="${X(1)}" y2="${Y(1)}" stroke="${css("muted")}" opacity=".7"/><text class="tick" x="${X(.66)}" y="${Y(.62)}" style="font-size:10px" transform="rotate(${ang.toFixed(1)} ${X(.66).toFixed(1)} ${Y(.62).toFixed(1)})">coin toss</text>`;
+  svg += `<g class="fade"><path d="${line}L${X(1)} ${Y(0)}Z" fill="url(#rocg)"/></g><path class="ln" pathLength="1" d="${line}" fill="none" stroke="${css("ink")}" stroke-width="2.2" stroke-linejoin="round"/>`;
+  svg += `<text class="clabel" x="${X(.5)}" y="${Y(.16)}" style="font-size:13px;font-weight:600">AUC = ${fmt(m.auc, 3)}</text>`;
+  svg += `<circle id="roc-pt" r="6" cx="${X(0)}" cy="${Y(0)}" fill="${css("accent")}" stroke="var(--surface)" stroke-width="2"/>`;
+  svg += `<text class="tick" x="${ml + iw / 2}" y="${h - 3}" text-anchor="middle">False positive rate</text><text class="tick" transform="translate(12 ${mt + ih / 2}) rotate(-90)" text-anchor="middle">True positive rate</text></svg>`;
+  host.innerHTML = svg;
+  host.dataset.geom = JSON.stringify({ml, mt, iw, ih});
+}
+function drawCls() {
+  const m = clsModel; if (!m) return;
+  const thr = st.thr; let tp = 0, fp = 0, fn = 0, tn = 0;
+  m.probs.forEach((pr, i) => { const pred = pr >= thr; if (pred && m.yte[i]) tp++; else if (pred) fp++; else if (m.yte[i]) fn++; else tn++; });
+  const n = m.probs.length, acc = (tp + tn) / n, prec = tp + fp ? tp / (tp + fp) : 0, rec = tp / (tp + fn || 1), spec = tn / (tn + fp || 1), f1 = prec + rec ? 2 * prec * rec / (prec + rec) : 0;
+  const cell = (label, v, good) => `<div class="cm-cell" style="background:color-mix(in srgb,${good ? "var(--grad-a)" : "var(--grad-b)"} ${Math.round(10 + 40 * v / n)}%,var(--surface-2))"><small>${label}</small><b>${fmtInt(v)}</b><span>${fmt(v / n * 100, 1)}% of test rows</span></div>`;
+  $("#cm").innerHTML = `<div class="cm"><span></span><span class="cm-h">Predicted rain</span><span class="cm-h">Predicted dry</span><span class="cm-v">Actual rain</span>${cell("True positive", tp, true)}${cell("False negative", fn, false)}<span class="cm-v">Actual dry</span>${cell("False positive", fp, false)}${cell("True negative", tn, true)}</div>`;
+  $("#cls-metrics").innerHTML = [
+    metricTile("Accuracy", `${fmt(acc * 100, 1)}%`, `always-majority guess ${fmt(m.base * 100, 1)}%`), metricTile("Precision", `${fmt(prec * 100, 1)}%`, "rain calls that were right"),
+    metricTile("Recall", `${fmt(rec * 100, 1)}%`, "rainy days caught"), metricTile("F1 score", fmt(f1, 3), `specificity ${fmt(spec * 100, 0)}%`),
+  ].join("");
+  $("#thr-val").textContent = fmt(thr, 2);
+  $("#thr-note").textContent = `at threshold ${fmt(thr, 2)}`;
+  const g = JSON.parse($("#roc").dataset.geom || "null"), pt = $("#roc-pt");
+  if (g && pt) { pt.setAttribute("cx", (g.ml + fp / (fp + tn || 1) * g.iw).toFixed(1)); pt.setAttribute("cy", (g.mt + g.ih - rec * g.ih).toFixed(1)); }
+  const gl = $("#gauge-lbl"); if (gl && m.lastP != null) gl.textContent = m.lastP >= thr ? "predicted: rainy" : "predicted: dry";
+}
+function buildWhatIf() {
+  const m = clsModel; if (!m) return;
+  const gh = $("#gauge"), w = Math.min(gh.clientWidth || 260, 300), h = Math.round(w * .6), r = w / 2 - 16, cx = w / 2, cy = h - 12;
+  const arc = `M${cx - r} ${cy} A${r} ${r} 0 0 1 ${cx + r} ${cy}`;
+  gh.innerHTML = `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img" aria-label="Predicted probability of rain" style="display:block;margin:0 auto"><defs><linearGradient id="gaugeg" gradientUnits="userSpaceOnUse" x1="${cx - r}" y1="0" x2="${cx + r}" y2="0"><stop offset="0" style="stop-color:var(--grad-a)"/><stop offset="1" style="stop-color:var(--grad-b)"/></linearGradient></defs><path d="${arc}" fill="none" stroke="${css("hair")}" stroke-width="14" stroke-linecap="round"/><path id="gauge-val" d="" fill="none" stroke="url(#gaugeg)" stroke-width="14" stroke-linecap="round"/><text id="gauge-txt" x="${cx}" y="${cy - 18}" text-anchor="middle" style="font:600 30px var(--f-body);fill:var(--ink)">–</text><text id="gauge-lbl" x="${cx}" y="${cy}" text-anchor="middle" class="tick"></text></svg>`;
+  $("#whatif").innerHTML = m.ord.slice(0, 4).map((j) => { const M = META[m.feats[j]], step = (m.hi[j] - m.lo[j]) / 100 || .01; return `<label class="slider"><span>${M.short} (${M.unit})</span><b data-out="${j}">${fmt(m.mu[j], M.dp)}</b><input type="range" data-j="${j}" min="${m.lo[j].toFixed(3)}" max="${m.hi[j].toFixed(3)}" step="${step.toFixed(4)}" value="${m.mu[j].toFixed(3)}"></label>`; }).join("");
+  let shown = 0, gRaf = 0, firstDraw = true;
+  const setArc = (v) => {
+    const phi = Math.PI * Math.max(0, Math.min(1, v));
+    $("#gauge-val").setAttribute("d", v < .002 ? "" : `M${cx - r} ${cy} A${r} ${r} 0 0 1 ${(cx - r * Math.cos(phi)).toFixed(2)} ${(cy - r * Math.sin(phi)).toFixed(2)}`);
+  };
+  const tweenGauge = (target) => {
+    cancelAnimationFrame(gRaf);
+    if (!MOTION || firstDraw) { firstDraw = false; shown = target; setArc(target); return; }
+    const from = shown, t0 = performance.now();
+    const step = (t) => { const k = Math.min(1, (t - t0) / 450), e = 1 - Math.pow(1 - k, 3); shown = from + (target - from) * e; setArc(shown); if (k < 1) gRaf = requestAnimationFrame(step); };
+    gRaf = requestAnimationFrame(step);
+  };
+  const recalc = () => {
+    const z = new Array(m.feats.length).fill(0);
+    $("#whatif").querySelectorAll("input").forEach((inp) => { const j = +inp.dataset.j, val = +inp.value; z[j] = (val - m.mu[j]) / m.sd[j]; $("#whatif").querySelector(`[data-out="${j}"]`).textContent = fmt(val, META[m.feats[j]].dp); });
+    const pr = sigmoid(m.beta[0] + z.reduce((s, zz, j) => s + zz * m.beta[j + 1], 0));
+    m.lastP = pr;
+    tweenGauge(pr);
+    $("#gauge-txt").textContent = `${fmt(pr * 100, 0)}%`;
+    $("#gauge-lbl").textContent = pr >= st.thr ? "predicted: rainy" : "predicted: dry";
+  };
+  $("#whatif").querySelectorAll("input").forEach((inp) => inp.addEventListener("input", recalc));
+  recalc();
+  $("#odds").innerHTML = `<div class="sub-h" style="margin:4px 0 0">What drives the prediction <small>odds ratio per +1 SD</small></div>` + m.ord.map((j) => { const b = m.beta[j + 1]; return `<div class="cl-row"><b>${META[m.feats[j]].short}</b><span>×${fmt(Math.exp(b), 2)} odds of rain, ${b > 0 ? "▲ more likely" : "▼ less likely"}</span></div>`; }).join("");
+}
+
+/* ---------- presentation mode ---------- */
+const TOUR = [
+  ["#kpis", "The year at a glance", "Six headline figures for whatever is selected. Every number, sparkline and chart below redraws the moment a filter changes."],
+  ["#sec-live", "Live data meets 2022", "Real conditions from the Open-Meteo API for the selected district, set against the same date in the dataset, next to findings the dashboard writes for itself."],
+  ["#sec-map", "Where and when", "A bicubic-smoothed map of 2,100 grid cells with contour lines, and the daily series with a 7-day rolling mean. Circles mark statistical anomalies."],
+  ["#sec-calendar", "Every single day", "The calendar heatmap shows all 365 days at once; the wind rose shows direction and speed, which swing between the two monsoons."],
+  ["#sec-dist", "Shape and relationships", "A histogram with a kernel density estimate and Tukey outliers, beside the Pearson correlation matrix of all eight variables."],
+  ["#sec-reg", "From correlation to a line", "Least-squares regression on any pair, with R², RMSE and a plain-language reading, plus a sortable district league table."],
+  ["#sec-models", "Models tested on unseen data", "A harmonic seasonal model scored on a held-out Nov–Dec period, upgraded with AR(1) weather memory, and multiple regression with an 80/20 split and VIF checks."],
+  ["#sec-class", "Can we tell a rainy day?", "Logistic regression with an ROC curve, a confusion matrix you can re-threshold live, and a what-if simulator."],
+  ["#sec-clusters", "Districts that behave alike", "k-means finds climate groups; the elbow and silhouette justify k, and PCA shows the groups in two dimensions."],
+  ["#sec-anom", "Anomalies and evidence", "Rolling z-scores catch days that broke the pattern, and a Welch t-test checks whether two seasons really differ."],
+  ["#sec-data", "Built on clean data", "Exact descriptive statistics and every cleaning step, from three spellings of India to decoded rain classes."],
+];
+function tourFx() {
+  const btn = $("#present"); if (!btn) return;
+  let idx = -1, raf = 0, hole = null, card = null;
+  const place = () => {
+    if (idx < 0) return;
+    const el = $(TOUR[idx][0]);
+    if (el) {
+      const r = el.getBoundingClientRect(), pad = 8, top = Math.max(8, r.top - pad), bottom = Math.min(innerHeight - 8, r.bottom + pad);
+      Object.assign(hole.style, {top: `${top}px`, left: `${r.left - pad}px`, width: `${r.width + pad * 2}px`, height: `${Math.max(40, bottom - top)}px`});
+      const cw = card.offsetWidth, ch = card.offsetHeight;
+      let cy = bottom + 14; if (cy + ch > innerHeight - 12) cy = top - ch - 14; if (cy < 12) cy = innerHeight - ch - 16;
+      Object.assign(card.style, {top: `${cy}px`, left: `${Math.min(innerWidth - cw - 16, Math.max(16, r.left + 12))}px`});
+    }
+    raf = requestAnimationFrame(place);
+  };
+  const show = (i) => {
+    idx = Math.max(0, Math.min(TOUR.length - 1, i));
+    const [sel, title, text] = TOUR[idx], el = $(sel);
+    card.querySelector(".tour-step").textContent = `STEP ${idx + 1} OF ${TOUR.length}`;
+    card.querySelector("h3").textContent = title;
+    card.querySelector("p").textContent = text;
+    card.querySelector('[data-t="prev"]').disabled = idx === 0;
+    card.querySelector('[data-t="next"]').textContent = idx === TOUR.length - 1 ? "Finish" : "Next →";
+    if (el) {
+      if (!el.classList.contains("in")) { el.classList.add("in"); const fn = pendingIn.get(el); if (fn) { pendingIn.delete(el); fn(); } }
+      scrollTo({top: el.getBoundingClientRect().top + scrollY - Math.max(170, (innerHeight - Math.min(el.offsetHeight, innerHeight * .72)) / 2), behavior: MOTION ? "smooth" : "auto"});
+    }
+  };
+  const close = () => { idx = -1; cancelAnimationFrame(raf); hole.remove(); card.remove(); removeEventListener("keydown", onKey); btn.focus(); };
+  const onKey = (e) => {
+    if (e.key === "Escape") close();
+    else if (e.key === "ArrowRight" || e.key === "PageDown") { e.preventDefault(); if (idx === TOUR.length - 1) close(); else show(idx + 1); }
+    else if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); show(idx - 1); }
+  };
+  btn.addEventListener("click", () => {
+    if (idx >= 0) return;
+    hole = document.createElement("div"); hole.className = "tour-hole"; hole.setAttribute("aria-hidden", "true");
+    card = document.createElement("div"); card.className = "tour-card"; card.setAttribute("role", "dialog"); card.setAttribute("aria-modal", "true"); card.setAttribute("aria-label", "Guided presentation");
+    card.innerHTML = `<div class="tour-step"></div><h3></h3><p></p><div class="tour-nav"><button type="button" data-t="exit" class="linkish">Exit</button><span style="display:flex;gap:6px"><button type="button" data-t="prev">← Back</button><button type="button" data-t="next" class="primary">Next →</button></span></div>`;
+    document.body.append(hole, card);
+    card.addEventListener("click", (e) => { const t = e.target.closest("button"); if (!t) return; if (t.dataset.t === "exit") close(); else if (t.dataset.t === "prev") show(idx - 1); else if (idx === TOUR.length - 1) close(); else show(idx + 1); });
+    addEventListener("keydown", onKey);
+    show(0); raf = requestAnimationFrame(place);
+    card.querySelector('[data-t="next"]').focus();
+  });
+}
+
 /* ---------- controls, export, section rail ---------- */
 function buildLab() {
-  st.K = 3; st.k = 4; st.ta = "sw"; st.tb = "ne";
+  st.K = 3; st.k = 4; st.ta = "sw"; st.tb = "ne"; st.thr = .5;
+  $("#thr").addEventListener("input", (e) => { st.thr = +e.target.value; drawCls(); });
   const hk = $("#harm-k"), ck = $("#clus-k");
   hk.value = String(st.K); ck.value = String(st.k);
   hk.addEventListener("change", () => { st.K = +hk.value; st.anim = MOTION; renderHarmonic(); st.anim = false; });
@@ -2139,7 +2354,7 @@ function update(anim = true) {
   renderedTheme = resolvedTheme();
   corrCache = null; hideTip();
   syncFilters(); renderKPIs(); renderMap(); renderSeries(); renderConds(); renderHist(); renderCorr(); renderScatter(); renderRank();
-  renderCalendar(); renderRose(); renderHarmonic(); renderMLR(); renderClusters(); renderAnomalies(); renderTest(); renderInsights(); renderLive();
+  renderCalendar(); renderRose(); renderHarmonic(); renderMLR(); renderClassifier(); renderClusters(); renderAnomalies(); renderTest(); renderInsights(); renderLive();
   if (st.anim && sheenReady) sheenFx();
   if (st.anim) sheenReady = true;
   st.anim = false;
@@ -2149,7 +2364,7 @@ buildFilters(); renderMeta(); renderDesc(); renderPipe();
 if (MOTION) splitTitle();
 themeToggle(); buildTicker(); plumeFx(); cursorFx(); magnetFx(); spotlightFx(); progressFx(); smoothScroll();
 rippleFx(); tiltFx(); toTopFx();
-buildLab(); buildExport(); buildRail();
+buildLab(); buildExport(); buildRail(); tourFx();
 const ready = new Promise((res) => {
   let ok = false;
   const go = () => { if (ok) return; ok = true; update(MOTION); res(); };
