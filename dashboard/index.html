@@ -1,0 +1,900 @@
+<title>Tamil Nadu Weather Atlas 2022</title>
+<meta name="description" content="Interactive data-science dashboard of 766,500 grid-day weather observations across Tamil Nadu and Puducherry in 2022.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anek+Tamil:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  color-scheme: light;
+  --ground:#F3F5F7; --surface:#FFFFFF; --surface-2:#F4F7F9; --ink:#101820; --ink-2:#4A5663; --muted:#6E7A87;
+  --hair:#E1E6EC; --axis:#C3CBD5; --accent:#2F6CB0; --accent-ink:#10202A; --accent-wash:rgba(47,108,176,.09);
+  --grad-a:#6CCB97; --grad-b:#6FAAEB; --grad-ink:#10202A;
+  --halo:rgba(255,255,255,.92); --tip:#101820; --tip-ink:#F3F5F7;
+  --heat-0:#FBE7D8; --heat-1:#EDA67C; --heat-2:#C4552A; --heat-3:#6B2310;
+  --rain-0:#E0EAF6; --rain-1:#88AFE3; --rain-2:#2F63B3; --rain-3:#132E63;
+  --wind-0:#ECE9F8; --wind-1:#AFA4E0; --wind-2:#6A58C2; --wind-3:#35297A;
+  --slate-0:#E5E9EF; --slate-1:#9BA8BB; --slate-2:#526481; --slate-3:#222E44;
+  --plum-0:#F0E4F0; --plum-1:#C497C5; --plum-2:#8A4B8C; --plum-3:#481E4A;
+  --div-neg:#2F63B3; --div-mid:#EEF1F4; --div-pos:#C4552A;
+  --c-dry:#D9CEB9; --c-light:#86AEE3; --c-mod:#2F63B3; --c-heavy:#132E63;
+  --f-display:"Anek Tamil", "Nirmala UI", "Segoe UI", system-ui, sans-serif;
+  --f-body:"IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --ground:#0B1016; --surface:#121922; --surface-2:#18212C; --ink:#E8EDF3; --ink-2:#A9B4C1; --muted:#8391A1;
+    --hair:#222D3A; --axis:#34404F; --accent:#93C2F5; --accent-ink:#10202A; --accent-wash:rgba(147,194,245,.13);
+    --grad-a:#8FE0B4; --grad-b:#93C2F5; --grad-ink:#10202A;
+    --halo:rgba(18,25,34,.92); --tip:#E8EDF3; --tip-ink:#121922;
+    --heat-0:#2B1A13; --heat-1:#8C3C1C; --heat-2:#E2783F; --heat-3:#FFD4AB;
+    --rain-0:#131F36; --rain-1:#2A559C; --rain-2:#6E9DE0; --rain-3:#D0E1FA;
+    --wind-0:#1B1733; --wind-1:#46398F; --wind-2:#9C8FE6; --wind-3:#E3DEFB;
+    --slate-0:#182030; --slate-1:#45546E; --slate-2:#8C9BB4; --slate-3:#DCE3EE;
+    --plum-0:#24182A; --plum-1:#6E3C71; --plum-2:#B884BA; --plum-3:#F0DCF0;
+    --div-neg:#6E9DE0; --div-mid:#222D3A; --div-pos:#E2783F;
+    --c-dry:#5A5446; --c-light:#3B6BB5; --c-mod:#7FA8E6; --c-heavy:#D0E1FA;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --ground:#0B1016; --surface:#121922; --surface-2:#18212C; --ink:#E8EDF3; --ink-2:#A9B4C1; --muted:#8391A1;
+  --hair:#222D3A; --axis:#34404F; --accent:#93C2F5; --accent-ink:#10202A; --accent-wash:rgba(147,194,245,.13);
+    --grad-a:#8FE0B4; --grad-b:#93C2F5; --grad-ink:#10202A;
+  --halo:rgba(18,25,34,.92); --tip:#E8EDF3; --tip-ink:#121922;
+  --heat-0:#2B1A13; --heat-1:#8C3C1C; --heat-2:#E2783F; --heat-3:#FFD4AB;
+  --rain-0:#131F36; --rain-1:#2A559C; --rain-2:#6E9DE0; --rain-3:#D0E1FA;
+  --wind-0:#1B1733; --wind-1:#46398F; --wind-2:#9C8FE6; --wind-3:#E3DEFB;
+  --slate-0:#182030; --slate-1:#45546E; --slate-2:#8C9BB4; --slate-3:#DCE3EE;
+  --plum-0:#24182A; --plum-1:#6E3C71; --plum-2:#B884BA; --plum-3:#F0DCF0;
+  --div-neg:#6E9DE0; --div-mid:#222D3A; --div-pos:#E2783F;
+  --c-dry:#5A5446; --c-light:#3B6BB5; --c-mod:#7FA8E6; --c-heavy:#D0E1FA;
+}
+
+*{box-sizing:border-box}
+body{background-color:var(--ground);background-image:linear-gradient(160deg,color-mix(in srgb,var(--grad-a) 16%,var(--ground)) 0%,var(--ground) 45%,color-mix(in srgb,var(--grad-b) 18%,var(--ground)) 100%);background-attachment:fixed;color:var(--ink);font:14px/1.55 var(--f-body);-webkit-font-smoothing:antialiased;min-height:100vh}
+.wrap{max-width:1440px;margin:0 auto;padding:28px 28px 48px}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance;letter-spacing:-.005em}
+button,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.num{font-variant-numeric:tabular-nums}
+.mono{font-family:var(--f-mono)}
+
+/* header */
+.masthead{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;padding:26px 30px;margin-bottom:18px;border-radius:14px;background:linear-gradient(120deg,var(--grad-a),var(--grad-b));color:var(--grad-ink)}
+.brand{display:flex;flex-direction:column;gap:6px}
+.tamil{font-family:var(--f-display);font-weight:600;font-size:15px;color:var(--grad-ink);letter-spacing:.02em;opacity:.85}
+.masthead h1{font-size:42px;line-height:1.02;font-weight:700;color:var(--grad-ink)}
+.masthead h1 span{color:rgba(16,32,42,.7);font-weight:500}
+.lede{color:rgba(16,32,42,.82);max-width:68ch;margin:6px 0 0}
+.byline{display:inline-flex;flex-wrap:wrap;gap:4px 8px;align-items:center;width:max-content;max-width:100%;margin:0 0 4px;padding:5px 14px;border-radius:999px;background:rgba(255,255,255,.5);border:1px solid rgba(16,32,42,.12);font-size:14px;color:var(--grad-ink)}
+.byline b{font-weight:600}
+.meta{display:grid;grid-template-columns:repeat(4,auto);gap:4px 26px;text-align:right}
+.meta div{display:flex;flex-direction:column}
+.meta b{font-size:22px;font-weight:600;line-height:1.1;color:var(--grad-ink)}
+.meta small{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:rgba(16,32,42,.72)}
+
+/* filter bar */
+.filters{position:sticky;top:0;z-index:20;margin:0 -28px 18px;padding:12px 28px;background:color-mix(in srgb,var(--ground) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--hair)}
+.frow{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center}
+.fgroup{display:flex;align-items:center;gap:8px}
+.flabel{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:500}
+select{appearance:none;background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%236F8583' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 10px center;border:1px solid var(--hair);border-radius:7px;padding:6px 30px 6px 10px;cursor:pointer;min-height:34px}
+select:hover{border-color:var(--axis)}
+.seg{display:inline-flex;background:var(--surface);border:1px solid var(--hair);border-radius:8px;padding:2px;flex-wrap:wrap}
+.seg button{border:0;background:transparent;padding:5px 11px;border-radius:6px;cursor:pointer;white-space:nowrap;color:var(--ink-2);min-height:28px}
+.seg button:hover{background:var(--accent-wash);color:var(--ink)}
+.seg button[aria-pressed="true"]{background:linear-gradient(120deg,var(--grad-a),var(--grad-b));color:var(--grad-ink);font-weight:600}
+.seg button small{opacity:.75;margin-left:4px;font-size:11px}
+.reset{border:0;background:none;color:var(--accent);cursor:pointer;padding:4px 2px;font-weight:500;text-decoration:underline;text-underline-offset:3px}
+.summary{margin-top:8px;font-size:13px;color:var(--ink-2)}
+.summary b{color:var(--ink);font-weight:600}
+
+/* grid */
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}
+.panel{background:linear-gradient(150deg,color-mix(in srgb,var(--grad-a) 9%,var(--surface)) 0%,var(--surface) 50%);border:1px solid var(--hair);border-radius:10px;padding:18px 20px 16px;min-width:0;display:flex;flex-direction:column;gap:12px}
+.ph{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);font-weight:600;margin-bottom:2px}
+.panel h2{font-size:21px;font-weight:600;line-height:1.15}
+.sub{color:var(--muted);font-size:12.5px;margin:3px 0 0;max-width:70ch}
+.span-12{grid-column:span 12}.span-7{grid-column:span 7}.span-6{grid-column:span 6}.span-5{grid-column:span 5}
+.map-panel{grid-column:1 / span 5;grid-row:span 2}
+.right-top,.right-bot{grid-column:6 / span 7}
+
+/* KPI strip */
+.kpis{grid-column:span 12;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));background:linear-gradient(150deg,color-mix(in srgb,var(--grad-a) 16%,var(--surface)) 0%,var(--surface) 55%,color-mix(in srgb,var(--grad-b) 12%,var(--surface)) 100%);border:1px solid var(--hair);border-radius:10px}
+.kpi{padding:16px 18px 14px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.kpi+.kpi{border-left:1px solid var(--hair)}
+.kpi .k-label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:500}
+.kpi .k-val{font-size:30px;font-weight:600;line-height:1.15;letter-spacing:-.01em}
+.kpi .k-val small{font-size:14px;font-weight:500;color:var(--ink-2);margin-left:3px}
+.kpi .k-sub{font-size:12px;color:var(--ink-2);min-height:18px}
+.kpi svg{margin-top:8px;width:100%;height:30px;display:block}
+
+/* charts */
+.chart{position:relative;width:100%}
+.chart svg{display:block;width:100%;overflow:visible}
+.tick{font:11px var(--f-mono);fill:var(--muted)}
+.clabel{font:500 11.5px var(--f-body);fill:var(--ink-2)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--ink-2);align-items:center}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-2px}
+.legend i.line{height:2px;border-radius:1px;vertical-align:3px;width:16px}
+.legend i.band{opacity:.45}
+.map-wrap{position:relative;flex:1;display:flex;flex-direction:column;justify-content:center}
+.map-wrap canvas{display:block;width:100%;cursor:crosshair}
+.ramp{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;font:11px var(--f-mono);color:var(--muted)}
+.ramp .bar{height:10px;border-radius:5px}
+.caption{font-size:12px;color:var(--muted)}
+.chip{display:inline-block;font-size:11px;padding:1px 8px;border-radius:999px;background:var(--surface-2);color:var(--ink-2);border:1px solid var(--hair);white-space:nowrap}
+.chip.warn{color:var(--heat-2);border-color:color-mix(in srgb,var(--heat-2) 40%,var(--hair))}
+.chip.cool{color:var(--rain-2);border-color:color-mix(in srgb,var(--rain-2) 40%,var(--hair))}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px 14px;border-top:1px solid var(--hair);padding-top:12px}
+.stats div{display:flex;flex-direction:column}
+.stats small{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.stats b{font-size:17px;font-weight:600}
+.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.controls select{min-height:30px;padding:4px 28px 4px 8px;font-size:13px}
+.eq{display:flex;gap:18px;flex-wrap:wrap;align-items:baseline;font-size:13px;color:var(--ink-2)}
+.eq .mono{color:var(--ink);font-size:13.5px}
+.insight{background:var(--surface-2);border-radius:8px;padding:10px 12px;font-size:13px;color:var(--ink-2)}
+.insight b{color:var(--ink)}
+
+/* tables */
+.tscroll{overflow:auto;max-height:520px;border-top:1px solid var(--hair)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:7px 10px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--hair)}
+th:first-child,td:first-child{text-align:left}
+thead th{position:sticky;top:0;background:var(--surface);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:500;z-index:1}
+th button{all:unset;cursor:pointer;display:inline-flex;gap:4px;align-items:center}
+th button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+th[aria-sort="ascending"] button::after{content:"▲";font-size:8px}
+th[aria-sort="descending"] button::after{content:"▼";font-size:8px}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:var(--accent-wash)}
+tbody tr.sel{background:var(--accent-wash);box-shadow:inset 3px 0 0 var(--accent)}
+td .spk{width:96px;height:20px;display:block;margin-left:auto}
+.desc td:first-child{font-weight:500}
+.desc td .mono{color:var(--muted);font-size:11.5px;margin-left:6px}
+details{font-size:12.5px;color:var(--ink-2)}
+details summary{cursor:pointer;color:var(--accent);font-weight:500;width:max-content}
+details table{margin-top:8px}
+
+/* pipeline */
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0;counter-reset:s}
+.steps li{display:grid;grid-template-columns:28px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid var(--hair);counter-increment:s}
+.steps li:last-child{border-bottom:0}
+.steps li::before{content:counter(s);width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--grad-a),var(--grad-b));color:var(--grad-ink);font:600 12px/24px var(--f-mono);text-align:center}
+.steps b{display:block;font-weight:600}
+.steps p{margin:2px 0 0;color:var(--ink-2);font-size:13px}
+.steps code{font:12px var(--f-mono);background:var(--surface-2);padding:0 5px;border-radius:4px;color:var(--ink)}
+.minitable{margin-top:6px;font-size:12px}
+.minitable td,.minitable th{padding:3px 8px 3px 0;border-bottom:1px dashed transparent;text-align:left}
+.minitable th{position:static;background:none}
+
+#tip{position:fixed;z-index:50;pointer-events:none;background:var(--tip);color:var(--tip-ink);border-radius:8px;padding:8px 10px;font-size:12px;line-height:1.45;box-shadow:0 8px 24px -8px rgba(0,0,0,.35);max-width:260px;opacity:0;transition:opacity .08s}
+#tip b{font-weight:600}
+#tip .r{display:flex;justify-content:space-between;gap:14px;font-variant-numeric:tabular-nums}
+#tip i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px}
+footer{margin-top:28px;color:var(--muted);font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+
+@media (max-width:1180px){
+  .map-panel,.right-top,.right-bot,.span-7,.span-6,.span-5{grid-column:1 / -1;grid-row:auto}
+  .kpis{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .kpi:nth-child(4){border-left:0}
+  .kpi:nth-child(n+4){border-top:1px solid var(--hair)}
+  .meta{grid-template-columns:repeat(2,auto)}
+}
+@media (max-width:700px){
+  .wrap{padding:18px 14px 36px}.filters{margin:0 -14px 14px;padding:10px 14px}
+  .masthead{grid-template-columns:1fr}.meta{text-align:left}
+  .masthead h1{font-size:32px}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .kpi:nth-child(n){border-left:0;border-top:1px solid var(--hair)}
+  .kpi:nth-child(-n+2){border-top:0}
+  .kpi:nth-child(even){border-left:1px solid var(--hair)}
+  .stats{grid-template-columns:repeat(2,1fr)}
+}
+@media (prefers-reduced-motion:reduce){#tip{transition:none}}
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <div class="brand">
+      <p class="byline"><b>Smeet Kataria</b><span aria-hidden="true">·</span>Roll No. <b>16014225042</b></p>
+      <h1>Tamil Nadu &amp; Puducherry <span>Weather Atlas</span></h1>
+      <p class="lede">A full year of gridded weather — temperature, humidity, rain, wind, cloud and pressure — cleaned, described and explored with the core toolkit of data science. Every panel responds to the filters below.</p>    </div>
+    <div class="meta" id="meta"></div>
+  </header>
+
+  <nav class="filters" aria-label="Filters">
+    <div class="frow">
+      <div class="fgroup">
+        <label class="flabel" for="f-district">District</label>
+        <select id="f-district"></select>
+      </div>
+      <div class="fgroup">
+        <span class="flabel" id="lbl-season">Season</span>
+        <div class="seg" id="f-season" role="group" aria-labelledby="lbl-season"></div>
+        <label class="sr" for="f-month" style="position:absolute;left:-9999px">Single month</label>
+        <select id="f-month"></select>
+      </div>
+      <div class="fgroup">
+        <span class="flabel" id="lbl-var">Variable</span>
+        <div class="seg" id="f-var" role="group" aria-labelledby="lbl-var"></div>
+      </div>
+      <button class="reset" id="f-reset" type="button">Reset filters</button>
+    </div>
+    <div class="summary" id="summary" aria-live="polite"></div>
+  </nav>
+
+  <main class="grid">
+    <section class="kpis" id="kpis" aria-label="Key figures for the selection"></section>
+
+    <section class="panel map-panel" aria-labelledby="h-map">
+      <div class="ph"><div><div class="eyebrow">Geospatial</div><h2 id="h-map">Where it happens</h2>
+        <p class="sub" id="map-sub"></p></div></div>
+      <div class="map-wrap"><canvas id="map" role="img" aria-label="Grid map of the selected variable"></canvas></div>
+      <div class="ramp" id="map-ramp"></div>
+      <div class="caption">Each square is one 0.12° grid cell (≈ 13 km). Colour scale is shared across the whole state so districts stay comparable. Click a cell to filter to its district.</div>
+    </section>
+
+    <section class="panel right-top" aria-labelledby="h-series">
+      <div class="ph"><div><div class="eyebrow">Time series · smoothing</div><h2 id="h-series">Through the year</h2>
+        <p class="sub" id="series-sub"></p></div>
+        <div class="legend" id="series-legend"></div></div>
+      <div class="chart" id="series" tabindex="0" aria-label="Daily time series; use left and right arrow keys to move through days"></div>
+      <details><summary>View monthly table</summary><div class="tscroll" style="max-height:260px" id="series-table"></div></details>
+    </section>
+
+    <section class="panel right-bot" aria-labelledby="h-conds">
+      <div class="ph"><div><div class="eyebrow">Categorical encoding</div><h2 id="h-conds">How often it rained</h2>
+        <p class="sub">Share of grid-days in each decoded <span class="mono">Condition_encoded</span> class, by month. Faded months are outside the season filter.</p></div>
+        <div class="legend" id="conds-legend"></div></div>
+      <div class="chart" id="conds"></div>
+      <details><summary>View counts table</summary><div class="tscroll" style="max-height:260px" id="conds-table"></div></details>
+    </section>
+
+    <section class="panel span-6" aria-labelledby="h-hist">
+      <div class="ph"><div><div class="eyebrow">Distribution · outliers</div><h2 id="h-hist">Shape of the data</h2>
+        <p class="sub" id="hist-sub"></p></div></div>
+      <div class="chart" id="hist"></div>
+      <div class="stats" id="hist-stats"></div>
+      <div class="insight" id="hist-insight"></div>
+    </section>
+
+    <section class="panel span-6" aria-labelledby="h-corr">
+      <div class="ph"><div><div class="eyebrow">Correlation</div><h2 id="h-corr">What moves together</h2>
+        <p class="sub" id="corr-sub"></p></div></div>
+      <div class="chart" id="corr"></div>
+      <div class="ramp" id="corr-ramp"></div>
+    </section>
+
+    <section class="panel span-7" aria-labelledby="h-scatter">
+      <div class="ph"><div><div class="eyebrow">Regression</div><h2 id="h-scatter">Fitting a line</h2>
+        <p class="sub" id="scatter-sub"></p></div>
+        <div class="controls">
+          <label for="sx">X</label><select id="sx"></select>
+          <label for="sy">Y</label><select id="sy"></select>
+        </div></div>
+      <div class="eq" id="scatter-eq"></div>
+      <div class="chart"><canvas id="scatter" role="img" aria-label="Scatter plot with least-squares regression line"></canvas></div>
+      <div class="insight" id="scatter-insight"></div>
+    </section>
+
+    <section class="panel span-5" aria-labelledby="h-rank">
+      <div class="ph"><div><div class="eyebrow">Aggregation · ranking</div><h2 id="h-rank">District league table</h2>
+        <p class="sub" id="rank-sub"></p></div></div>
+      <div class="tscroll" id="rank"></div>
+    </section>
+
+    <section class="panel span-7" aria-labelledby="h-desc">
+      <div class="ph"><div><div class="eyebrow">Descriptive statistics</div><h2 id="h-desc">The numbers behind it all</h2>
+        <p class="sub">Exact values over all 766,500 cleaned observations (whole state, full year). Outliers use Tukey's fences: below Q1 − 1.5·IQR or above Q3 + 1.5·IQR.</p></div></div>
+      <div class="tscroll" id="desc" style="max-height:none"></div>
+    </section>
+
+    <section class="panel span-5" aria-labelledby="h-pipe">
+      <div class="ph"><div><div class="eyebrow">Data quality · wrangling</div><h2 id="h-pipe">From raw CSV to clean data</h2>
+        <p class="sub">The cleaning steps applied before any chart was drawn, in the order they ran.</p></div></div>
+      <ol class="steps" id="pipe"></ol>
+    </section>
+  </main>
+
+  <footer>
+    <span>Source: <span class="mono">Tamilnadu_and_Puducherry_weather_2022.csv</span> · 2,100 grid cells × 365 days</span>
+    <span>Dashboard by Smeet Kataria · Roll No. 16014225042</span>
+  </footer>
+</div>
+<div id="tip" role="tooltip"></div>
+
+<script src="data.js"></script>
+<script>
+(() => {
+const W = window.WX, VARS = W.vars, D = W.districts, ND = D.length, P = W.points, NP = P.lat.length;
+const root = document.documentElement;
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const MDAYS = [31,28,31,30,31,30,31,31,30,31,30,31];
+const MSTART = []; MDAYS.reduce((a, d, i) => (MSTART[i] = a, a + d), 0);
+const MONTH_OF = new Int8Array(365); MSTART.forEach((s, i) => { for (let k = 0; k < MDAYS[i]; k++) MONTH_OF[s + k] = i + 1; });
+const META = {
+  temp:  {label:"Air temperature", short:"Temperature", unit:"°C", dp:1, ramp:"heat", raw:"TMP_2m"},
+  rh:    {label:"Relative humidity", short:"Humidity", unit:"%", dp:0, ramp:"rain", raw:"RH_2m"},
+  rain:  {label:"Precipitation", short:"Rain", unit:"mm", dp:2, ramp:"rain", raw:"APCP_sfc"},
+  gust:  {label:"Wind gust", short:"Gust", unit:"km/h", dp:1, ramp:"wind", raw:"GUST_10m"},
+  wind:  {label:"Wind speed at 10 m", short:"Wind", unit:"km/h", dp:1, ramp:"wind", raw:"√(UGRD²+VGRD²)"},
+  cloud: {label:"Total cloud cover", short:"Cloud", unit:"%", dp:0, ramp:"slate", raw:"TCDCRO_atmc"},
+  vis:   {label:"Visibility", short:"Visibility", unit:"km", dp:1, ramp:"slate", raw:"VIS_2m"},
+  slp:   {label:"Sea-level pressure", short:"Pressure", unit:"hPa", dp:1, ramp:"plum", raw:"PRMSL_msl"},
+};
+const VAR_ORDER = ["temp","rh","rain","gust","wind","cloud","vis","slp"];
+const SEASONS = [
+  {id:"all", label:"Full year", m:[1,2,3,4,5,6,7,8,9,10,11,12]},
+  {id:"winter", label:"Winter", sub:"Jan–Feb", m:[1,2]},
+  {id:"pre", label:"Summer", sub:"Mar–May", m:[3,4,5]},
+  {id:"sw", label:"SW monsoon", sub:"Jun–Sep", m:[6,7,8,9]},
+  {id:"ne", label:"NE monsoon", sub:"Oct–Dec", m:[10,11,12]},
+];
+const COND = [
+  {key:"dry", label:"Dry", rule:"< 0.1 mm", code:3, tok:"c-dry"},
+  {key:"light", label:"Light rain", rule:"0.1–2.5 mm", code:1, tok:"c-light"},
+  {key:"mod", label:"Moderate", rule:"2.5–7.6 mm", code:2, tok:"c-mod"},
+  {key:"heavy", label:"Heavy", rule:"≥ 7.6 mm", code:0, tok:"c-heavy"},
+];
+const st = {district:-1, season:"all", months:new Set(SEASONS[0].m), v:"temp", sx:"temp", sy:"rh", sort:{key:"mean", dir:-1}};
+
+/* ---------- utils ---------- */
+const $ = (s) => document.querySelector(s);
+const css = (n) => getComputedStyle(root).getPropertyValue("--" + n).trim();
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmt = (x, dp = 1) => Number.isFinite(x) ? x.toLocaleString("en-IN", {minimumFractionDigits:dp, maximumFractionDigits:dp}).replace("-", "−") : "–";
+const fmtInt = (x) => Math.round(x).toLocaleString("en-IN");
+const dayLabel = (i) => `${i - MSTART[MONTH_OF[i] - 1] + 1} ${MONTHS[MONTH_OF[i] - 1]}`;
+const hex2rgb = (h) => { h = h.replace("#", ""); if (h.length === 3) h = h.split("").map((c) => c + c).join(""); const n = parseInt(h, 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; };
+const rgbStr = (c, a = 1) => `rgba(${c[0] | 0},${c[1] | 0},${c[2] | 0},${a})`;
+const mix = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
+function rampFn(name) {
+  const s = [0, 1, 2, 3].map((i) => hex2rgb(css(`${name}-${i}`)));
+  return (t) => { t = Math.max(0, Math.min(1, t)); const x = t * 3, i = Math.min(2, Math.floor(x)); return mix(s[i], s[i + 1], x - i); };
+}
+function divFn() {
+  const n = hex2rgb(css("div-neg")), m = hex2rgb(css("div-mid")), p = hex2rgb(css("div-pos"));
+  return (r) => r < 0 ? mix(m, n, Math.min(1, -r)) : mix(m, p, Math.min(1, r));
+}
+const lum = (c) => { const f = (v) => { v /= 255; return v <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; }; return .2126 * f(c[0]) + .7152 * f(c[1]) + .0722 * f(c[2]); };
+function niceTicks(lo, hi, n = 5) {
+  if (!(hi > lo)) { hi = lo + 1; }
+  const raw = (hi - lo) / n, mag = 10 ** Math.floor(Math.log10(raw)), e = raw / mag;
+  const step = (e >= 7.5 ? 10 : e >= 3.5 ? 5 : e >= 1.5 ? 2 : 1) * mag;
+  const a = Math.floor(lo / step) * step, b = Math.ceil(hi / step) * step, t = [];
+  for (let v = a; v <= b + step * 1e-6; v += step) t.push(+v.toFixed(10));
+  return {ticks:t, lo:a, hi:b, step};
+}
+const stepDp = (step) => Math.max(0, -Math.floor(Math.log10(step) + 1e-9));
+const monthsArr = () => [...st.months].sort((a, b) => a - b);
+const selDistricts = () => st.district < 0 ? D.map((_, i) => i) : [st.district];
+const selDays = () => { const out = []; for (let i = 0; i < 365; i++) if (st.months.has(MONTH_OF[i])) out.push(i); return out; };
+
+const tip = $("#tip");
+function showTip(html, x, y) {
+  tip.innerHTML = html; tip.style.opacity = 1;
+  const r = tip.getBoundingClientRect(), pad = 14;
+  let left = x + pad, top = y + pad;
+  if (left + r.width > innerWidth - 8) left = x - r.width - pad;
+  if (top + r.height > innerHeight - 8) top = y - r.height - pad;
+  tip.style.left = Math.max(8, left) + "px"; tip.style.top = Math.max(8, top) + "px";
+}
+const hideTip = () => { tip.style.opacity = 0; };
+
+/* ---------- precompute ---------- */
+const DM = {};
+VARS.forEach((v) => {
+  const a = new Float64Array(ND * 12), c = new Float64Array(ND * 12), g = W.grid[v];
+  for (let p = 0; p < NP; p++) { const d = P.did[p]; for (let m = 0; m < 12; m++) { a[d * 12 + m] += g[p * 12 + m]; c[d * 12 + m]++; } }
+  for (let i = 0; i < a.length; i++) a[i] /= c[i];
+  DM[v] = a;
+});
+const dailyCache = new Map();
+function dailySel(v, dists = selDistricts()) {
+  const key = v + "|" + (dists.length === ND ? "all" : dists.join(","));
+  if (dailyCache.has(key)) return dailyCache.get(key);
+  const out = new Float64Array(365); let wsum = 0;
+  dists.forEach((d) => { const n = D[d].n, arr = W.daily[D[d].name][v]; wsum += n; for (let i = 0; i < 365; i++) out[i] += n * arr[i]; });
+  for (let i = 0; i < 365; i++) out[i] /= wsum;
+  dailyCache.set(key, out); return out;
+}
+function monthlySel(v, dists = selDistricts()) {
+  const out = new Array(12).fill(0); let w = 0;
+  dists.forEach((d) => { const n = D[d].n; w += n; for (let m = 0; m < 12; m++) out[m] += n * DM[v][d * 12 + m]; });
+  return out.map((x) => x / w);
+}
+const overMonths = (monthly) => { let s = 0, w = 0; st.months.forEach((m) => { s += monthly[m - 1] * MDAYS[m - 1]; w += MDAYS[m - 1]; }); return s / w; };
+function condsSel(dists = selDistricts()) {
+  const out = Array.from({length:12}, () => [0, 0, 0, 0]);
+  dists.forEach((d) => W.conds[D[d].name].forEach((row, m) => row.forEach((c, k) => out[m][k] += c)));
+  return out;
+}
+const LON0 = Math.min(...P.lon), LAT0 = Math.min(...P.lat), STEP = 0.12;
+const GI = new Int16Array(NP), GJ = new Int16Array(NP), CELL = new Map();
+for (let p = 0; p < NP; p++) { GI[p] = Math.round((P.lon[p] - LON0) / STEP); GJ[p] = Math.round((P.lat[p] - LAT0) / STEP); CELL.set(GI[p] * 1000 + GJ[p], p); }
+const NI = Math.max(...GI) + 1, NJ = Math.max(...GJ) + 1;
+const CENTROID = D.map((_, d) => { let i = 0, j = 0, c = 0; for (let p = 0; p < NP; p++) if (P.did[p] === d) { i += GI[p]; j += GJ[p]; c++; } return [i / c, j / c]; });
+const LANDMARKS = ["Chennai","Coimbatore","Madurai","Kanniyakumari","Nilgiris","Puducherry","Ramanathapuram","Tiruchirappalli","Krishnagiri","Nagapattinam"].map((n) => D.findIndex((d) => d.name === n)).filter((i) => i >= 0);
+
+/* ---------- filters ---------- */
+function buildFilters() {
+  const sel = $("#f-district");
+  const groups = {};
+  D.forEach((d, i) => (groups[d.state] ||= []).push(i));
+  sel.innerHTML = `<option value="-1">All 40 districts</option>` + Object.keys(groups).sort().map((s) =>
+    `<optgroup label="${esc(s)}">${groups[s].map((i) => `<option value="${i}">${esc(D[i].name)}</option>`).join("")}</optgroup>`).join("");
+  sel.addEventListener("change", () => { st.district = +sel.value; update(); });
+
+  const seg = $("#f-season");
+  seg.innerHTML = SEASONS.map((s) => `<button type="button" data-s="${s.id}">${s.label}${s.sub ? `<small>${s.sub}</small>` : ""}</button>`).join("");
+  seg.addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; const s = SEASONS.find((x) => x.id === b.dataset.s); st.season = s.id; st.months = new Set(s.m); update(); });
+
+  const ms = $("#f-month");
+  ms.innerHTML = `<option value="">Or one month…</option>` + MONTHS.map((m, i) => `<option value="${i + 1}">${m} 2022</option>`).join("");
+  ms.addEventListener("change", () => { if (!ms.value) return; st.season = "month"; st.months = new Set([+ms.value]); update(); });
+
+  const vs = $("#f-var");
+  vs.innerHTML = VAR_ORDER.map((v) => `<button type="button" data-v="${v}">${META[v].short}</button>`).join("");
+  vs.addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; st.v = b.dataset.v; update(); });
+
+  $("#f-reset").addEventListener("click", () => { st.district = -1; st.season = "all"; st.months = new Set(SEASONS[0].m); st.v = "temp"; st.sx = "temp"; st.sy = "rh"; update(); });
+
+  ["sx", "sy"].forEach((id) => {
+    const s = $("#" + id);
+    s.innerHTML = VAR_ORDER.map((v) => `<option value="${v}">${META[v].short} (${META[v].unit})</option>`).join("");
+    s.addEventListener("change", () => { st[id] = s.value; renderScatter(); renderCorr(); });
+  });
+}
+function syncFilters() {
+  $("#f-district").value = st.district;
+  $("#f-season").querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.s === st.season));
+  $("#f-month").value = st.season === "month" ? monthsArr()[0] : "";
+  $("#f-var").querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.v === st.v));
+  $("#sx").value = st.sx; $("#sy").value = st.sy;
+  const dists = selDistricts(), cells = dists.reduce((s, d) => s + D[d].n, 0), days = selDays().length;
+  const where = st.district < 0 ? "All 40 districts" : `${D[st.district].name}, ${D[st.district].state}`;
+  const when = st.season === "month" ? `${MONTHS[monthsArr()[0] - 1]} 2022` : (() => { const s = SEASONS.find((x) => x.id === st.season); return s.sub ? `${s.label} (${s.sub})` : "Full year 2022"; })();
+  $("#summary").innerHTML = `Showing <b>${esc(where)}</b> · <b>${when}</b> · ${fmtInt(cells)} grid cells × ${days} days = <b>${fmtInt(cells * days)}</b> observations`;
+}
+
+/* ---------- masthead meta ---------- */
+function renderMeta() {
+  $("#meta").innerHTML = [
+    [fmtInt(W.clean.rows_clean), "clean rows"], ["2,100", "grid cells"], ["40", "districts"], ["8", "variables"],
+  ].map(([b, s]) => `<div><b class="num">${b}</b><small>${s}</small></div>`).join("");
+}
+
+/* ---------- KPIs ---------- */
+function spark(values, rampName, isShare) {
+  const on = css(`${rampName}-2`), off = css("hair");
+  const fin = values.filter(Number.isFinite), max = Math.max(...fin), min = isShare ? 0 : Math.min(...fin);
+  const bars = values.map((v, m) => {
+    const h = max > min ? 4 + 24 * (v - min) / (max - min) : 14;
+    return `<rect x="${m * 10 + 1}" y="${30 - h}" width="8" height="${h}" rx="1.5" fill="${st.months.has(m + 1) ? on : off}"><title>${MONTHS[m]}</title></rect>`;
+  }).join("");
+  return `<svg viewBox="0 0 120 30" preserveAspectRatio="none" aria-hidden="true">${bars}</svg>`;
+}
+function renderKPIs() {
+  const dists = selDistricts(), days = selDays();
+  const tM = monthlySel("temp"), tDaily = dailySel("temp");
+  let hot = -Infinity, hotDay = 0, cold = Infinity;
+  days.forEach((i) => { if (tDaily[i] > hot) { hot = tDaily[i]; hotDay = i; } if (tDaily[i] < cold) cold = tDaily[i]; });
+  const hotMonthly = MONTHS.map((_, m) => { let x = -Infinity; for (let k = 0; k < MDAYS[m]; k++) x = Math.max(x, tDaily[MSTART[m] + k]); return x; });
+  const cs = condsSel(dists);
+  let tot = 0, wet = 0, heavy = 0, mod = 0;
+  st.months.forEach((m) => { const r = cs[m - 1]; tot += r[0] + r[1] + r[2] + r[3]; wet += r[1] + r[2] + r[3]; heavy += r[3]; mod += r[2]; });
+  const wetMonthly = cs.map((r) => (r[1] + r[2] + r[3]) / (r[0] + r[1] + r[2] + r[3]) * 100);
+  const heavyMonthly = cs.map((r) => r[3] + r[2]);
+  const rhM = monthlySel("rh"), gM = monthlySel("gust"), cM = monthlySel("cloud"), gDaily = dailySel("gust");
+  let gmax = -Infinity; days.forEach((i) => gmax = Math.max(gmax, gDaily[i]));
+  const tiles = [
+    {label:"Mean temperature", val:fmt(overMonths(tM), 1), unit:"°C", sub:`daily means ${fmt(cold, 1)} to ${fmt(hot, 1)} °C`, sp:spark(tM, "heat")},
+    {label:"Hottest day", val:fmt(hot, 1), unit:"°C", sub:`on ${dayLabel(hotDay)} 2022`, sp:spark(hotMonthly, "heat")},
+    {label:"Days with rain", val:fmt(wet / tot * 100, 1), unit:"%", sub:`${fmtInt(wet)} of ${fmtInt(tot)} grid-days`, sp:spark(wetMonthly, "rain", true)},
+    {label:"Moderate + heavy rain", val:fmtInt(heavy + mod), unit:"grid-days", sub:`${fmtInt(heavy)} heavy (≥ 7.6 mm)`, sp:spark(heavyMonthly, "rain", true)},
+    {label:"Mean humidity", val:fmt(overMonths(rhM), 0), unit:"%", sub:`cloud cover ${fmt(overMonths(cM), 0)} %`, sp:spark(rhM, "rain")},
+    {label:"Mean wind gust", val:fmt(overMonths(gM), 1), unit:"km/h", sub:`windiest day ${fmt(gmax, 1)} km/h`, sp:spark(gM, "wind")},
+  ];
+  $("#kpis").innerHTML = tiles.map((t) => `<div class="kpi"><span class="k-label">${t.label}</span><span class="k-val">${t.val}<small>${t.unit}</small></span><span class="k-sub">${t.sub}</span>${t.sp}</div>`).join("");
+}
+
+/* ---------- map ---------- */
+const mapCv = $("#map");
+let mapState = null;
+function renderMap() {
+  const v = st.v, M = META[v], g = W.grid[v], ms = monthsArr();
+  const vals = new Float64Array(NP); let lo = Infinity, hi = -Infinity;
+  const wsum = ms.reduce((s, m) => s + MDAYS[m - 1], 0);
+  for (let p = 0; p < NP; p++) { let s = 0; ms.forEach((m) => s += g[p * 12 + m - 1] * MDAYS[m - 1]); vals[p] = s / wsum; if (vals[p] < lo) lo = vals[p]; if (vals[p] > hi) hi = vals[p]; }
+  const wrap = mapCv.parentElement, cw = wrap.clientWidth;
+  const cellW = cw / NI, cellH = cellW * 1.02, H = cellH * NJ, dpr = devicePixelRatio || 1;
+  mapCv.style.height = H + "px"; mapCv.width = Math.round(cw * dpr); mapCv.height = Math.round(H * dpr);
+  const ctx = mapCv.getContext("2d"); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, cw, H);
+  const ramp = rampFn(M.ramp), sel = st.district;
+  for (let p = 0; p < NP; p++) {
+    ctx.globalAlpha = sel < 0 || P.did[p] === sel ? 1 : 0.22;
+    ctx.fillStyle = rgbStr(ramp((vals[p] - lo) / (hi - lo || 1)));
+    ctx.fillRect(GI[p] * cellW, (NJ - 1 - GJ[p]) * cellH, cellW + 0.6, cellH + 0.6);
+  }
+  ctx.globalAlpha = 1;
+  if (sel >= 0) {
+    ctx.strokeStyle = css("ink"); ctx.lineWidth = 1.6; ctx.beginPath();
+    for (let p = 0; p < NP; p++) {
+      if (P.did[p] !== sel) continue;
+      const x = GI[p] * cellW, y = (NJ - 1 - GJ[p]) * cellH, same = (di, dj) => { const q = CELL.get((GI[p] + di) * 1000 + GJ[p] + dj); return q !== undefined && P.did[q] === sel; };
+      if (!same(-1, 0)) { ctx.moveTo(x, y); ctx.lineTo(x, y + cellH); }
+      if (!same(1, 0)) { ctx.moveTo(x + cellW, y); ctx.lineTo(x + cellW, y + cellH); }
+      if (!same(0, 1)) { ctx.moveTo(x, y); ctx.lineTo(x + cellW, y); }
+      if (!same(0, -1)) { ctx.moveTo(x, y + cellH); ctx.lineTo(x + cellW, y + cellH); }
+    }
+    ctx.stroke();
+  }
+  const labels = new Set(LANDMARKS); if (sel >= 0) labels.add(sel);
+  ctx.font = `600 ${cw < 420 ? 10 : 11.5}px "IBM Plex Sans", sans-serif`; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.lineJoin = "round";
+  labels.forEach((d) => {
+    const [ci, cj] = CENTROID[d], x = (ci + .5) * cellW, y = (NJ - 1 - cj + .5) * cellH;
+    ctx.strokeStyle = css("halo"); ctx.lineWidth = 3.5; ctx.strokeText(D[d].name, x, y);
+    ctx.fillStyle = css("ink"); ctx.fillText(D[d].name, x, y);
+  });
+  mapState = {vals, cellW, cellH};
+  const stops = [0, .33, .66, 1].map((t) => rgbStr(ramp(t)));
+  $("#map-ramp").innerHTML = `<span>${fmt(lo, M.dp)}</span><div class="bar" style="background:linear-gradient(90deg,${stops.join(",")})"></div><span>${fmt(hi, M.dp)} ${M.unit}</span>`;
+  $("#map-sub").textContent = `Mean ${M.label.toLowerCase()} per grid cell, ${seasonText()}.`;
+}
+function seasonText() {
+  if (st.season === "month") return `${MONTHS[monthsArr()[0] - 1]} 2022`;
+  const s = SEASONS.find((x) => x.id === st.season); return s.sub ? `${s.label.toLowerCase()} (${s.sub})` : "full year 2022";
+}
+function mapCellAt(e) {
+  const r = mapCv.getBoundingClientRect(), i = Math.floor((e.clientX - r.left) / mapState.cellW), j = NJ - 1 - Math.floor((e.clientY - r.top) / mapState.cellH);
+  return CELL.get(i * 1000 + j);
+}
+mapCv.addEventListener("mousemove", (e) => {
+  if (!mapState) return; const p = mapCellAt(e);
+  if (p === undefined) { hideTip(); mapCv.style.cursor = "default"; return; }
+  mapCv.style.cursor = "pointer";
+  const d = D[P.did[p]], M = META[st.v];
+  showTip(`<b>${esc(d.name)}</b> <span style="opacity:.7">${esc(d.state)}</span><div class="r"><span>${M.short}</span><b>${fmt(mapState.vals[p], M.dp)} ${M.unit}</b></div><div class="r"><span>Cell</span><span>${fmt(P.lat[p], 2)}° N, ${fmt(P.lon[p], 2)}° E</span></div><div style="opacity:.7;margin-top:2px">Click to ${st.district === P.did[p] ? "clear filter" : "filter to district"}</div>`, e.clientX, e.clientY);
+});
+mapCv.addEventListener("mouseleave", hideTip);
+mapCv.addEventListener("click", (e) => { const p = mapCellAt(e); if (p === undefined) return; st.district = st.district === P.did[p] ? -1 : P.did[p]; update(); });
+
+/* ---------- time series ---------- */
+function renderSeries() {
+  const v = st.v, M = META[v], host = $("#series"), w = host.clientWidth, h = 270;
+  const ml = 46, mr = 14, mt = 16, mb = 26, iw = w - ml - mr, ih = h - mt - mb;
+  const y = dailySel(v), roll = new Float64Array(365);
+  for (let i = 0; i < 365; i++) { let s = 0, c = 0; for (let k = -3; k <= 3; k++) { const j = i + k; if (j >= 0 && j < 365) { s += y[j]; c++; } } roll[i] = s / c; }
+  let bandLo = null, bandHi = null, bandLabel = "";
+  if (v === "temp") {
+    bandLo = new Float64Array(365); bandHi = new Float64Array(365);
+    if (st.district >= 0) {
+      const dd = W.daily[D[st.district].name]; for (let i = 0; i < 365; i++) { bandLo[i] = dd.t10[i]; bandHi[i] = dd.t90[i]; }
+      bandLabel = "10th–90th percentile across grid cells";
+    } else {
+      bandLo.fill(Infinity); bandHi.fill(-Infinity);
+      D.forEach((d) => { const a = W.daily[d.name].temp; for (let i = 0; i < 365; i++) { bandLo[i] = Math.min(bandLo[i], a[i]); bandHi[i] = Math.max(bandHi[i], a[i]); } });
+      bandLabel = "range across the 40 district means";
+    }
+  }
+  let lo = Infinity, hi = -Infinity;
+  for (let i = 0; i < 365; i++) { lo = Math.min(lo, y[i], bandLo ? bandLo[i] : Infinity); hi = Math.max(hi, y[i], bandHi ? bandHi[i] : -Infinity); }
+  if (v === "rain" || v === "rh" || v === "cloud") lo = Math.min(lo, 0);
+  const nt = niceTicks(lo, hi, 5), X = (i) => ml + i / 364 * iw, Y = (val) => mt + ih - (val - nt.lo) / (nt.hi - nt.lo) * ih;
+  const c1 = css(`${M.ramp}-1`), c2 = css(`${M.ramp}-2`), grid = css("hair"), axis = css("axis");
+  let svg = `<svg viewBox="0 0 ${w} ${h}" height="${h}" role="img" aria-label="Daily ${M.label} in 2022 with 7-day rolling mean">`;
+  if (st.months.size < 12) monthsArr().forEach((m) => { svg += `<rect x="${X(MSTART[m - 1])}" y="${mt}" width="${X(MSTART[m - 1] + MDAYS[m - 1] - 1) - X(MSTART[m - 1]) + iw / 364}" height="${ih}" fill="var(--accent-wash)"/>`; });
+  const tdp = stepDp(nt.step);
+  nt.ticks.forEach((t) => { svg += `<line x1="${ml}" x2="${w - mr}" y1="${Y(t)}" y2="${Y(t)}" stroke="${grid}" stroke-width="1"/><text class="tick" x="${ml - 8}" y="${Y(t) + 4}" text-anchor="end">${fmt(t, tdp)}</text>`; });
+  MSTART.forEach((s, m) => { svg += `<text class="tick" x="${X(s + MDAYS[m] / 2)}" y="${h - 6}" text-anchor="middle">${iw < 420 ? MONTHS[m][0] : MONTHS[m]}</text>`; if (m) svg += `<line x1="${X(s)}" x2="${X(s)}" y1="${mt + ih}" y2="${mt + ih + 4}" stroke="${axis}"/>`; });
+  svg += `<line x1="${ml}" x2="${w - mr}" y1="${mt + ih}" y2="${mt + ih}" stroke="${axis}"/>`;
+  if (bandLo) {
+    let d = ""; for (let i = 0; i < 365; i++) d += (i ? "L" : "M") + X(i).toFixed(1) + " " + Y(bandHi[i]).toFixed(1);
+    for (let i = 364; i >= 0; i--) d += "L" + X(i).toFixed(1) + " " + Y(bandLo[i]).toFixed(1);
+    svg += `<path d="${d}Z" fill="${c1}" opacity=".28"/>`;
+  }
+  const path = (arr) => { let d = ""; for (let i = 0; i < 365; i++) d += (i ? "L" : "M") + X(i).toFixed(1) + " " + Y(arr[i]).toFixed(1); return d; };
+  svg += `<path d="${path(y)}" fill="none" stroke="${c1}" stroke-width="1" opacity=".85"/>`;
+  svg += `<path d="${path(roll)}" fill="none" stroke="${c2}" stroke-width="2.2" stroke-linejoin="round"/>`;
+  let pk = 0; for (let i = 0; i < 365; i++) if (roll[i] > roll[pk]) pk = i;
+  const px = X(pk), py = Y(roll[pk]), anchor = px > w - 150 ? "end" : "start";
+  svg += `<circle cx="${px}" cy="${py}" r="4" fill="${c2}" stroke="var(--surface)" stroke-width="2"/><text class="clabel" x="${px + (anchor === "end" ? -8 : 8)}" y="${Math.max(mt + 10, py - 8)}" text-anchor="${anchor}">Peak 7-day mean ${fmt(roll[pk], M.dp)} ${M.unit} · ${dayLabel(pk)}</text>`;
+  svg += `<g id="xh" style="display:none"><line id="xh-l" y1="${mt}" y2="${mt + ih}" stroke="${css("ink-2")}" stroke-width="1"/><circle id="xh-d" r="4" fill="${c2}" stroke="var(--surface)" stroke-width="2"/></g>`;
+  svg += `<rect id="xh-hit" x="${ml}" y="${mt}" width="${iw}" height="${ih}" fill="transparent"/></svg>`;
+  host.innerHTML = svg;
+  const g = host.querySelector("#xh"), l = host.querySelector("#xh-l"), dot = host.querySelector("#xh-d");
+  const at = (i, cx, cy) => {
+    g.style.display = ""; l.setAttribute("x1", X(i)); l.setAttribute("x2", X(i)); dot.setAttribute("cx", X(i)); dot.setAttribute("cy", Y(roll[i]));
+    const band = bandLo ? `<div class="r"><span>Band</span><span>${fmt(bandLo[i], 1)} – ${fmt(bandHi[i], 1)}</span></div>` : "";
+    showTip(`<b>${dayLabel(i)} 2022</b><div class="r"><span>Daily mean</span><b>${fmt(y[i], M.dp)} ${M.unit}</b></div><div class="r"><span>7-day mean</span><span>${fmt(roll[i], M.dp)} ${M.unit}</span></div>${band}`, cx, cy);
+  };
+  let cur = 0;
+  host.querySelector("#xh-hit").addEventListener("mousemove", (e) => { const r = host.getBoundingClientRect(); cur = Math.max(0, Math.min(364, Math.round((e.clientX - r.left - ml) / iw * 364))); at(cur, e.clientX, e.clientY); });
+  host.querySelector("#xh-hit").addEventListener("mouseleave", () => { g.style.display = "none"; hideTip(); });
+  host.onkeydown = (e) => {
+    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return; e.preventDefault();
+    cur = Math.max(0, Math.min(364, cur + (e.key === "ArrowRight" ? 1 : -1) * (e.shiftKey ? 7 : 1)));
+    const r = host.getBoundingClientRect(); at(cur, r.left + X(cur), r.top + Y(roll[cur]));
+  };
+  host.onblur = () => { g.style.display = "none"; hideTip(); };
+  $("#series-sub").textContent = `Daily mean ${M.label.toLowerCase()} (${M.unit}) for ${st.district < 0 ? "the state, weighted by grid cells" : D[st.district].name}; thick line is a centred 7-day rolling mean.`;
+  $("#series-legend").innerHTML = `<span><i class="line" style="background:${c1}"></i>Daily</span><span><i class="line" style="background:${c2};height:3px"></i>7-day mean</span>${bandLo ? `<span><i class="band" style="background:${c1}"></i>${bandLabel}</span>` : ""}`;
+  const mM = monthlySel(v);
+  $("#series-table").innerHTML = `<table><thead><tr><th>Month</th><th>Mean ${M.unit}</th><th>Min daily</th><th>Max daily</th></tr></thead><tbody>${MONTHS.map((mn, m) => { let a = Infinity, b = -Infinity; for (let k = 0; k < MDAYS[m]; k++) { a = Math.min(a, y[MSTART[m] + k]); b = Math.max(b, y[MSTART[m] + k]); } return `<tr><td>${mn}</td><td class="num">${fmt(mM[m], M.dp)}</td><td class="num">${fmt(a, M.dp)}</td><td class="num">${fmt(b, M.dp)}</td></tr>`; }).join("")}</tbody></table>`;
+}
+
+/* ---------- condition bars ---------- */
+function renderConds() {
+  const host = $("#conds"), w = host.clientWidth, h = 210, ml = 40, mr = 8, mt = 22, mb = 24, iw = w - ml - mr, ih = h - mt - mb;
+  const cs = condsSel(), colors = COND.map((c) => css(c.tok)), bw = iw / 12, barW = Math.min(46, bw * .68), gap = 2;
+  let svg = `<svg viewBox="0 0 ${w} ${h}" height="${h}" role="img" aria-label="Monthly share of dry, light, moderate and heavy rain grid-days">`;
+  [0, 25, 50, 75, 100].forEach((t) => { const yy = mt + ih - t / 100 * ih; svg += `<line x1="${ml}" x2="${w - mr}" y1="${yy}" y2="${yy}" stroke="${css("hair")}"/><text class="tick" x="${ml - 8}" y="${yy + 4}" text-anchor="end">${t}%</text>`; });
+  const shares = cs.map((r) => { const t = r[0] + r[1] + r[2] + r[3]; return r.map((c) => c / t); });
+  const wet = shares.map((s) => 1 - s[0]);
+  const wettest = wet.indexOf(Math.max(...wet)), driest = wet.indexOf(Math.min(...wet));
+  shares.forEach((s, m) => {
+    const x = ml + m * bw + (bw - barW) / 2, op = st.months.has(m + 1) ? 1 : .32;
+    let yTop = mt + ih;
+    svg += `<g opacity="${op}">`;
+    s.forEach((frac, k) => {
+      const hh = frac * ih; if (hh <= 0) return;
+      const drawH = Math.max(0, hh - (k > 0 ? gap : 0));
+      yTop -= hh;
+      svg += `<rect x="${x}" y="${yTop + (k > 0 ? 0 : 0)}" width="${barW}" height="${Math.max(drawH, frac > 0 ? .8 : 0)}" fill="${colors[k]}" ${k === 3 || (k === 2 && s[3] === 0) ? `rx="3"` : ""}/>`;
+    });
+    svg += `</g>`;
+    svg += `<text class="tick" x="${x + barW / 2}" y="${h - 6}" text-anchor="middle">${bw < 34 ? MONTHS[m][0] : MONTHS[m]}</text>`;
+    if (m === wettest || m === driest) svg += `<text class="clabel" x="${x + barW / 2}" y="${mt + ih - wet[m] * ih - 7}" text-anchor="middle">${fmt(wet[m] * 100, 0)}% wet</text>`;
+    svg += `<rect data-m="${m}" x="${ml + m * bw}" y="${mt}" width="${bw}" height="${ih}" fill="transparent"/>`;
+  });
+  svg += `</svg>`;
+  host.innerHTML = svg;
+  host.querySelectorAll("rect[data-m]").forEach((r) => {
+    r.addEventListener("mousemove", (e) => {
+      const m = +r.dataset.m, row = cs[m], t = row.reduce((a, b) => a + b, 0);
+      showTip(`<b>${MONTHS[m]} 2022</b>${COND.map((c, k) => `<div class="r"><span><i style="background:${colors[k]}"></i>${c.label}</span><span>${fmtInt(row[k])} · ${fmt(row[k] / t * 100, 1)}%</span></div>`).reverse().join("")}<div class="r" style="opacity:.7"><span>Grid-days</span><span>${fmtInt(t)}</span></div>`, e.clientX, e.clientY);
+    });
+    r.addEventListener("mouseleave", hideTip);
+  });
+  const totals = [0, 0, 0, 0]; cs.forEach((r) => r.forEach((c, k) => totals[k] += c));
+  $("#conds-legend").innerHTML = COND.map((c, k) => `<span title="Condition_encoded = ${c.code}"><i style="background:${colors[k]}"></i>${c.label} <span class="mono" style="font-size:11px;color:var(--muted)">${c.rule}</span></span>`).join("");
+  $("#conds-table").innerHTML = `<table><thead><tr><th>Month</th>${COND.map((c) => `<th>${c.label}</th>`).join("")}</tr></thead><tbody>${cs.map((r, m) => `<tr><td>${MONTHS[m]}</td>${r.map((c) => `<td class="num">${fmtInt(c)}</td>`).join("")}</tr>`).join("")}<tr><td><b>Total</b></td>${totals.map((c) => `<td class="num"><b>${fmtInt(c)}</b></td>`).join("")}</tr></tbody></table>`;
+}
+
+/* ---------- histogram ---------- */
+function binnedStats(counts, edges) {
+  const N = counts.reduce((a, b) => a + b, 0), mids = counts.map((_, i) => (edges[i] + edges[i + 1]) / 2);
+  let mean = 0; counts.forEach((c, i) => mean += c * mids[i]); mean /= N;
+  let m2 = 0, m3 = 0; counts.forEach((c, i) => { const d = mids[i] - mean; m2 += c * d * d; m3 += c * d * d * d; });
+  const sd = Math.sqrt(m2 / N), skew = (m3 / N) / (sd ** 3 || 1);
+  const q = (p) => { const target = p * N; let cum = 0; for (let i = 0; i < counts.length; i++) { if (cum + counts[i] >= target) return edges[i] + (edges[i + 1] - edges[i]) * ((target - cum) / (counts[i] || 1)); cum += counts[i]; } return edges[edges.length - 1]; };
+  const q1 = q(.25), med = q(.5), q3 = q(.75), iqr = q3 - q1, fLo = q1 - 1.5 * iqr, fHi = q3 + 1.5 * iqr;
+  let out = 0; counts.forEach((c, i) => { const a = edges[i], b = edges[i + 1];
+    if (b <= fLo || a >= fHi) out += c; else { if (a < fLo) out += c * (fLo - a) / (b - a); if (b > fHi) out += c * (b - fHi) / (b - a); } });
+  let first = counts.findIndex((c) => c > 0), last = counts.length - 1; while (last > 0 && !counts[last]) last--;
+  return {N, mean, sd, skew, q1, med, q3, iqr, fLo, fHi, out, min:edges[first], max:edges[last + 1]};
+}
+function renderHist() {
+  const v = st.v, M = META[v], edges = W.histEdges[v], host = $("#hist"), w = host.clientWidth, h = 250;
+  const counts = new Array(edges.length - 1).fill(0);
+  selDistricts().forEach((d) => st.months.forEach((m) => W.hist[v][D[d].name][m - 1].forEach((c, i) => counts[i] += c)));
+  const S = binnedStats(counts, edges);
+  const uneven = v === "rain";
+  let a = 0, b = counts.length - 1; while (a < b && !counts[a]) a++; while (b > a && !counts[b]) b--;
+  a = Math.max(0, a - 1); b = Math.min(counts.length - 1, b + 1);
+  const ml = 50, mr = 12, mt = 44, mb = 30, iw = w - ml - mr, ih = h - mt - mb, nb = b - a + 1;
+  const xOf = uneven ? (i) => ml + (i - a) / nb * iw : (val) => ml + (val - edges[a]) / (edges[b + 1] - edges[a]) * iw;
+  const binX = (i) => uneven ? xOf(i) : xOf(edges[i]), binX2 = (i) => uneven ? xOf(i + 1) : xOf(edges[i + 1]);
+  const valX = (val) => { if (!uneven) return xOf(val); let i = edges.findIndex((e, k) => k < edges.length - 1 && val < edges[k + 1]); if (i < 0) i = edges.length - 2; i = Math.max(a, Math.min(b, i)); return xOf(i) + (val - edges[i]) / (edges[i + 1] - edges[i]) * (iw / nb); };
+  const maxC = Math.max(...counts), yt = niceTicks(0, maxC / S.N * 100, 4), Y = (pct) => mt + ih - pct / yt.hi * ih;
+  const c2 = css(`${M.ramp}-2`), c1 = css(`${M.ramp}-1`), ink = css("ink"), ink2 = css("ink-2");
+  let svg = `<svg viewBox="0 0 ${w} ${h}" height="${h}" role="img" aria-label="Histogram of ${M.label} with box plot">`;
+  yt.ticks.forEach((t) => { svg += `<line x1="${ml}" x2="${w - mr}" y1="${Y(t)}" y2="${Y(t)}" stroke="${css("hair")}"/><text class="tick" x="${ml - 8}" y="${Y(t) + 4}" text-anchor="end">${fmt(t, stepDp(yt.step))}%</text>`; });
+  for (let i = a; i <= b; i++) {
+    const x1 = binX(i), x2 = binX2(i), pct = counts[i] / S.N * 100, yy = Y(pct), inOut = (edges[i + 1] <= S.fLo || edges[i] >= S.fHi);
+    const gw = x2 - x1 > 6 ? 2 : 1;
+    if (counts[i]) svg += `<path d="M${x1 + gw / 2} ${mt + ih}V${yy + 3}q0 -3 3 -3H${x2 - gw / 2 - 3}q3 0 3 3V${mt + ih}Z" fill="${inOut ? c1 : c2}"/>`;
+    svg += `<rect data-i="${i}" x="${x1}" y="${mt}" width="${x2 - x1}" height="${ih}" fill="transparent"/>`;
+  }
+  svg += `<line x1="${ml}" x2="${w - mr}" y1="${mt + ih}" y2="${mt + ih}" stroke="${css("axis")}"/>`;
+  if (uneven) { for (let i = a; i <= b + 1; i++) if ((i - a) % Math.max(1, Math.ceil(nb / 8)) === 0 || i === b + 1) svg += `<text class="tick" x="${xOf(i)}" y="${h - 10}" text-anchor="middle">${edges[i]}</text>`; }
+  else { const xt = niceTicks(edges[a], edges[b + 1], Math.max(3, Math.floor(iw / 80))); xt.ticks.filter((t) => t >= edges[a] && t <= edges[b + 1]).forEach((t) => { svg += `<text class="tick" x="${xOf(t)}" y="${h - 10}" text-anchor="middle">${fmt(t, stepDp(xt.step))}</text>`; }); }
+  const by = 18, wLo = Math.max(S.min, S.fLo), wHi = Math.min(S.max, S.fHi);
+  svg += `<line x1="${valX(wLo)}" x2="${valX(wHi)}" y1="${by}" y2="${by}" stroke="${ink2}" stroke-width="1.2"/>`;
+  svg += `<line x1="${valX(wLo)}" x2="${valX(wLo)}" y1="${by - 6}" y2="${by + 6}" stroke="${ink2}" stroke-width="1.2"/><line x1="${valX(wHi)}" x2="${valX(wHi)}" y1="${by - 6}" y2="${by + 6}" stroke="${ink2}" stroke-width="1.2"/>`;
+  svg += `<rect x="${valX(S.q1)}" y="${by - 9}" width="${Math.max(2, valX(S.q3) - valX(S.q1))}" height="18" rx="3" fill="${c1}" opacity=".55" stroke="${c2}" stroke-width="1.2"/>`;
+  svg += `<line x1="${valX(S.med)}" x2="${valX(S.med)}" y1="${by - 9}" y2="${by + 9}" stroke="${ink}" stroke-width="2.2"/>`;
+  svg += `<line x1="${valX(S.mean)}" x2="${valX(S.mean)}" y1="${mt}" y2="${mt + ih}" stroke="${ink}" stroke-width="1.2"/><text class="clabel" x="${valX(S.mean) + 5}" y="${mt + 12}">mean ${fmt(S.mean, M.dp)}</text>`;
+  svg += `</svg>`;
+  host.innerHTML = svg;
+  host.querySelectorAll("rect[data-i]").forEach((r) => {
+    r.addEventListener("mousemove", (e) => { const i = +r.dataset.i; showTip(`<b>${fmt(edges[i], uneven ? 1 : M.dp)} – ${fmt(edges[i + 1], uneven ? 1 : M.dp)} ${M.unit}</b><div class="r"><span>Observations</span><b>${fmtInt(counts[i])}</b></div><div class="r"><span>Share</span><span>${fmt(counts[i] / S.N * 100, 2)}%</span></div>`, e.clientX, e.clientY); });
+    r.addEventListener("mouseleave", hideTip);
+  });
+  $("#hist-sub").innerHTML = `${M.label} (${M.unit}) for every grid-day in the selection. Box plot above: whiskers at Tukey's fences, dark tick = median. ${uneven ? "Rain bins follow IMD-style intensity classes, so widths are equal on screen but not in mm." : ""}`;
+  $("#hist-stats").innerHTML = [
+    ["Observations", fmtInt(S.N)], ["Mean", `${fmt(S.mean, M.dp)} ${M.unit}`], ["Median", `≈ ${fmt(S.med, M.dp)} ${M.unit}`], ["Std deviation", `≈ ${fmt(S.sd, M.dp === 0 ? 1 : M.dp)}`],
+    ["IQR (Q1–Q3)", `≈ ${fmt(S.q1, M.dp)}–${fmt(S.q3, M.dp)}`], ["Skewness", `≈ ${fmt(S.skew, 2)}`], ["Outliers", `≈ ${fmtInt(S.out)}`], ["Outlier share", `≈ ${fmt(S.out / S.N * 100, 1)}%`],
+  ].map(([k, val]) => `<div><small>${k}</small><b class="num">${val}</b></div>`).join("");
+  const shape = Math.abs(S.skew) < .5 ? "roughly symmetric, so the mean and median agree" : S.skew > 0 ? "right-skewed: a long tail of high values pulls the mean above the median, so the median is the better 'typical' value" : "left-skewed: a tail of low values pulls the mean below the median";
+  $("#hist-insight").innerHTML = `<b>Reading it:</b> this distribution is ${shape}. ≈ ${fmt(S.out / S.N * 100, 1)}% of observations fall outside Tukey's fences. <span style="color:var(--muted)">Values marked ≈ are estimated from binned counts.</span>`;
+}
+
+/* ---------- correlation ---------- */
+function selectionMatrix() {
+  const days = selDays(), dists = selDistricts(), cols = VAR_ORDER.map(() => []);
+  dists.forEach((d) => { const dd = W.daily[D[d].name]; days.forEach((i) => VAR_ORDER.forEach((v, k) => cols[k].push(dd[v][i]))); });
+  return cols;
+}
+function pearson(a, b) {
+  const n = a.length; let ma = 0, mb = 0; for (let i = 0; i < n; i++) { ma += a[i]; mb += b[i]; } ma /= n; mb /= n;
+  let sab = 0, saa = 0, sbb = 0; for (let i = 0; i < n; i++) { const x = a[i] - ma, y = b[i] - mb; sab += x * y; saa += x * x; sbb += y * y; }
+  return sab / Math.sqrt(saa * sbb);
+}
+let corrCache = null;
+function corrMatrix() {
+  const full = st.district < 0 && st.months.size === 12;
+  const key = st.district + "|" + monthsArr().join(",");
+  if (corrCache && corrCache.key === key) return corrCache;
+  let R, basis, n;
+  if (full) { R = VAR_ORDER.map((a) => VAR_ORDER.map((b) => W.corr[VARS.indexOf(a)][VARS.indexOf(b)])); n = W.clean.rows_clean; basis = `Pearson r over all ${fmtInt(n)} cleaned grid-day observations.`; }
+  else { const cols = selectionMatrix(); n = cols[0].length; R = VAR_ORDER.map((_, i) => VAR_ORDER.map((_, j) => i === j ? 1 : pearson(cols[i], cols[j]))); basis = `Pearson r over ${fmtInt(n)} district-day means in the selection.`; }
+  corrCache = {key, R, basis, n, cols: full ? null : undefined};
+  return corrCache;
+}
+function renderCorr() {
+  const host = $("#corr"), {R, basis} = corrMatrix(), n = VAR_ORDER.length;
+  const size = Math.min(host.clientWidth, 520), lab = 84, top = 26, cell = (size - lab) / n, h = top + cell * n + 4;
+  const dv = divFn(), ink = css("ink"), inkOn = css("surface");
+  let svg = `<svg viewBox="0 0 ${size} ${h}" height="${h}" style="max-width:${size}px" role="img" aria-label="Correlation matrix of eight weather variables">`;
+  const ABBR = {temp:"Temp", rh:"Hum", rain:"Rain", gust:"Gust", wind:"Wind", cloud:"Cloud", vis:"Vis", slp:"Pres"};
+  VAR_ORDER.forEach((v, j) => { svg += `<text class="tick" x="${lab + j * cell + cell / 2}" y="${top - 9}" text-anchor="middle">${ABBR[v]}</text>`; });
+  VAR_ORDER.forEach((vi, i) => {
+    svg += `<text class="tick" x="${lab - 8}" y="${top + i * cell + cell / 2 + 4}" text-anchor="end">${META[vi].short}</text>`;
+    VAR_ORDER.forEach((vj, j) => {
+      const r = R[i][j], c = dv(r), light = lum(c) > .36, isSel = (vi === st.sy && vj === st.sx) || (vi === st.sx && vj === st.sy);
+      svg += `<g class="cc" data-i="${i}" data-j="${j}" style="cursor:pointer"><rect x="${lab + j * cell + 1}" y="${top + i * cell + 1}" width="${cell - 2}" height="${cell - 2}" rx="3" fill="${rgbStr(c)}" ${isSel ? `stroke="${ink}" stroke-width="2"` : ""}/>`;
+      svg += `<text x="${lab + j * cell + cell / 2}" y="${top + i * cell + cell / 2 + 4}" text-anchor="middle" style="font:500 ${cell < 46 ? 10 : 11.5}px var(--f-mono)" fill="${light ? "#101820" : "#F3F5F7"}">${fmt(r, 2)}</text></g>`;
+    });
+  });
+  svg += `</svg>`;
+  host.innerHTML = svg;
+  host.querySelectorAll("g.cc").forEach((g) => {
+    const i = +g.dataset.i, j = +g.dataset.j;
+    g.addEventListener("mousemove", (e) => {
+      const r = R[i][j], s = Math.abs(r), word = s < .1 ? "negligible" : s < .3 ? "weak" : s < .5 ? "moderate" : s < .7 ? "strong" : "very strong";
+      showTip(`<b>${META[VAR_ORDER[i]].short} × ${META[VAR_ORDER[j]].short}</b><div class="r"><span>Pearson r</span><b>${fmt(r, 3)}</b></div><div class="r"><span>r²</span><span>${fmt(r * r, 3)}</span></div><div style="opacity:.75">${i === j ? "a variable with itself" : `${word} ${r < 0 ? "negative" : "positive"} · click to plot`}</div>`, e.clientX, e.clientY);
+    });
+    g.addEventListener("mouseleave", hideTip);
+    g.addEventListener("click", () => { if (i === j) return; st.sy = VAR_ORDER[i]; st.sx = VAR_ORDER[j]; syncFilters(); renderCorr(); renderScatter(); });
+  });
+  $("#corr-sub").textContent = `${basis} Click any cell to plot that pair below.`;
+  const stops = [-1, -.5, 0, .5, 1].map((r) => rgbStr(dv(r)));
+  $("#corr-ramp").innerHTML = `<span>−1 · move opposite</span><div class="bar" style="background:linear-gradient(90deg,${stops.join(",")})"></div><span>+1 · move together</span>`;
+}
+
+/* ---------- scatter + regression ---------- */
+const scCv = $("#scatter");
+let scState = null;
+function renderScatter() {
+  const xv = st.sx, yv = st.sy, MX = META[xv], MY = META[yv], days = selDays(), dists = selDistricts();
+  const xs = [], ys = [], who = [];
+  dists.forEach((d) => { const dd = W.daily[D[d].name]; days.forEach((i) => { xs.push(dd[xv][i]); ys.push(dd[yv][i]); who.push(d * 1000 + i); }); });
+  const n = xs.length; let mx = 0, my = 0; for (let i = 0; i < n; i++) { mx += xs[i]; my += ys[i]; } mx /= n; my /= n;
+  let sxy = 0, sxx = 0, syy = 0; for (let i = 0; i < n; i++) { const a = xs[i] - mx, b = ys[i] - my; sxy += a * b; sxx += a * a; syy += b * b; }
+  const slope = sxy / sxx, icpt = my - slope * mx, r = sxy / Math.sqrt(sxx * syy), r2 = r * r;
+  let ssr = 0; for (let i = 0; i < n; i++) { const e = ys[i] - (icpt + slope * xs[i]); ssr += e * e; }
+  const rmse = Math.sqrt(ssr / n);
+  const wrap = scCv.parentElement, w = wrap.clientWidth, h = 320, dpr = devicePixelRatio || 1;
+  scCv.style.height = h + "px"; scCv.width = Math.round(w * dpr); scCv.height = Math.round(h * dpr);
+  const ctx = scCv.getContext("2d"); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, w, h);
+  const ml = 54, mr = 14, mt = 10, mb = 40, iw = w - ml - mr, ih = h - mt - mb;
+  const xt = niceTicks(Math.min(...xs), Math.max(...xs), Math.max(3, Math.floor(iw / 90))), yt = niceTicks(Math.min(...ys), Math.max(...ys), 5);
+  const X = (val) => ml + (val - xt.lo) / (xt.hi - xt.lo) * iw, Y = (val) => mt + ih - (val - yt.lo) / (yt.hi - yt.lo) * ih;
+  ctx.font = '11px "IBM Plex Mono", monospace'; ctx.fillStyle = css("muted"); ctx.strokeStyle = css("hair"); ctx.lineWidth = 1;
+  ctx.textAlign = "right"; ctx.textBaseline = "middle";
+  yt.ticks.forEach((t) => { ctx.beginPath(); ctx.moveTo(ml, Y(t) + .5); ctx.lineTo(w - mr, Y(t) + .5); ctx.stroke(); ctx.fillText(fmt(t, stepDp(yt.step)), ml - 8, Y(t)); });
+  ctx.textAlign = "center"; ctx.textBaseline = "top";
+  xt.ticks.forEach((t) => ctx.fillText(fmt(t, stepDp(xt.step)), X(t), mt + ih + 8));
+  ctx.strokeStyle = css("axis"); ctx.beginPath(); ctx.moveTo(ml, mt + ih + .5); ctx.lineTo(w - mr, mt + ih + .5); ctx.stroke();
+  ctx.fillStyle = css("ink-2"); ctx.font = '500 12px "IBM Plex Sans", sans-serif'; ctx.fillText(`${MX.label} (${MX.unit})`, ml + iw / 2, h - 16);
+  ctx.save(); ctx.translate(13, mt + ih / 2); ctx.rotate(-Math.PI / 2); ctx.textBaseline = "middle"; ctx.fillText(`${MY.label} (${MY.unit})`, 0, 0); ctx.restore();
+  const pc = hex2rgb(css(`${MY.ramp}-2`)), alpha = n > 5000 ? .16 : n > 1500 ? .3 : .55, rad = n > 5000 ? 1.8 : 2.6;
+  ctx.fillStyle = rgbStr(pc, alpha);
+  for (let i = 0; i < n; i++) { ctx.beginPath(); ctx.arc(X(xs[i]), Y(ys[i]), rad, 0, 6.2832); ctx.fill(); }
+  const xa = xt.lo, xb = xt.hi;
+  ctx.save(); ctx.beginPath(); ctx.rect(ml, mt, iw, ih); ctx.clip();
+  ctx.strokeStyle = css("surface"); ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(X(xa), Y(icpt + slope * xa)); ctx.lineTo(X(xb), Y(icpt + slope * xb)); ctx.stroke();
+  ctx.strokeStyle = css("ink"); ctx.lineWidth = 2.2; ctx.stroke(); ctx.restore();
+  scState = {xs, ys, who, X, Y, n};
+  const sign = slope < 0 ? "−" : "+";
+  $("#scatter-eq").innerHTML = `<span>Least squares: <span class="mono">ŷ = ${fmt(icpt, 2)} ${sign} ${fmt(Math.abs(slope), 3)}·x</span></span><span>R² <b class="mono">${fmt(r2, 3)}</b></span><span>r <b class="mono">${fmt(r, 3)}</b></span><span>RMSE <b class="mono">${fmt(rmse, 2)} ${MY.unit}</b></span><span>n <b class="mono">${fmtInt(n)}</b></span>`;
+  $("#scatter-sub").textContent = `Each dot is one district's daily mean. The line minimises the squared vertical distance to every dot.`;
+  const s = Math.abs(r), word = s < .1 ? "no meaningful" : s < .3 ? "a weak" : s < .5 ? "a moderate" : s < .7 ? "a strong" : "a very strong";
+  $("#scatter-insight").innerHTML = xv === yv ? `<b>Pick two different variables</b> to see a relationship.` :
+    `<b>${word[0].toUpperCase() + word.slice(1)} ${r < 0 ? "negative" : "positive"} relationship.</b> Each +1 ${MX.unit} of ${MX.short.toLowerCase()} goes with ${slope < 0 ? "−" : "+"}${fmt(Math.abs(slope), 2)} ${MY.unit} of ${MY.short.toLowerCase()} on average, and the line explains ${fmt(r2 * 100, 0)}% of the variation. <span style="color:var(--muted)">Correlation is not causation: both may follow the monsoon season.</span>`;
+}
+let scRaf = 0;
+scCv.addEventListener("mousemove", (e) => {
+  if (!scState) return; cancelAnimationFrame(scRaf);
+  scRaf = requestAnimationFrame(() => {
+    const r = scCv.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top;
+    let best = -1, bd = 24 * 24;
+    for (let i = 0; i < scState.n; i++) { const dx = scState.X(scState.xs[i]) - mx, dy = scState.Y(scState.ys[i]) - my, dd = dx * dx + dy * dy; if (dd < bd) { bd = dd; best = i; } }
+    if (best < 0) { hideTip(); return; }
+    const d = Math.floor(scState.who[best] / 1000), day = scState.who[best] % 1000, MX = META[st.sx], MY = META[st.sy];
+    showTip(`<b>${esc(D[d].name)}</b> · ${dayLabel(day)}<div class="r"><span>${MX.short}</span><b>${fmt(scState.xs[best], MX.dp)} ${MX.unit}</b></div><div class="r"><span>${MY.short}</span><b>${fmt(scState.ys[best], MY.dp)} ${MY.unit}</b></div>`, e.clientX, e.clientY);
+  });
+});
+scCv.addEventListener("mouseleave", () => { cancelAnimationFrame(scRaf); hideTip(); });
+
+/* ---------- league table ---------- */
+function renderRank() {
+  const v = st.v, M = META[v], days = selDays();
+  const rows = D.map((d, i) => {
+    const monthly = Array.from({length:12}, (_, m) => DM[v][i * 12 + m]);
+    const mean = overMonths(monthly), t = W.daily[d.name].temp;
+    let hot = -Infinity; days.forEach((k) => hot = Math.max(hot, t[k]));
+    let tot = 0, wet = 0; st.months.forEach((m) => { const r = W.conds[d.name][m - 1]; tot += r[0] + r[1] + r[2] + r[3]; wet += r[1] + r[2] + r[3]; });
+    return {i, name:d.name, state:d.state, cells:d.n, mean, hot, wet: wet / tot * 100, monthly};
+  });
+  const k = st.sort.key, dir = st.sort.dir;
+  rows.sort((a, b) => k === "name" ? a.name.localeCompare(b.name) * dir : (a[k] - b[k]) * dir);
+  const allMonthly = rows.flatMap((r) => r.monthly), lo = Math.min(...allMonthly), hi = Math.max(...allMonthly);
+  const on = css(`${M.ramp}-2`), off = css("axis");
+  const spk = (vals) => { const pts = vals.map((val, m) => `${(m / 11 * 94 + 1).toFixed(1)},${(18 - (val - lo) / (hi - lo || 1) * 16).toFixed(1)}`); const sel = vals.map((val, m) => st.months.has(m + 1) ? `<circle cx="${(m / 11 * 94 + 1).toFixed(1)}" cy="${(18 - (val - lo) / (hi - lo || 1) * 16).toFixed(1)}" r="1.8" fill="${on}"/>` : "").join(""); return `<svg class="spk" viewBox="0 0 96 20" aria-hidden="true"><polyline points="${pts.join(" ")}" fill="none" stroke="${off}" stroke-width="1.2"/>${sel}</svg>`; };
+  const th = (key, label) => `<th aria-sort="${st.sort.key === key ? (st.sort.dir > 0 ? "ascending" : "descending") : "none"}"><button type="button" data-k="${key}">${label}</button></th>`;
+  $("#rank").innerHTML = `<table><thead><tr>${th("name", "District")}${th("mean", `${M.short} ${M.unit}`)}${th("hot", "Hottest °C")}${th("wet", "Rain %")}<th>Jan–Dec</th></tr></thead><tbody>${rows.map((r) =>
+    `<tr data-i="${r.i}" class="${r.i === st.district ? "sel" : ""}" tabindex="0" title="${esc(r.name)} · ${r.cells} grid cells"><td>${esc(r.name)}${r.state !== "Tamil Nadu" ? ` <span class="chip">PY</span>` : ""}</td><td class="num">${fmt(r.mean, M.dp)}</td><td class="num">${fmt(r.hot, 1)}</td><td class="num">${fmt(r.wet, 1)}</td><td>${spk(r.monthly)}</td></tr>`).join("")}</tbody></table>`;
+  $("#rank-sub").textContent = `All 40 districts for ${seasonText()}. Click a header to sort, a row to filter. PY = Puducherry.`;
+  $("#rank").querySelectorAll("th button").forEach((b) => b.addEventListener("click", () => { const key = b.dataset.k; st.sort = {key, dir: st.sort.key === key ? -st.sort.dir : (key === "name" ? 1 : -1)}; renderRank(); }));
+  $("#rank").querySelectorAll("tbody tr").forEach((tr) => {
+    const go = () => { const i = +tr.dataset.i; st.district = st.district === i ? -1 : i; update(); };
+    tr.addEventListener("click", go); tr.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
+  });
+}
+
+/* ---------- descriptive table ---------- */
+function renderDesc() {
+  const cols = [["mean","Mean"],["std","Std"],["min","Min"],["q1","Q1"],["median","Median"],["q3","Q3"],["max","Max"],["skew","Skew"],["kurt","Kurtosis"]];
+  $("#desc").innerHTML = `<table class="desc"><thead><tr><th>Variable</th>${cols.map(([, l]) => `<th>${l}</th>`).join("")}<th>Outliers</th><th>Shape</th></tr></thead><tbody>${VAR_ORDER.map((v) => {
+    const s = W.stats[v], M = META[v], dp = v === "rain" ? 3 : Math.max(1, M.dp);
+    const shape = Math.abs(s.skew) < .5 ? `<span class="chip">symmetric</span>` : s.skew > 0 ? `<span class="chip warn">right-skewed</span>` : `<span class="chip cool">left-skewed</span>`;
+    return `<tr style="cursor:default"><td>${M.label} <span class="mono">${M.unit}</span></td>${cols.map(([k]) => `<td class="num">${fmt(s[k], k === "skew" || k === "kurt" ? 2 : dp)}</td>`).join("")}<td class="num">${fmtInt(s.outliers)} <span style="color:var(--muted)">(${fmt(s.outliers / W.clean.rows_clean * 100, 1)}%)</span></td><td>${shape}</td></tr>`;
+  }).join("")}</tbody></table>`;
+}
+
+/* ---------- pipeline ---------- */
+function renderPipe() {
+  const c = W.clean, cv = Object.entries(c.country_variants).map(([k, v]) => `<code>${esc(k.replace(/'/g, '"'))}</code> ${fmtInt(v)}`).join(" · ");
+  $("#pipe").innerHTML = [
+    `<b>Load and profile</b><p>${fmtInt(c.rows_raw)} rows × ${c.cols_raw} columns: 2,100 grid cells observed daily.</p>`,
+    `<b>Check completeness</b><p>${c.nulls} missing values and ${c.dupes} duplicate (cell, day) pairs. No imputation needed.</p>`,
+    `<b>Standardise text</b><p><code>Country</code> was spelled 3 ways: ${cv}. ${c.district_ws.length} district names had stray spaces (${c.district_ws.map(esc).join(", ")}). Trimmed all of them.</p>`,
+    `<b>Filter the time range</b><p>${fmtInt(c.rows_out_of_year)} rows were dated 2023-01-01, outside the 2022 study year, and were removed, leaving <b style="display:inline">${fmtInt(c.rows_clean)}</b> rows.</p>`,
+    `<b>Convert units</b><table class="minitable"><tbody><tr><td><code>TMP_2m</code></td><td>K − 273.15 → °C</td></tr><tr><td><code>GUST_10m</code></td><td>m/s × 3.6 → km/h</td></tr><tr><td><code>PRMSL_msl</code></td><td>Pa ÷ 100 → hPa</td></tr><tr><td><code>VIS_2m</code></td><td>m ÷ 1000 → km</td></tr><tr><td><code>UGRD/VGRD_10m</code></td><td>√(u² + v²) → wind speed</td></tr></tbody></table>`,
+    `<b>Decode the label</b><p><code>Condition_encoded</code> turned out to be rain intensity. Checking the rainfall range inside each code gave: 3 = dry (&lt; 0.1 mm), 1 = light (0.1–2.5), 2 = moderate (2.5–7.6), 0 = heavy (≥ 7.6).</p>`,
+    `<b>Aggregate for the browser</b><p>Cell × month means, district × day means, and binned histograms. This takes 766,500 rows down to about 2 MB while keeping every chart exact or clearly marked ≈.</p>`,
+  ].map((h) => `<li><div>${h}</div></li>`).join("");
+}
+
+/* ---------- orchestration ---------- */
+function update() {
+  corrCache = null; hideTip();
+  syncFilters(); renderKPIs(); renderMap(); renderSeries(); renderConds(); renderHist(); renderCorr(); renderScatter(); renderRank();
+}
+function renderAll() { renderMeta(); renderDesc(); renderPipe(); update(); }
+buildFilters(); renderAll();
+let rT = 0; const ro = new ResizeObserver(() => { cancelAnimationFrame(rT); rT = requestAnimationFrame(update); });
+ro.observe($("main"));
+new MutationObserver(update).observe(root, {attributes:true, attributeFilter:["data-theme"]});
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", update);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(update);
+})();
+</script>
