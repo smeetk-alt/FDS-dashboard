@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%2313203A%22/%3E%3Cpath d=%22M18 33l9 9 19-20%22 fill=%22none%22 stroke=%22%235FD39B%22 stroke-width=%227%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3C/svg%3E">
+<style>body{margin:0}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>HR Records Audit Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  color-scheme:light;
+  --ground:#EEF1F5; --surface:#FFFFFF; --surface-2:#F5F7FA; --ink:#13203A; --ink-2:#46526A; --muted:#6B768B;
+  --hair:#DCE1E9; --axis:#C3CAD6; --accent:#1F4E8C; --accent-wash:rgba(31,78,140,.08); --band:#13203A; --band-ink:#F3F5F9; --band-muted:#A9B4C8;
+  --ok:#1E8A5A; --ok-bg:#DDF1E6; --part:#B7791F; --part-bg:#FBEBCF; --bad:#C0392B; --bad-bg:#F8DDD9; --na:#8A93A3; --na-bg:#ECEEF2;
+  --f-display:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-body:"Public Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#0C121D; --surface:#141C2A; --surface-2:#1A2333; --ink:#E7ECF4; --ink-2:#AEB8C8; --muted:#8793A6;
+    --hair:#263145; --axis:#36435A; --accent:#8CB4EA; --accent-wash:rgba(140,180,234,.1); --band:#16233A; --band-ink:#EEF2F8; --band-muted:#9AA8BF;
+    --ok:#4CC08A; --ok-bg:#16372A; --part:#E3A94B; --part-bg:#3A2E17; --bad:#EF7A6C; --bad-bg:#40211E; --na:#8793A6; --na-bg:#212A3A;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#0C121D; --surface:#141C2A; --surface-2:#1A2333; --ink:#E7ECF4; --ink-2:#AEB8C8; --muted:#8793A6;
+  --hair:#263145; --axis:#36435A; --accent:#8CB4EA; --accent-wash:rgba(140,180,234,.1); --band:#16233A; --band-ink:#EEF2F8; --band-muted:#9AA8BF;
+  --ok:#4CC08A; --ok-bg:#16372A; --part:#E3A94B; --part-bg:#3A2E17; --bad:#EF7A6C; --bad-bg:#40211E; --na:#8793A6; --na-bg:#212A3A;
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font:14px/1.55 var(--f-body);-webkit-font-smoothing:antialiased}
+.wrap{max-width:1320px;margin:0 auto;padding:24px 24px 48px;display:flex;flex-direction:column;gap:18px}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance}
+button,select,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mono,.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+.band{background:var(--band);color:var(--band-ink);border-radius:12px;padding:26px 28px;display:grid;grid-template-columns:1.4fr 1fr;gap:28px;align-items:end}
+.kicker{font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--band-muted);font-weight:600}
+.band h1{font-size:36px;line-height:1.08;font-weight:700;margin-top:6px}
+.band p{color:var(--band-muted);margin:10px 0 0;max-width:62ch}
+.score{display:flex;align-items:center;gap:20px;justify-self:end}
+.score svg{width:132px;height:132px;flex:none}
+.score b{display:block;font:600 13px var(--f-body);color:var(--band-ink)}
+.score span{color:var(--band-muted);font-size:12.5px;display:block;max-width:26ch}
+.legend-row{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:14px;font-size:12px;color:var(--band-muted)}
+
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.kpi{background:var(--surface);border:1px solid var(--hair);border-radius:10px;padding:14px 16px}
+.kpi small{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.kpi strong{display:block;font:600 30px/1.15 var(--f-mono);margin-top:4px}
+.kpi span{font-size:12.5px;color:var(--ink-2)}
+.kpi.alert{border-color:color-mix(in srgb,var(--bad) 45%,var(--hair))}
+.kpi.alert strong{color:var(--bad)}
+
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:18px}
+.panel{background:var(--surface);border:1px solid var(--hair);border-radius:10px;padding:18px 20px;min-width:0;display:flex;flex-direction:column;gap:12px}
+.panel h2{font-size:20px;font-weight:600}
+.sub{color:var(--muted);font-size:12.5px;margin:2px 0 0}
+.s5{grid-column:span 5}.s7{grid-column:span 7}.s12{grid-column:span 12}
+
+.pill{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:600;white-space:nowrap}
+.pill.ok{background:var(--ok-bg);color:var(--ok)}.pill.part{background:var(--part-bg);color:var(--part)}.pill.bad{background:var(--bad-bg);color:var(--bad)}.pill.na{background:var(--na-bg);color:var(--na)}
+
+/* findings */
+.finds{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0}
+.finds li{display:grid;grid-template-columns:4px 1fr;gap:14px;padding:12px 0;border-top:1px solid var(--hair)}
+.finds li:first-child{border-top:0}
+.finds li::before{content:"";border-radius:2px;background:var(--sev)}
+.finds h3{font:600 14.5px/1.35 var(--f-body)}
+.finds p{margin:3px 0 6px;color:var(--ink-2);font-size:13px}
+.finds .meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12px;color:var(--muted)}
+
+/* school ranking */
+.rank{display:flex;flex-direction:column;gap:4px}
+.rank button{display:grid;grid-template-columns:minmax(0,1fr) 150px 46px;gap:12px;align-items:center;text-align:left;background:none;border:0;border-radius:8px;padding:7px 8px;cursor:pointer}
+.rank button:hover{background:var(--accent-wash)}
+.rank button[aria-pressed="true"]{background:var(--accent-wash);box-shadow:inset 3px 0 0 var(--accent)}
+.rank .nm{font-weight:600;font-size:13px;line-height:1.3}
+.rank .nm small{display:block;font-weight:400;color:var(--muted);font-size:11.5px}
+.stack{display:flex;height:10px;border-radius:5px;overflow:hidden;background:var(--na-bg);gap:2px}
+.stack i{display:block;height:100%}
+.rank .pct{font:600 14px var(--f-mono);text-align:right}
+
+/* section heatmap */
+.scroll{overflow-x:auto}
+table{border-collapse:separate;border-spacing:3px;width:100%;font-variant-numeric:tabular-nums}
+th{font-size:11.5px;font-weight:600;color:var(--ink-2);text-align:left;vertical-align:bottom;padding:4px 6px}
+.hm td{height:40px;border-radius:6px;text-align:center;font:500 12.5px var(--f-mono);min-width:64px}
+.hm td.lab{text-align:left;font:500 13px var(--f-body);color:var(--ink);background:none;min-width:190px;padding-right:10px}
+.colhd{writing-mode:horizontal-tb;max-width:120px;line-height:1.25}
+
+/* digitisation */
+.digi{display:flex;flex-direction:column;gap:10px}
+.digi div{display:grid;grid-template-columns:minmax(0,190px) 1fr 48px;gap:12px;align-items:center;font-size:13px}
+.bar{height:12px;border-radius:6px;background:var(--na-bg);position:relative;overflow:hidden}
+.bar i{position:absolute;inset:0 auto 0 0;border-radius:6px}
+
+/* checklist */
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.tools select,.tools input{border:1px solid var(--hair);background:var(--surface-2);border-radius:8px;padding:7px 10px;min-height:36px}
+.tools input{min-width:0;flex:1 1 220px}
+.seg{display:inline-flex;border:1px solid var(--hair);border-radius:8px;padding:2px;background:var(--surface-2);flex-wrap:wrap}
+.seg button{border:0;background:none;border-radius:6px;padding:5px 11px;cursor:pointer;font-size:12.5px;color:var(--ink-2)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--surface);font-weight:600}
+.cl td{border-bottom:1px solid var(--hair);padding:6px;vertical-align:middle}
+.cl{border-spacing:0}
+.cl td.q{font-size:13px;min-width:280px;max-width:460px}
+.cl td.q b{font-family:var(--f-mono);color:var(--muted);font-weight:500;margin-right:6px}
+.cl tr.sec td{background:var(--surface-2);font:600 12px var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);padding:8px 6px}
+.cell{display:grid;place-items:center;width:34px;height:28px;border-radius:6px;margin:auto;font:600 13px var(--f-mono)}
+.cell.ok{background:var(--ok-bg);color:var(--ok)}.cell.part{background:var(--part-bg);color:var(--part)}.cell.bad{background:var(--bad-bg);color:var(--bad)}.cell.na{background:var(--na-bg);color:var(--na)}.cell.pct{background:var(--ok-bg);color:var(--ok);width:44px;font-size:11.5px}
+th.sch{text-align:center;font-size:11px;min-width:58px}
+th.sch.on,td.on{background:var(--accent-wash)}
+.empty{color:var(--muted);padding:18px 6px}
+.notes{font-size:12.5px;color:var(--ink-2);margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;color:var(--muted);font-size:12px}
+.tip{position:fixed;z-index:20;pointer-events:none;max-width:300px;background:var(--ink);color:var(--surface);padding:8px 10px;border-radius:8px;font-size:12px;line-height:1.4;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+
+@media (max-width:980px){.band{grid-template-columns:1fr}.score{justify-self:start}.s5,.s7{grid-column:span 12}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.wrap{padding:16px 16px 40px}.band h1{font-size:28px}.rank button{grid-template-columns:minmax(0,1fr) 90px 42px}.digi div{grid-template-columns:1fr 60px 44px}}
+@media print{body{background:#fff}.tools,.tip{display:none}.panel,.kpi{break-inside:avoid}}
+</style>
+
+<div class="wrap">
+  <header class="band">
+    <div>
+      <div class="kicker">HR records audit · 7 institutions · 55 checkpoints</div>
+      <h1>HR &amp; Staff Records Compliance Review</h1>
+      <p>Summary of the HR records audit across the Sindhi Society and Kurla institutions, prepared for the Board. Each checkpoint is marked Yes, Partially or No per institution; items marked NA are not applicable and are left out of the scores.</p>
+      <div class="legend-row"><span class="pill ok">✓ Compliant</span><span class="pill part">◐ Partially</span><span class="pill bad">✕ Not compliant</span><span class="pill na">– Not applicable</span></div>
+    </div>
+    <div class="score" id="score"></div>
+  </header>
+
+  <section class="kpis" id="kpis" aria-label="Headline figures"></section>
+
+  <div class="grid">
+    <section class="panel s7" aria-labelledby="h-find">
+      <div><h2 id="h-find">Matters for the Board</h2><p class="sub">Every gap in the audit, most serious first. Group-wide gaps need a policy decision; single-institution gaps need a deadline.</p></div>
+      <ul class="finds" id="finds"></ul>
+    </section>
+    <section class="panel s5" aria-labelledby="h-rank">
+      <div><h2 id="h-rank">Institution scores</h2><p class="sub">Yes = 1, Partially = ½, No = 0, averaged over applicable checkpoints. Select an institution to highlight it below.</p></div>
+      <div class="rank" id="rank"></div>
+    </section>
+
+    <section class="panel s7" aria-labelledby="h-sec">
+      <div><h2 id="h-sec">Score by audit area</h2><p class="sub">Compliance score for each area and institution. Darker red means a bigger gap.</p></div>
+      <div class="scroll"><table class="hm" id="hm"></table></div>
+    </section>
+    <section class="panel s5" aria-labelledby="h-digi">
+      <div><h2 id="h-digi">Digitisation of employee files</h2><p class="sub">Share of employee files digitised, as reported by each institution (checkpoint 55).</p></div>
+      <div class="digi" id="digi"></div>
+      <ul class="notes" id="diginote"></ul>
+    </section>
+
+    <section class="panel s12" aria-labelledby="h-cl">
+      <div><h2 id="h-cl">Full checklist</h2><p class="sub">All 55 checkpoints as recorded in the audit summary. Hover or focus a mark for the institution's full response.</p></div>
+      <div class="tools">
+        <label class="sr" for="fsec" hidden>Audit area</label>
+        <select id="fsec" aria-label="Audit area"></select>
+        <div class="seg" role="group" aria-label="Show">
+          <button type="button" data-f="all" aria-pressed="true">All</button>
+          <button type="button" data-f="gaps" aria-pressed="false">Gaps only</button>
+          <button type="button" data-f="clean" aria-pressed="false">Fully compliant</button>
+        </div>
+        <input id="fq" type="search" placeholder="Search checkpoints, e.g. appraisal" aria-label="Search checkpoints">
+      </div>
+      <div class="scroll"><table class="cl" id="cl"></table></div>
+    </section>
+
+    <section class="panel s12" aria-labelledby="h-notes">
+      <h2 id="h-notes">Notes on the data</h2>
+      <ul class="notes">
+        <li>Checkpoint 10 (appraisal system) is marked Non Compliant everywhere, while checkpoint 11 (appraisal records) is marked Yes everywhere. The Board may want this clarified.</li>
+        <li>Checkpoint 54 asks whether any files are still pending, so "No" is the good answer there and is scored as compliant.</li>
+        <li>Checkpoint 7 (increment letters) has no response ("–") for any institution and is not scored. Checkpoint 48 does not appear in the summary.</li>
+        <li>Rows 1–15 have no section heading in the summary; they are grouped here as "Employment terms &amp; personnel files".</li>
+      </ul>
+    </section>
+  </div>
+  <footer><span>Source: School audit Summary.xlsx</span><span>Prepared for the Board of Management</span></footer>
+</div>
+<div class="tip" id="tip" hidden></div>
+
+<script>
+(() => {
+const ITEMS = [{"n": 1, "q": "Are the work weeks /Working Hours Clearly defined?", "s": "Employment Terms & Personnel Files", "v": ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 2, "q": "Are new employees given an offer letter and appointment letter?", "s": "Employment Terms & Personnel Files", "v": ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 3, "q": "Are the employees (existing and new) communicated on terms & conditions of Employment in VES? Is the T & C document provided to all employees?", "s": "Employment Terms & Personnel Files", "v": ["No", "No", "No", "No", "No", "No", "No"]}, {"n": 4, "q": "Are personal files stored in secure place, maintained and the documents are up to date? (PAN card, Aadhar card, educational certificates, company letters etc.)?", "s": "Employment Terms & Personnel Files", "v": ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 5, "q": "Whether all the files are indexed and updated till date?", "s": "Employment Terms & Personnel Files", "v": ["Partially", "Partially", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 6, "q": "Whether missing documents list prepared or not?", "s": "Employment Terms & Personnel Files", "v": ["NA", "NA", "NA", "NA", "NA", "NA", "NA"]}, {"n": 7, "q": "Whether Increment Letter is issued?", "s": "Employment Terms & Personnel Files", "v": ["-", "-", "-", "-", "-", "-", "-"]}, {"n": 8, "q": "Whether contract letters are issued and the priod is updated, renewal records maintained?", "s": "Employment Terms & Personnel Files", "v": ["Partially", "Partially", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 9, "q": "Whether service books prepared for all working staff?is it updated till date?", "s": "Employment Terms & Personnel Files", "v": ["Partially", "Partially", "Yes", "Partially", "Yes", "Yes", "Yes"]}, {"n": 10, "q": "Are there appraisal systems in place to determine employee performance?", "s": "Employment Terms & Personnel Files", "v": ["Non Compliant", "Non Compliant", "Non Compliant", "Non Compliant", "Non Compliant", "Non Compliant", "Non Compliant"]}, {"n": 11, "q": "Performance appraisal records updated /Confidential reports maintained (if applicable)", "s": "Employment Terms & Personnel Files", "v": ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 12, "q": "Staff training/Orientation / FDP records maintained", "s": "Employment Terms & Personnel Files", "v": ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 13, "q": "Whether POSH/Sexual harassment committee contitute? Are staff aware about the same", "s": "Employment Terms & Personnel Files", "v": ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 14, "q": "whether the Staff grievance register is maintained? Are staff aware about the same", "s": "Employment Terms & Personnel Files", "v": ["NA", "NA", "NA", "NA", "NA", "NA", "NA"]}, {"n": 15, "q": "Whether Disciplinary records are maintained", "s": "Employment Terms & Personnel Files", "v": ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 16, "q": "Biometric attendance system functioning properly", "s": "Attendance & Leave Records", "v": ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 17, "q": "Attendance records updated monthly in muster", "s": "Attendance & Leave Records", "v": ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 18, "q": "Leave records maintained properly", "s": "Attendance & Leave Records", "v": ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 19, "q": "Casual Leave / Medical Leave / Earned Leave register updated", "s": "Attendance & Leave Records", "v": ["NA", "NA", "Yes", "NA", "NA", "NA", "NA"]}, {"n": 20, "q": "Leave approvals properly documented", "s": "Attendance & Leave Records", "v": ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 21, "q": "Late coming / absenteeism records maintained", "s": "Attendance & Leave Records", "v": ["Partially", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 22, "q": "Whether Salary muster updated", "s": "Salary & Payroll Records", "v": ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 23, "q": "Whether Salary slips issued regularly", "s": "Salary & Payroll Records", "v": ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 24, "q": "Whether Increment records updated", "s": "Salary & Payroll Records", "v": ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 25, "q": "Pay fixation records maintained", "s": "Salary & Payroll Records", "v": ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 26, "q": "Salary bank transfer records maintained", "s": "Salary & Payroll Records", "v": ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 27, "q": "Professional Tax deductions updated? Whether records maintained?", "s": "Salary & Payroll Records", "v": ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 28, "q": "Are all employees covered under PF? Whether the UAN details available for all eligible employees", "s": "Statutory Compliances & Employee Benefits", "v": ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 29, "q": "Whether PF registration details available? Are all challans updated?", "s": "Statutory Compliances & Employee Benefits", "v": ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 30, "q": "Whether ESIC registraion records updated? (if applicable)?", "s": "Statutory Compliances & Employee Benefits", "v": ["NA", "NA", "NA", "NA", "NA", "NA", "NA"]}, {"n": 31, "q": "Whether gratuity nomination form recorded & maintained?", "s": "Statutory Compliances & Employee Benefits", "v": ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 32, "q": "Whether Seniority list updated", "s": "Staff Service Records", "v": ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 33, "q": "Staff approval records maintained", "s": "Staff Service Records", "v": ["yes", "yes", "yes", "yes", "yes", "yes", "yes"]}, {"n": 34, "q": "University / Government approvals available", "s": "Staff Service Records", "v": ["NA", "NA", "NA", "NA", "NA", "NA", "NA"]}, {"n": 35, "q": "Promotion records updated", "s": "Staff Service Records", "v": ["NA", "NA", "NA", "NA", "NA", "NA", "NA"]}, {"n": 36, "q": "Retirement records maintained", "s": "Staff Service Records", "v": ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 37, "q": "Probation completion records maintained", "s": "Staff Service Records", "v": ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 38, "q": "Whether the employees has been granted promotion/increment on completion of 12 years of service", "s": "Staff Service Records", "v": ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 39, "q": "Approved staff pattern available", "s": "Vacancy & Recruitment Records", "v": ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 40, "q": "Vacant positions list updated", "s": "Vacancy & Recruitment Records", "v": ["NA", "NA", "NA", "NA", "NA", "NA", "NA"]}, {"n": 41, "q": "Recruitment records maintained", "s": "Vacancy & Recruitment Records", "v": ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 42, "q": "Interview records available", "s": "Vacancy & Recruitment Records", "v": ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 43, "q": "Selection committee records maintained", "s": "Vacancy & Recruitment Records", "v": ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 44, "q": "Resignation records maintained", "s": "Vacancy & Recruitment Records", "v": ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 45, "q": "Relieving letters issued", "s": "Vacancy & Recruitment Records", "v": ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 46, "q": "Full & Final settlement records maintained", "s": "Vacancy & Recruitment Records", "v": ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 47, "q": "Retirement files updated", "s": "Vacancy & Recruitment Records", "v": ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 49, "q": "whether all employee personal files have been digitized as per earlier instructions issued by the Management / Head Office.", "s": "Digitization of Employee Files", "v": ["No", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 50, "q": "whether scanned copies of all employee documents are properly stored in digital format.", "s": "Digitization of Employee Files", "v": ["No", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 51, "q": "whether digital records are arranged employee-wise and department-wise.", "s": "Digitization of Employee Files", "v": ["No", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 52, "q": "whether backup of digitized records is maintained properly.", "s": "Digitization of Employee Files", "v": ["No", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 53, "q": "whether newly joined employees' files are being digitized regularly.", "s": "Digitization of Employee Files", "v": ["No", "Partially", "Yes", "Yes", "Yes", "Yes", "Yes"]}, {"n": 54, "q": "Any pending employee files yet to be digitized?", "s": "Digitization of Employee Files", "v": ["NA", "Yes", "No", "No", "No", "No", "No"]}, {"n": 55, "q": "Obtain details of percentage of digitization completed by the institution.", "s": "Digitization of Employee Files", "v": ["No", 0.8, 1, 1, 1, 1, 1]}, {"n": 56, "q": "whether physical files and digital records are matching and updated.", "s": "Digitization of Employee Files", "v": ["No", "partially", "Yes", "Yes", "Yes", "Yes", "Yes"]}];
+const SCH = [
+  {s:"DBC", l:"DBC"},
+  {s:"SVHS & JC", l:"SVHS & Jr College, Sindhi Society"},
+  {s:"SV Primary (SS)", l:"SV Pre-Primary / Primary School, Sindhi Society"},
+  {s:"SV Vidyalaya", l:"SV Vidyalaya / Kanishtha Mahavidyalaya, Kurla"},
+  {s:"SV Prathmik", l:"SV Purva Prathmik / Prathmik Shala, Kurla"},
+  {s:"VEPS", l:"VEPS, Kurla"},
+  {s:"VEHS", l:"VEHS, Kurla"},
+];
+const SECNAME = {"Employment Terms & Personnel Files":"Employment terms & personnel files"};
+const INVERT = new Set([54]);
+const $ = (q) => document.querySelector(q);
+const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+// classify one response -> {k: ok|part|bad|na, v: score or null, t: label}
+function grade(item, raw) {
+  if (typeof raw === "number") return {k: raw >= 1 ? "ok" : raw > 0 ? "part" : "bad", v: raw, t: Math.round(raw * 100) + "%", pct: true};
+  const r = String(raw ?? "").trim().toLowerCase();
+  if (r === "na" || r === "-" || r === "") return {k: "na", v: null, t: r === "na" ? "Not applicable" : "No response"};
+  let k = r === "yes" ? "ok" : r === "partially" ? "part" : "bad";
+  if (INVERT.has(item.n) && k !== "part") k = k === "ok" ? "bad" : "ok";
+  if (item.n === 55 && r === "no") return {k: "bad", v: 0, t: "Not started (0%)", pct: true};
+  const t = INVERT.has(item.n) ? (k === "bad" ? "Yes, files still pending" : "No files pending") : String(raw).trim();
+  return {k, v: k === "ok" ? 1 : k === "part" ? .5 : 0, t};
+}
+ITEMS.forEach((it) => { it.s = SECNAME[it.s] || it.s; it.g = it.v.map((x) => grade(it, x)); });
+const SECS = [...new Set(ITEMS.map((i) => i.s))];
+const mean = (a) => a.length ? a.reduce((x, y) => x + y, 0) / a.length : null;
+const scoreOf = (items, si) => mean(items.map((i) => i.g[si].v).filter((v) => v !== null));
+const pctTxt = (v) => v === null ? "–" : Math.round(v * 100) + "%";
+let focus = -1;
+
+// headline
+const all = ITEMS.flatMap((i) => i.g.filter((g) => g.v !== null).map((g) => g.v));
+const overall = mean(all);
+const counts = {ok:0, part:0, bad:0, na:0};
+ITEMS.forEach((i) => i.g.forEach((g) => counts[g.k]++));
+const R = 52, C = 2 * Math.PI * R;
+$("#score").innerHTML = `<svg viewBox="0 0 132 132" role="img" aria-label="Overall compliance ${pctTxt(overall)}">
+  <circle cx="66" cy="66" r="${R}" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="12"/>
+  <circle cx="66" cy="66" r="${R}" fill="none" stroke="#5FD39B" stroke-width="12" stroke-linecap="round" stroke-dasharray="${(C * overall).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 66 66)"/>
+  <text x="66" y="72" text-anchor="middle" style="font:600 28px var(--f-mono)" fill="currentColor">${pctTxt(overall)}</text></svg>
+  <div><b>Overall compliance</b><span>${counts.ok} compliant, ${counts.part} partial and ${counts.bad} non-compliant responses across ${SCH.length} institutions.</span></div>`;
+
+const scored = ITEMS.filter((i) => i.g.some((g) => g.v !== null));
+const fullClean = scored.filter((i) => i.g.every((g) => g.k === "ok" || g.k === "na"));
+const groupWide = scored.filter((i) => i.g.every((g) => g.k === "bad" || g.k === "na") );
+const schScores = SCH.map((_, si) => scoreOf(ITEMS, si));
+const best = Math.max(...schScores), worst = Math.min(...schScores);
+$("#kpis").innerHTML = [
+  {l:"Checkpoints fully met", v:`${fullClean.length}<small style="font-size:15px;color:var(--muted)"> / ${scored.length}</small>`, s:"met by every institution"},
+  {l:"Group-wide failures", v:groupWide.length, s:"not met by any institution", a:true},
+  {l:"Strongest institution", v:pctTxt(best), s:SCH.filter((_, i) => schScores[i] === best).map((x) => x.s).join(", ")},
+  {l:"Weakest institution", v:pctTxt(worst), s:SCH[schScores.indexOf(worst)].l, a:true},
+].map((k) => `<div class="kpi${k.a ? " alert" : ""}"><small>${k.l}</small><strong>${k.v}</strong><span>${esc(k.s)}</span></div>`).join("");
+
+// findings
+const finds = [];
+groupWide.forEach((i) => finds.push({sev:"var(--bad)", rank:0, t:`#${i.n} · ${i.q}`, d:`Not met at any of the ${SCH.length} institutions. Needs a group-level policy.`, who:"All institutions", tag:"bad", tl:"Group-wide"}));
+const digiBad = ITEMS.filter((i) => i.s.startsWith("Digitization") && i.g[0].k === "bad");
+if (digiBad.length) finds.push({sev:"var(--bad)", rank:1, t:"DBC has not started digitising employee files", d:`DBC answered No on ${digiBad.length} of the digitisation checkpoints, including backup and storage of scanned records.`, who:"DBC", tag:"bad", tl:"Institution"});
+ITEMS.forEach((i) => {
+  if (groupWide.includes(i)) return;
+  const who = i.g.map((g, si) => g.k === "bad" || g.k === "part" ? si : -1).filter((x) => x >= 0);
+  if (!who.length) return;
+  if (i.s.startsWith("Digitization") && who.length === 1 && who[0] === 0 && i.g[0].k === "bad") return;
+  const bad = who.some((si) => i.g[si].k === "bad");
+  finds.push({sev: bad ? "var(--bad)" : "var(--part)", rank: bad ? 2 : 3, t:`#${i.n} · ${i.q}`, d: who.map((si) => `${SCH[si].s}: ${i.g[si].t}`).join(" · "), who: who.map((si) => SCH[si].s).join(", "), tag: bad ? "bad" : "part", tl: bad ? "Not met" : "Partially met"});
+});
+finds.sort((a, b) => a.rank - b.rank);
+$("#finds").innerHTML = finds.map((f) => `<li style="--sev:${f.sev}"><div><h3>${esc(f.t)}</h3><p>${esc(f.d)}</p><div class="meta"><span class="pill ${f.tag}">${f.tl}</span>${esc(f.who)}</div></div></li>`).join("");
+
+// ranking
+function renderRank() {
+  const order = SCH.map((_, i) => i).sort((a, b) => schScores[b] - schScores[a]);
+  $("#rank").innerHTML = order.map((si) => {
+    const c = {ok:0, part:0, bad:0};
+    ITEMS.forEach((i) => { const k = i.g[si].k; if (k in c) c[k]++; });
+    const n = c.ok + c.part + c.bad;
+    const seg = ["ok", "part", "bad"].filter((k) => c[k]).map((k) => `<i style="width:${c[k] / n * 100}%;background:var(--${k})"></i>`).join("");
+    return `<button type="button" data-s="${si}" aria-pressed="${focus === si}" data-tip="${esc(`${SCH[si].l}: ${c.ok} compliant, ${c.part} partial, ${c.bad} not compliant`)}"><span class="nm">${esc(SCH[si].s)}<small>${esc(SCH[si].l)}</small></span><span class="stack">${seg}</span><span class="pct">${pctTxt(schScores[si])}</span></button>`;
+  }).join("");
+}
+
+// heatmap
+function heatColor(v) {
+  if (v === null) return "var(--na-bg)";
+  if (v >= .999) return "var(--ok-bg)";
+  const t = Math.round((1 - v) * 100);
+  return `color-mix(in srgb,var(--bad) ${Math.min(85, 18 + t)}%,var(--part-bg))`;
+}
+function renderHeat() {
+  const head = `<tr><th></th>${SCH.map((s, si) => `<th class="colhd${focus === si ? " on" : ""}" style="text-align:center">${esc(s.s)}</th>`).join("")}</tr>`;
+  const body = SECS.map((sec) => {
+    const items = ITEMS.filter((i) => i.s === sec);
+    return `<tr><td class="lab">${esc(sec)}</td>${SCH.map((s, si) => { const v = scoreOf(items, si); const dark = v !== null && v < .6;
+      return `<td style="background:${heatColor(v)};color:${v === null ? "var(--na)" : v >= .999 ? "var(--ok)" : dark ? "#fff" : "var(--ink)"};${focus === si ? "box-shadow:inset 0 0 0 2px var(--accent)" : ""}" data-tip="${esc(`${s.l} · ${sec}: ${pctTxt(v)}`)}">${pctTxt(v)}</td>`; }).join("")}</tr>`;
+  }).join("");
+  $("#hm").innerHTML = head + body;
+}
+
+// digitisation
+const d55 = ITEMS.find((i) => i.n === 55);
+if (d55) {
+  $("#digi").innerHTML = SCH.map((s, si) => { const g = d55.g[si], v = g.v ?? 0;
+    return `<div><span>${esc(s.s)}</span><span class="bar"><i style="width:${Math.max(v * 100, 0)}%;background:var(--${g.k})"></i></span><span class="num" style="text-align:right;color:var(--${g.k})">${Math.round(v * 100)}%</span></div>`; }).join("");
+  const d54 = ITEMS.find((i) => i.n === 54);
+  const pend = d54 ? SCH.filter((_, si) => d54.g[si].k === "bad").map((s) => s.s) : [];
+  $("#diginote").innerHTML = `<li>${SCH.filter((_, si) => d55.g[si].v === 1).length} of ${SCH.length} institutions report full digitisation.</li>` +
+    (pend.length ? `<li>Files still pending at: ${esc(pend.join(", "))}.</li>` : "") +
+    `<li>DBC reported "No" for digitisation progress, shown here as 0%.</li>`;
+}
+
+// checklist
+const MARK = {ok:"✓", part:"◐", bad:"✕", na:"–"};
+let fSec = "all", fMode = "all", fText = "";
+$("#fsec").innerHTML = `<option value="all">All audit areas</option>` + SECS.map((s) => `<option value="${esc(s)}">${esc(s)}</option>`).join("");
+function renderList() {
+  const q = fText.trim().toLowerCase();
+  const rows = ITEMS.filter((i) => (fSec === "all" || i.s === fSec) && (!q || i.q.toLowerCase().includes(q) || String(i.n) === q) &&
+    (fMode === "all" || (fMode === "gaps" ? i.g.some((g) => g.k === "bad" || g.k === "part") : i.g.every((g) => g.k === "ok" || g.k === "na") && i.g.some((g) => g.k === "ok"))));
+  let html = `<thead><tr><th>Checkpoint</th>${SCH.map((s, si) => `<th class="sch${focus === si ? " on" : ""}" title="${esc(s.l)}">${esc(s.s)}</th>`).join("")}</tr></thead><tbody>`;
+  let cur = "";
+  rows.forEach((i) => {
+    if (i.s !== cur) { cur = i.s; html += `<tr class="sec"><td colspan="${SCH.length + 1}">${esc(cur)}</td></tr>`; }
+    html += `<tr><td class="q"><b>${i.n}</b>${esc(i.q)}</td>${i.g.map((g, si) => `<td class="${focus === si ? "on" : ""}"><span class="cell ${g.k}${g.pct ? " pct" : ""}" tabindex="0" data-tip="${esc(`${SCH[si].l}: ${g.t}`)}" aria-label="${esc(`${SCH[si].s}: ${g.t}`)}">${g.pct ? Math.round((g.v ?? 0) * 100) + "%" : MARK[g.k]}</span></td>`).join("")}</tr>`;
+  });
+  if (!rows.length) html += `<tr><td class="empty" colspan="${SCH.length + 1}">No checkpoints match. Clear the search or pick another area.</td></tr>`;
+  $("#cl").innerHTML = html + "</tbody>";
+}
+$("#fsec").addEventListener("change", (e) => { fSec = e.target.value; renderList(); });
+$("#fq").addEventListener("input", (e) => { fText = e.target.value; renderList(); });
+document.querySelectorAll("[data-f]").forEach((b) => b.addEventListener("click", () => {
+  fMode = b.dataset.f; document.querySelectorAll("[data-f]").forEach((x) => x.setAttribute("aria-pressed", x === b)); renderList();
+}));
+$("#rank").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; const si = +b.dataset.s; focus = focus === si ? -1 : si; renderAll(); });
+
+// tooltip
+const tip = $("#tip");
+const show = (el, x, y) => { tip.textContent = el.dataset.tip; tip.hidden = false; const w = tip.offsetWidth, h = tip.offsetHeight;
+  tip.style.left = Math.min(innerWidth - w - 8, x + 14) + "px"; tip.style.top = (y + h + 20 > innerHeight ? y - h - 12 : y + 16) + "px"; };
+document.addEventListener("pointermove", (e) => { const el = e.target.closest("[data-tip]"); if (el) show(el, e.clientX, e.clientY); else tip.hidden = true; });
+document.addEventListener("focusin", (e) => { const el = e.target.closest("[data-tip]"); if (el) { const r = el.getBoundingClientRect(); show(el, r.left, r.bottom); } });
+document.addEventListener("focusout", () => { tip.hidden = true; });
+
+function renderAll() { renderRank(); renderHeat(); renderList(); }
+renderAll();
+})();
+</script>
+
+</body>
+</html>
