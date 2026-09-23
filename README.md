@@ -64,6 +64,7 @@ dashboard/                 main dashboard (index.html + pre-aggregated data.js)
 versions/heatwave-watch/   alternative Heatwave Watch layout (index.html, data.js, temps.js)
 data/                      zipped dataset and the land mask used by the Heatwave Watch version
 scripts/                   Python scripts that rebuild the data files from the raw dataset
+postgres-dashboard/        PostgreSQL edition: SQL schema, per-panel queries, FastAPI backend (see its README)
 ```
 
 ## Rebuild the data files
