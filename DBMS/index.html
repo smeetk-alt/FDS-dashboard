@@ -84,6 +84,7 @@
     <div class="nav-group g-overview">
       <div class="nav-section-label">Overview</div>
       <a href="#dashboard" data-page="dashboard" class="nav-link"><span class="dot"></span>Dashboard</a>
+      <a href="#myreport" data-page="myreport" class="nav-link" data-role="patient"><span class="dot"></span>My Report</a>
     </div>
 
     <div class="nav-group g-design">
@@ -129,6 +130,15 @@
       <div class="crumb">Overview</div>
       <h1 id="dashboardTitle">Administrator Dashboard</h1>
       <div id="dashBody"></div>
+    </section>
+
+    <!-- MY REPORT (patient) -->
+    <section id="page-myreport" class="page hidden">
+      <div class="crumb">Patient</div>
+      <h1>My Report</h1>
+      <p class="muted">Your own diagnosis, treating doctors and ward. Only your record is shown.</p>
+      <div id="myReportBody"></div>
+      <button id="btnPrintReport" class="btn-primary">Print report</button>
     </section>
 
     <!-- ER MODEL (Exp 1) -->

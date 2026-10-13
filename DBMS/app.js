@@ -185,6 +185,7 @@ function navigate(page) {
 function renderPage(page) {
   const renderers = {
     dashboard: renderDashboard,
+    myreport: renderMyReport,
     ermodel: renderErModel,
     mapping: renderMapping,
     ddl: renderDdl,
@@ -251,9 +252,38 @@ function renderDashboard() {
                        JOIN department dep ON dep.dno = d.dno WHERE p.patient_id = ${me}`);
     body.innerHTML = rec.rows.length
       ? `<h3>My record</h3><div class="table-wrap">${tableHtml(rec)}</div>
-         <p class="muted small">You can only see your own record. Other pages are limited to staff.</p>`
+         <p class="muted small">Open My Report in the sidebar for your full report. Other pages are limited to staff.</p>`
       : `<p class="muted">No record found for this account.</p>`;
   }
+}
+
+/* ---------------- MY REPORT (patient) ---------------- */
+function renderMyReport() {
+  const me = currentAccount.ref;
+  const body = document.getElementById("myReportBody");
+  const rec = query(`SELECT p.patient_id, p.name, p.age, p.disease, p.status,
+                            d.fname || ' ' || d.lname AS doctor, d.specialization, dep.dname AS department, dep.location
+                     FROM patient p JOIN doctor d ON d.doc_id = p.doc_id
+                     JOIN department dep ON dep.dno = d.dno WHERE p.patient_id = ${me}`);
+  if (!rec.rows.length) { body.innerHTML = `<p class="muted">No record found for this account.</p>`; return; }
+  const [id, name, age, disease, status, doctor, spec, dept, loc] = rec.rows[0];
+  const level = status === "Critical" ? "crit" : "ok";
+  const care = query(`SELECT 'Dr. ' || d.fname || ' ' || d.lname AS doctor, d.specialization, t.hours_spent AS hours_of_care
+                      FROM treats t JOIN doctor d ON d.doc_id = t.doc_id WHERE t.patient_id = ${me}`);
+  const wards = query(`SELECT w.ward_name, w.capacity AS free_beds FROM ward w
+                       JOIN doctor d ON d.dno = w.dno JOIN patient p ON p.doc_id = d.doc_id
+                       WHERE p.patient_id = ${me} GROUP BY w.ward_no`);
+  body.innerHTML = `
+    <div class="theory-box">
+      <h4>${name} <span class="pill ${level}">${status}</span></h4>
+      <p class="muted">Patient ID ${id} &middot; Age ${age} &middot; Diagnosis: <strong>${disease}</strong></p>
+      <p class="muted">Treating doctor: <strong>Dr. ${doctor}</strong> (${spec}), ${dept} department, ${loc}.</p>
+    </div>
+    <h3>Treatment history <span class="tag">treats</span></h3>
+    <div class="table-wrap">${tableHtml(care)}</div>
+    <h3>Wards in my department</h3>
+    <div class="table-wrap">${tableHtml(wards)}</div>`;
+  document.getElementById("btnPrintReport").onclick = () => window.print();
 }
 
 /* ---------------- ER MODEL (Exp 1) ---------------- */
@@ -459,6 +489,7 @@ function renderAccess() {
     columns: ["Page / resource", "Administrator", "Doctor", "Patient"],
     rows: [
       ["Dashboard", "Hospital-wide", "Own patients and department", "Own record only"],
+      ["My Report (own diagnosis, doctors, ward)", "No", "No", "Own report only"],
       ["ER / EER Model, Relational Mapping", "Yes", "Yes", "No"],
       ["Schema (DDL)", "Yes", "No", "No"],
       ["Records: add / discharge patients", "All patients", "Own patients only", "No"],
