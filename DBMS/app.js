@@ -167,6 +167,8 @@ document.querySelectorAll(".nav-link").forEach((link) => {
 });
 
 function navigate(page) {
+  const link = document.querySelector(`.nav-link[data-page="${page}"]`);
+  if (link && link.dataset.role && !link.dataset.role.split(",").includes(currentRole)) page = "dashboard";
   document.querySelectorAll(".page").forEach((p) => p.classList.add("hidden"));
   document.getElementById(`page-${page}`).classList.remove("hidden");
   document.querySelectorAll(".nav-link").forEach((l) => l.classList.toggle("active", l.dataset.page === page));
@@ -407,7 +409,8 @@ function renderAccess() {
       ["Dashboard", "✓", "✓", "✓"],
       ["Schema (DDL)", "✓", "-", "-"],
       ["Records (DML - insert/update)", "✓", "✓", "-"],
-      ["Reports (SELECT + aggregates)", "✓", "✓", "✓"],
+      ["ER / EER Model, Relational Mapping", "✓", "✓", "No"],
+      ["Reports (SELECT + aggregates)", "✓", "✓", "No"],
       ["Views & Joins", "✓", "✓", "-"],
       ["SQL Console (raw SQL)", "✓", "-", "-"],
       ["Transactions / ACID demo", "✓", "-", "-"],
