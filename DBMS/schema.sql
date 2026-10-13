@@ -32,7 +32,7 @@ CREATE TABLE patient (
   age         INTEGER,
   disease     TEXT,
   status      TEXT DEFAULT 'Stable',
-  doc_id      INTEGER REFERENCES doctor(doc_id)
+  doc_id      INTEGER NOT NULL REFERENCES doctor(doc_id)
 );
 
 CREATE TABLE treats (

@@ -128,11 +128,7 @@
     <section id="page-dashboard" class="page">
       <div class="crumb">Overview</div>
       <h1 id="dashboardTitle">Administrator Dashboard</h1>
-      <div class="stat-row" id="dashStats"></div>
-      <h3>Ward Occupancy</h3>
-      <div id="wardRisk" class="risk-list"></div>
-      <h3>Department-wise patient summary <span class="tag">SQL view</span></h3>
-      <div id="deptSummaryTable" class="table-wrap"></div>
+      <div id="dashBody"></div>
     </section>
 
     <!-- ER MODEL (Exp 1) -->
@@ -213,6 +209,7 @@
         <button type="submit" class="btn-primary c-blue">INSERT</button>
       </form>
 
+      <div id="raiseBlock">
       <h3>Give a department a raise <span class="tag">UPDATE</span></h3>
       <form id="raiseForm" class="inline-form">
         <select name="dno" id="deptSelect"></select>
@@ -220,17 +217,21 @@
         <button type="submit" class="btn-primary c-blue">UPDATE</button>
       </form>
 
+      </div>
+
       <h3>Discharge a patient <span class="tag">DELETE</span></h3>
       <form id="dischargeForm" class="inline-form">
         <select name="patient_id" id="dischargeSelect"></select>
         <button type="submit" class="btn-primary c-red">DELETE</button>
       </form>
 
-      <h3>All patients <span class="tag">SELECT + JOIN</span></h3>
+      <h3 id="patientsHeading">All patients <span class="tag">SELECT + JOIN</span></h3>
       <div id="patientTable" class="table-wrap"></div>
 
+      <div id="doctorBlock">
       <h3>All doctors <span class="tag">SELECT</span></h3>
       <div id="doctorTable" class="table-wrap"></div>
+      </div>
     </section>
 
     <!-- REPORTS (Exp 5) -->
@@ -369,7 +370,7 @@ GRANT SELECT ON doctor TO patient_role WITH GRANT OPTION;</pre>
       </div>
 
       <div class="acid-grid">
-        <div class="acid-card"><div class="letter">A</div><h4>Atomicity</h4><p>The bed transfer below runs both UPDATEs as one unit. Either both succeed, or neither does, so a ward can never lose a bed without another ward gaining it.</p></div>
+        <div class="acid-card"><div class="letter">A</div><h4>Atomicity</h4><p>The patient transfer below runs both UPDATEs as one unit. Either both succeed, or neither does, so a bed is never freed in one ward without being taken in the other.</p></div>
         <div class="acid-card"><div class="letter">C</div><h4>Consistency</h4><p>The <code>CHECK (salary &gt; 0)</code> constraint from Experiment 3 and foreign keys guarantee the database moves between valid states only.</p></div>
         <div class="acid-card"><div class="letter">I</div><h4>Isolation</h4><p>Concurrent transactions should not see each other's uncommitted changes. SQLite's default is Serializable for a single connection; PostgreSQL defaults to Read Committed.</p></div>
         <div class="acid-card"><div class="letter">D</div><h4>Durability</h4><p>Once COMMIT returns, the change survives a crash. ROLLBACK below demonstrates the opposite: an uncommitted change is fully undone.</p></div>
@@ -389,8 +390,8 @@ GRANT SELECT ON doctor TO patient_role WITH GRANT OPTION;</pre>
 
       <h3>Transfer a patient between wards <span class="tag">atomic</span></h3>
       <pre class="code-block small">BEGIN;
-UPDATE ward SET capacity = capacity - 1 WHERE ward_no = 1;
-UPDATE ward SET capacity = capacity + 1 WHERE ward_no = 5;
+UPDATE ward SET capacity = capacity + 1 WHERE ward_no = 1;
+UPDATE ward SET capacity = capacity - 1 WHERE ward_no = 5;
 COMMIT;</pre>
       <button id="btnTransfer" class="btn-primary c-red">Run transfer (COMMIT)</button>
 
@@ -401,7 +402,7 @@ ROLLBACK;</pre>
       <button id="btnRollback" class="btn-primary c-red">Run delete then ROLLBACK</button>
       <div id="txResult" class="muted small"></div>
 
-      <h3>Ward capacity (live)</h3>
+      <h3>Free beds per ward (live)</h3>
       <div id="wardTable" class="table-wrap"></div>
     </section>
 

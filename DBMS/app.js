@@ -2,6 +2,7 @@
    Role-based UI over a live in-browser SQLite database (sql.js). */
 
 let db = null;
+let SQLLib = null;
 let currentRole = null;
 let currentAccount = null;
 
@@ -10,15 +11,15 @@ const ROLES = {
             accounts: [{ id: "admin", name: "System Administrator", sub: "@admin" }] },
   doctor: { title: "Doctor", icon: "&#128104;&#8205;&#9877;&#65039;",
             accounts: [
-              { id: "doc1", name: "Dr. Asha Mehta", sub: "Cardiology" },
-              { id: "doc2", name: "Dr. Priya Iyer", sub: "Orthopedics" },
+              { id: "doc1", name: "Dr. Asha Mehta", sub: "Cardiology", ref: 1, dno: 101 },
+              { id: "doc2", name: "Dr. Priya Iyer", sub: "Orthopedics", ref: 3, dno: 102 },
             ] },
   patient:{ title: "Patient", icon: "&#128100;",
             accounts: [
-              { id: "p1", name: "A. Shah", sub: "Cardiac ICU" },
-              { id: "p2", name: "R. Nair", sub: "Ortho Ward" },
-              { id: "p3", name: "S. Rao", sub: "Neuro" },
-              { id: "p4", name: "K. Verma", sub: "Pediatric Ward" },
+              { id: "p1", name: "A. Shah", sub: "Cardiac ICU", ref: 1 },
+              { id: "p2", name: "R. Nair", sub: "Ortho Ward", ref: 2 },
+              { id: "p3", name: "S. Rao", sub: "Neuro", ref: 4 },
+              { id: "p4", name: "K. Verma", sub: "Pediatric Ward", ref: 6 },
             ] },
 };
 
@@ -50,7 +51,7 @@ CREATE TABLE patient (
   age         INTEGER,
   disease     TEXT,
   status      TEXT DEFAULT 'Stable',
-  doc_id      INTEGER REFERENCES doctor(doc_id)
+  doc_id      INTEGER NOT NULL REFERENCES doctor(doc_id)
 );
 
 CREATE TABLE treats (
@@ -65,6 +66,7 @@ async function initDb() {
   const SQL = await initSqlJs({
     locateFile: (f) => `https://cdn.jsdelivr.net/npm/sql.js@1.11.0/dist/${f}`,
   });
+  SQLLib = SQL;
   db = new SQL.Database();
   const seedSql = await fetch("schema.sql").then((r) => r.text());
   db.run(seedSql);
@@ -125,7 +127,7 @@ function showAccountScreen(role) {
     )
     .join("");
   document.querySelectorAll(".account-item").forEach((btn) => {
-    btn.addEventListener("click", () => login(role, btn.dataset.id, btn.dataset.name));
+    btn.addEventListener("click", () => login(role, r.accounts.find((x) => x.id === btn.dataset.id)));
   });
   document.getElementById("roleScreen").classList.add("hidden");
   document.getElementById("accountScreen").classList.remove("hidden");
@@ -136,9 +138,10 @@ document.getElementById("backToRoles").addEventListener("click", () => {
   document.getElementById("roleScreen").classList.remove("hidden");
 });
 
-function login(role, id, name) {
+function login(role, account) {
+  const name = account.name;
   currentRole = role;
-  currentAccount = { id, name };
+  currentAccount = account;
   document.getElementById("accountScreen").classList.add("hidden");
   document.getElementById("appShell").classList.remove("hidden");
   document.getElementById("whoami").innerHTML = `<strong>${name}</strong><br><span class="muted">${ROLES[role].title}</span>`;
@@ -155,6 +158,10 @@ function applyRoleVisibility(role) {
   document.querySelectorAll(".nav-link[data-role]").forEach((link) => {
     const allowed = link.dataset.role.split(",");
     link.style.display = allowed.includes(role) ? "" : "none";
+  });
+  document.querySelectorAll(".nav-group").forEach((g) => {
+    const visible = [...g.querySelectorAll(".nav-link")].some((l) => l.style.display !== "none");
+    g.style.display = visible ? "" : "none";
   });
 }
 
@@ -193,36 +200,60 @@ function renderPage(page) {
 }
 
 /* ---------------- DASHBOARD ---------------- */
+function statHtml(items) {
+  return `<div class="stat-row">` + items.map(([n, l, d]) =>
+    `<div class="stat${d ? " danger" : ""}"><div class="num">${n}</div><div class="label">${l}</div></div>`).join("") + `</div>`;
+}
+
+function wardRows(where) {
+  const wards = query(`SELECT ward_name, capacity FROM ward ${where} ORDER BY capacity ASC`);
+  return wards.rows.map(([name, cap]) => {
+    const level = cap <= 6 ? "crit" : cap <= 12 ? "high" : "ok";
+    const label = cap <= 6 ? "Few beds left" : cap <= 12 ? "Filling up" : "Available";
+    return `<div class="risk-row"><span>${name}: ${cap} beds free</span><span class="pill ${level}">${label}</span></div>`;
+  }).join("");
+}
+
 function renderDashboard() {
   document.getElementById("dashboardTitle").textContent = `${ROLES[currentRole].title} Dashboard`;
-  const dept = query("SELECT COUNT(*) FROM department").rows[0][0];
-  const doc = query("SELECT COUNT(*) FROM doctor").rows[0][0];
-  const pat = query("SELECT COUNT(*) FROM patient").rows[0][0];
-  const crit = query("SELECT COUNT(*) FROM patient WHERE status='Critical'").rows[0][0];
-  document.getElementById("dashStats").innerHTML = `
-    <div class="stat"><div class="num">${dept}</div><div class="label">Departments</div></div>
-    <div class="stat"><div class="num">${doc}</div><div class="label">Doctors</div></div>
-    <div class="stat"><div class="num">${pat}</div><div class="label">Patients</div></div>
-    <div class="stat danger"><div class="num">${crit}</div><div class="label">Critical cases</div></div>`;
+  const body = document.getElementById("dashBody");
+  const n = (sql) => query(sql).rows[0][0];
 
-  const wards = query("SELECT ward_name, capacity FROM ward ORDER BY capacity ASC");
-  document.getElementById("wardRisk").innerHTML = wards.rows
-    .map(([name, cap]) => {
-      const level = cap <= 6 ? "crit" : cap <= 12 ? "high" : "ok";
-      const label = cap <= 6 ? "Near full" : cap <= 12 ? "Filling up" : "Available";
-      return `<div class="risk-row"><span>${name}: ${cap} beds free</span><span class="pill ${level}">${label}</span></div>`;
-    })
-    .join("");
-
-  const summary = query(`
-    SELECT d.dname, COUNT(p.patient_id) AS total,
-           SUM(CASE WHEN p.status='Critical' THEN 1 ELSE 0 END) AS critical,
-           SUM(CASE WHEN p.status='Stable' THEN 1 ELSE 0 END) AS stable
-    FROM department d
-    JOIN doctor doc ON doc.dno = d.dno
-    JOIN patient p ON p.doc_id = doc.doc_id
-    GROUP BY d.dname`);
-  document.getElementById("deptSummaryTable").innerHTML = tableHtml(summary);
+  if (currentRole === "admin") {
+    const summary = query(`
+      SELECT d.dname AS department, COUNT(p.patient_id) AS total,
+             SUM(CASE WHEN p.status='Critical' THEN 1 ELSE 0 END) AS critical,
+             SUM(CASE WHEN p.status='Stable' THEN 1 ELSE 0 END) AS stable
+      FROM department d JOIN doctor doc ON doc.dno = d.dno JOIN patient p ON p.doc_id = doc.doc_id
+      GROUP BY d.dname`);
+    body.innerHTML = statHtml([
+      [n("SELECT COUNT(*) FROM department"), "Departments"],
+      [n("SELECT COUNT(*) FROM doctor"), "Doctors"],
+      [n("SELECT COUNT(*) FROM patient"), "Patients"],
+      [n("SELECT COUNT(*) FROM patient WHERE status='Critical'"), "Critical cases", true],
+    ]) + `<h3>Ward occupancy</h3><div class="risk-list">${wardRows("")}</div>
+      <h3>Department-wise patient summary <span class="tag">SQL view</span></h3>
+      <div class="table-wrap">${tableHtml(summary)}</div>`;
+  } else if (currentRole === "doctor") {
+    const me = currentAccount.ref, dno = currentAccount.dno;
+    const mine = query(`SELECT patient_id, name, age, disease, status FROM patient WHERE doc_id = ${me} ORDER BY status, name`);
+    body.innerHTML = statHtml([
+      [n(`SELECT COUNT(*) FROM patient WHERE doc_id = ${me}`), "My patients"],
+      [n(`SELECT COUNT(*) FROM patient WHERE doc_id = ${me} AND status='Critical'`), "My critical cases", true],
+      [n(`SELECT COALESCE(SUM(hours_spent),0) FROM treats WHERE doc_id = ${me}`), "Hours logged"],
+    ]) + `<h3>My patients</h3><div class="table-wrap">${tableHtml(mine)}</div>
+      <h3>Wards in my department</h3><div class="risk-list">${wardRows(`WHERE dno = ${dno}`)}</div>`;
+  } else {
+    const me = currentAccount.ref;
+    const rec = query(`SELECT p.name, p.age, p.disease, p.status,
+                              d.fname || ' ' || d.lname AS doctor, d.specialization, dep.dname AS department
+                       FROM patient p JOIN doctor d ON d.doc_id = p.doc_id
+                       JOIN department dep ON dep.dno = d.dno WHERE p.patient_id = ${me}`);
+    body.innerHTML = rec.rows.length
+      ? `<h3>My record</h3><div class="table-wrap">${tableHtml(rec)}</div>
+         <p class="muted small">You can only see your own record. Other pages are limited to staff.</p>`
+      : `<p class="muted">No record found for this account.</p>`;
+  }
 }
 
 /* ---------------- ER MODEL (Exp 1) ---------------- */
@@ -272,14 +303,26 @@ function renderMapping() {
 function renderDdl() {
   document.getElementById("ddlCode").textContent = DDL_TEXT;
   document.getElementById("btnRunDdl").onclick = () => {
-    document.getElementById("ddlResult").textContent =
-      "Schema already created at load time - DDL statements verified against the live DB without error.";
+    try {
+      const scratch = new SQLLib.Database();
+      scratch.run(DDL_TEXT);
+      const tables = scratch.exec("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name")[0].values.flat();
+      scratch.close();
+      document.getElementById("ddlResult").textContent =
+        "DDL ran without errors on a scratch database. Tables created: " + tables.join(", ") + ". Live data was not touched.";
+    } catch (err) {
+      document.getElementById("ddlResult").textContent = "DDL failed: " + err.message;
+    }
   };
 }
 
 /* ---------------- DML (Exp 4) ---------------- */
 function renderDml() {
-  const docs = query("SELECT doc_id, fname, lname FROM doctor");
+  const isAdmin = currentRole === "admin";
+  const me = currentAccount.ref;
+  const docs = isAdmin
+    ? query("SELECT doc_id, fname, lname FROM doctor")
+    : query(`SELECT doc_id, fname, lname FROM doctor WHERE doc_id = ${me}`);
   document.getElementById("doctorSelect").innerHTML = docs.rows
     .map(([id, f, l]) => `<option value="${id}">Dr. ${f} ${l}</option>`).join("");
 
@@ -287,8 +330,12 @@ function renderDml() {
   document.getElementById("deptSelect").innerHTML = depts.rows
     .map(([id, name]) => `<option value="${id}">${name}</option>`).join("");
 
+  document.getElementById("raiseBlock").style.display = isAdmin ? "" : "none";
+  document.getElementById("doctorBlock").style.display = isAdmin ? "" : "none";
+  document.getElementById("patientsHeading").firstChild.textContent = isAdmin ? "All patients " : "My patients ";
+
   renderPatientTable();
-  renderDoctorTable();
+  if (isAdmin) renderDoctorTable();
   refreshDischargeOptions();
 
   document.getElementById("addPatientForm").onsubmit = (e) => {
@@ -304,6 +351,7 @@ function renderDml() {
 
   document.getElementById("raiseForm").onsubmit = (e) => {
     e.preventDefault();
+    if (!isAdmin) return;
     const f = new FormData(e.target);
     run(`UPDATE doctor SET salary = salary + ${Number(f.get("amount"))} WHERE dno = ${f.get("dno")}`);
     renderDoctorTable();
@@ -312,21 +360,25 @@ function renderDml() {
   document.getElementById("dischargeForm").onsubmit = (e) => {
     e.preventDefault();
     const f = new FormData(e.target);
-    run(`DELETE FROM patient WHERE patient_id = ${f.get("patient_id")}`);
+    const id = Number(f.get("patient_id"));
+    run(`DELETE FROM treats WHERE patient_id = ${id}`);
+    run(`DELETE FROM patient WHERE patient_id = ${id}`);
     renderPatientTable();
     refreshDischargeOptions();
   };
 }
 
 function refreshDischargeOptions() {
-  const patients = query("SELECT patient_id, name FROM patient ORDER BY name");
+  const scope = currentRole === "admin" ? "" : `WHERE doc_id = ${currentAccount.ref}`;
+  const patients = query(`SELECT patient_id, name FROM patient ${scope} ORDER BY name`);
   document.getElementById("dischargeSelect").innerHTML = patients.rows
     .map(([id, name]) => `<option value="${id}">${name}</option>`).join("");
 }
 
 function renderPatientTable() {
   const res = query(`SELECT p.patient_id, p.name, p.age, p.disease, p.status, d.fname || ' ' || d.lname AS doctor
-                      FROM patient p JOIN doctor d ON d.doc_id = p.doc_id ORDER BY p.patient_id`);
+                      FROM patient p JOIN doctor d ON d.doc_id = p.doc_id
+                      ${currentRole === "admin" ? "" : `WHERE p.doc_id = ${currentAccount.ref}`} ORDER BY p.patient_id`);
   document.getElementById("patientTable").innerHTML = tableHtml(res);
 }
 
@@ -406,14 +458,15 @@ function renderAccess() {
   document.getElementById("accessMatrix").innerHTML = tableHtml({
     columns: ["Page / resource", "Administrator", "Doctor", "Patient"],
     rows: [
-      ["Dashboard", "✓", "✓", "✓"],
-      ["Schema (DDL)", "✓", "-", "-"],
-      ["Records (DML - insert/update)", "✓", "✓", "-"],
-      ["ER / EER Model, Relational Mapping", "✓", "✓", "No"],
-      ["Reports (SELECT + aggregates)", "✓", "✓", "No"],
-      ["Views & Joins", "✓", "✓", "-"],
-      ["SQL Console (raw SQL)", "✓", "-", "-"],
-      ["Transactions / ACID demo", "✓", "-", "-"],
+      ["Dashboard", "Hospital-wide", "Own patients and department", "Own record only"],
+      ["ER / EER Model, Relational Mapping", "Yes", "Yes", "No"],
+      ["Schema (DDL)", "Yes", "No", "No"],
+      ["Records: add / discharge patients", "All patients", "Own patients only", "No"],
+      ["Records: salary raise, doctor list", "Yes", "No", "No"],
+      ["Reports (SELECT + aggregates)", "Yes", "Yes", "No"],
+      ["Views & Joins", "Yes", "Yes", "No"],
+      ["Access Control, Indexing, Transactions", "Yes", "No", "No"],
+      ["SQL Console (raw SQL)", "Yes", "No", "No"],
     ],
   });
 }
@@ -446,10 +499,10 @@ function renderTransactions() {
   document.getElementById("btnTransfer").onclick = () => {
     try {
       run("BEGIN;");
-      run("UPDATE ward SET capacity = capacity - 1 WHERE ward_no = 1;");
-      run("UPDATE ward SET capacity = capacity + 1 WHERE ward_no = 5;");
+      run("UPDATE ward SET capacity = capacity + 1 WHERE ward_no = 1;");
+      run("UPDATE ward SET capacity = capacity - 1 WHERE ward_no = 5;");
       run("COMMIT;");
-      document.getElementById("txResult").textContent = "Transaction committed: 1 bed moved from Cardiac ICU to General Ward.";
+      document.getElementById("txResult").textContent = "Transaction committed: 1 patient moved from Cardiac ICU to General Ward (Cardiac ICU +1 free bed, General Ward -1).";
     } catch (e) {
       run("ROLLBACK;");
       document.getElementById("txResult").textContent = "Transaction failed and was rolled back: " + e.message;
@@ -470,7 +523,7 @@ function renderTransactions() {
 }
 
 function renderWardTable() {
-  document.getElementById("wardTable").innerHTML = tableHtml(query("SELECT ward_name, capacity FROM ward ORDER BY ward_no"));
+  document.getElementById("wardTable").innerHTML = tableHtml(query("SELECT ward_name, capacity AS free_beds FROM ward ORDER BY ward_no"));
 }
 
 /* ---------------- SQL CONSOLE ---------------- */
