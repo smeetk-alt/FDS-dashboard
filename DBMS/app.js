@@ -71,6 +71,7 @@ async function initDb() {
   const seedSql = await fetch("schema.sql").then((r) => r.text());
   db.run(seedSql);
   renderHeroStats();
+  updateAccountCounts();
 }
 
 function query(sql, params = []) {
@@ -112,8 +113,31 @@ document.querySelectorAll(".role-card").forEach((card) => {
   card.addEventListener("click", () => showAccountScreen(card.dataset.role));
 });
 
+function loadAccounts(role) {
+  if (role === "doctor") {
+    ROLES.doctor.accounts = query(`SELECT d.doc_id, d.fname, d.lname, dep.dname, d.dno FROM doctor d
+                                   JOIN department dep ON dep.dno = d.dno ORDER BY d.doc_id`).rows
+      .map(([id, f, l, dname, dno]) => ({ id: "doc" + id, name: `Dr. ${f} ${l}`, sub: dname, ref: id, dno }));
+  } else if (role === "patient") {
+    ROLES.patient.accounts = query(`SELECT p.patient_id, p.name, dep.dname FROM patient p
+                                    JOIN doctor d ON d.doc_id = p.doc_id JOIN department dep ON dep.dno = d.dno
+                                    ORDER BY p.patient_id`).rows
+      .map(([id, name, dname]) => ({ id: "p" + id, name, sub: dname, ref: id }));
+  }
+}
+
+function updateAccountCounts() {
+  loadAccounts("doctor"); loadAccounts("patient");
+  const counts = { admin: ROLES.admin.accounts.length, doctor: ROLES.doctor.accounts.length, patient: ROLES.patient.accounts.length };
+  document.querySelectorAll(".role-card").forEach((c) => {
+    const n = counts[c.dataset.role];
+    c.querySelector(".acct-count").textContent = `${n} account${n === 1 ? "" : "s"}`;
+  });
+}
+
 function showAccountScreen(role) {
   currentRole = role;
+  loadAccounts(role);
   const r = ROLES[role];
   document.getElementById("accountRoleIcon").innerHTML = r.icon;
   document.getElementById("accountRoleTitle").textContent = `Welcome, ${r.title}`;
@@ -134,6 +158,7 @@ function showAccountScreen(role) {
 }
 
 document.getElementById("backToRoles").addEventListener("click", () => {
+  updateAccountCounts();
   document.getElementById("accountScreen").classList.add("hidden");
   document.getElementById("roleScreen").classList.remove("hidden");
 });
@@ -151,7 +176,7 @@ function login(role, account) {
 
 document.getElementById("switchAccount").addEventListener("click", () => {
   document.getElementById("appShell").classList.add("hidden");
-  document.getElementById("accountScreen").classList.remove("hidden");
+  showAccountScreen(currentRole);
 });
 
 function applyRoleVisibility(role) {
