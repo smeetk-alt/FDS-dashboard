@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MediTrack - Hospital DBMS Mini Project</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">MediTrack</div>
+  <button id="menuBtn" class="icon-btn" aria-label="Menu">&#9776;</button>
+</header>
+
+<!-- ============ ROLE SELECT SCREEN ============ -->
+<section id="roleScreen" class="screen">
+  <div class="hero">
+    <h1>MediTrack</h1>
+    <p class="muted">Pick an account to log in. Data resets when you refresh.</p>
+
+    <div class="stat-row" id="heroStats"></div>
+
+    <div class="role-grid">
+      <div class="role-card" data-role="admin">
+        <div class="role-icon red">&#9881;</div>
+        <h3>Administrator</h3>
+        <p class="muted">Full access, DB admin, SQL console</p>
+        <p class="muted small">1 account</p>
+        <button class="btn-link">Continue &rarr;</button>
+      </div>
+      <div class="role-card" data-role="doctor">
+        <div class="role-icon amber">&#128104;&#8205;&#9877;&#65039;</div>
+        <h3>Doctor</h3>
+        <p class="muted">Manages patients and treatment records</p>
+        <p class="muted small">2 accounts</p>
+        <button class="btn-link">Continue &rarr;</button>
+      </div>
+      <div class="role-card" data-role="patient">
+        <div class="role-icon teal">&#128100;</div>
+        <h3>Patient</h3>
+        <p class="muted">Views own records and ward status</p>
+        <p class="muted small">4 accounts</p>
+        <button class="btn-link">Continue &rarr;</button>
+      </div>
+    </div>
+
+    <h2 class="section-title">How it works</h2>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-icon">&#127973;</div>
+        <h4>Admit &amp; record</h4>
+        <p class="muted">Doctors log patient data and ward assignments.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-icon">&#128202;</div>
+        <h4>Database reacts</h4>
+        <p class="muted">Constraints, views and triggers keep the data consistent.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-icon">&#128269;</div>
+        <h4>Everyone queries</h4>
+        <p class="muted">Role-based SQL access surfaces the right view for each user.</p>
+      </div>
+    </div>
+    <p class="footer-note">MediTrack - DBMS Mini Project (Experiments 1&ndash;9)</p>
+  </div>
+</section>
+
+<!-- ============ ACCOUNT SELECT (per role) ============ -->
+<section id="accountScreen" class="screen hidden">
+  <div class="hero narrow">
+    <button class="back-link" id="backToRoles">&larr; Back to roles</button>
+    <div class="role-icon lg" id="accountRoleIcon">&#9881;</div>
+    <h1 id="accountRoleTitle">Welcome, Administrator</h1>
+    <p class="muted">Pick an account to log in as.</p>
+    <div id="accountList" class="account-list"></div>
+  </div>
+</section>
+
+<!-- ============ APP SHELL ============ -->
+<div id="appShell" class="app-shell hidden">
+  <nav id="sideNav" class="sidenav">
+    <div class="nav-group g-overview">
+      <div class="nav-section-label">Overview</div>
+      <a href="#dashboard" data-page="dashboard" class="nav-link"><span class="dot"></span>Dashboard</a>
+    </div>
+
+    <div class="nav-group g-design">
+      <div class="nav-section-label">Exp 1&ndash;2 &middot; Design</div>
+      <a href="#ermodel" data-page="ermodel" class="nav-link"><span class="dot"></span>ER / EER Model</a>
+      <a href="#mapping" data-page="mapping" class="nav-link"><span class="dot"></span>Relational Mapping</a>
+    </div>
+
+    <div class="nav-group g-build">
+      <div class="nav-section-label">Exp 3&ndash;4 &middot; Build</div>
+      <a href="#ddl" data-page="ddl" class="nav-link" data-role="admin"><span class="dot"></span>Schema (DDL)</a>
+      <a href="#dml" data-page="dml" class="nav-link" data-role="admin,doctor"><span class="dot"></span>Records (DML)</a>
+    </div>
+
+    <div class="nav-group g-query">
+      <div class="nav-section-label">Exp 5&ndash;6 &middot; Query</div>
+      <a href="#reports" data-page="reports" class="nav-link"><span class="dot"></span>Reports (Aggregates)</a>
+      <a href="#views" data-page="views" class="nav-link" data-role="admin,doctor"><span class="dot"></span>Views &amp; Joins</a>
+    </div>
+
+    <div class="nav-group g-systems">
+      <div class="nav-section-label">Exp 7&ndash;9 &middot; Systems</div>
+      <a href="#access" data-page="access" class="nav-link" data-role="admin"><span class="dot"></span>Access Control</a>
+      <a href="#indexing" data-page="indexing" class="nav-link" data-role="admin"><span class="dot"></span>Indexing</a>
+      <a href="#transactions" data-page="transactions" class="nav-link" data-role="admin"><span class="dot"></span>Transactions (ACID)</a>
+    </div>
+
+    <div class="nav-group g-admin">
+      <div class="nav-section-label">Admin</div>
+      <a href="#sqlconsole" data-page="sqlconsole" class="nav-link" data-role="admin"><span class="dot"></span>SQL Console</a>
+    </div>
+
+    <div class="nav-footer">
+      <div id="whoami"></div>
+      <button id="switchAccount" class="btn-link small">Switch account</button>
+    </div>
+  </nav>
+
+  <main id="pageHost" class="page-host">
+
+    <!-- DASHBOARD -->
+    <section id="page-dashboard" class="page">
+      <div class="crumb">Overview</div>
+      <h1 id="dashboardTitle">Administrator Dashboard</h1>
+      <div class="stat-row" id="dashStats"></div>
+      <h3>Ward Occupancy</h3>
+      <div id="wardRisk" class="risk-list"></div>
+      <h3>Department-wise patient summary <span class="tag">SQL view</span></h3>
+      <div id="deptSummaryTable" class="table-wrap"></div>
+    </section>
+
+    <!-- ER MODEL (Exp 1) -->
+    <section id="page-ermodel" class="page hidden">
+      <div class="crumb">Experiment 1</div>
+      <h1>ER / EER Model</h1>
+      <p class="muted">Entities, relationships and participation constraints for the hospital database, mapped from the classic COMPANY schema (Elmasri &amp; Navathe).</p>
+      <div class="concept-chips c-blue">
+        <span class="concept-chip c-blue">Entity set</span>
+        <span class="concept-chip c-blue">Relationship set</span>
+        <span class="concept-chip c-blue">Weak entity</span>
+        <span class="concept-chip c-blue">Specialization</span>
+        <span class="concept-chip c-blue">Generalization</span>
+        <span class="concept-chip c-blue">Participation constraint</span>
+      </div>
+      <div id="erDiagram" class="er-diagram"></div>
+      <div class="theory-box">
+        <h4>Total vs partial participation</h4>
+        <p class="muted">Every <code>PATIENT</code> must be treated by a <code>DOCTOR</code> (total participation - enforced here with <code>doc_id NOT NULL</code>). A <code>DOCTOR</code> need not treat any patient at a given moment (partial participation).</p>
+      </div>
+    </section>
+
+    <!-- RELATIONAL MAPPING (Exp 2) -->
+    <section id="page-mapping" class="page hidden">
+      <div class="crumb">Experiment 2</div>
+      <h1>EER &rarr; Relational Mapping</h1>
+      <p class="muted">Each entity/relationship set from the ER model reduces to a relation, following the standard mapping rules.</p>
+      <div class="concept-chips">
+        <span class="concept-chip c-blue">Strong entity rule</span>
+        <span class="concept-chip c-blue">1:N mapping</span>
+        <span class="concept-chip c-blue">M:N mapping</span>
+        <span class="concept-chip c-blue">Composite PK</span>
+      </div>
+      <div id="mappingTable"></div>
+    </section>
+
+    <!-- DDL (Exp 3) -->
+    <section id="page-ddl" class="page hidden">
+      <div class="crumb">Experiment 3</div>
+      <h1>Schema &middot; DDL</h1>
+      <p class="muted">CREATE TABLE statements with PRIMARY KEY, FOREIGN KEY, CHECK, NOT NULL, UNIQUE and DEFAULT constraints.</p>
+      <div class="concept-chips c-purple">
+        <span class="concept-chip c-purple">PRIMARY KEY</span>
+        <span class="concept-chip c-purple">FOREIGN KEY</span>
+        <span class="concept-chip c-purple">CHECK</span>
+        <span class="concept-chip c-purple">NOT NULL</span>
+        <span class="concept-chip c-purple">UNIQUE</span>
+        <span class="concept-chip c-purple">DEFAULT</span>
+      </div>
+      <pre id="ddlCode" class="code-block"></pre>
+      <button id="btnRunDdl" class="btn-primary c-blue">Re-run DDL against live DB</button>
+      <div id="ddlResult" class="muted small"></div>
+
+      <div class="theory-box">
+        <h4>TRUNCATE vs DELETE vs DROP</h4>
+        <p class="muted"><code>DELETE</code> removes rows one at a time, is logged, and can be rolled back. <code>TRUNCATE</code> removes all rows at once without row-by-row logging, resetting the table fast. <code>DROP</code> removes the table definition itself, including its schema, not just the data.</p>
+      </div>
+    </section>
+
+    <!-- DML (Exp 4) -->
+    <section id="page-dml" class="page hidden">
+      <div class="crumb">Experiment 4</div>
+      <h1>Records &middot; DML</h1>
+      <p class="muted">INSERT, UPDATE, DELETE, SELECT against the live database.</p>
+      <div class="concept-chips c-purple">
+        <span class="concept-chip c-purple">INSERT</span>
+        <span class="concept-chip c-purple">UPDATE</span>
+        <span class="concept-chip c-purple">DELETE</span>
+        <span class="concept-chip c-purple">SELECT ... WHERE</span>
+      </div>
+
+      <h3>Add a patient <span class="tag">INSERT</span></h3>
+      <form id="addPatientForm" class="inline-form">
+        <input name="name" placeholder="Patient name" required />
+        <input name="age" type="number" placeholder="Age" required />
+        <input name="disease" placeholder="Diagnosis" required />
+        <select name="doc_id" id="doctorSelect"></select>
+        <button type="submit" class="btn-primary c-blue">INSERT</button>
+      </form>
+
+      <h3>Give a department a raise <span class="tag">UPDATE</span></h3>
+      <form id="raiseForm" class="inline-form">
+        <select name="dno" id="deptSelect"></select>
+        <input name="amount" type="number" placeholder="Amount" value="10000" required />
+        <button type="submit" class="btn-primary c-blue">UPDATE</button>
+      </form>
+
+      <h3>Discharge a patient <span class="tag">DELETE</span></h3>
+      <form id="dischargeForm" class="inline-form">
+        <select name="patient_id" id="dischargeSelect"></select>
+        <button type="submit" class="btn-primary c-red">DELETE</button>
+      </form>
+
+      <h3>All patients <span class="tag">SELECT + JOIN</span></h3>
+      <div id="patientTable" class="table-wrap"></div>
+
+      <h3>All doctors <span class="tag">SELECT</span></h3>
+      <div id="doctorTable" class="table-wrap"></div>
+    </section>
+
+    <!-- REPORTS (Exp 5) -->
+    <section id="page-reports" class="page hidden">
+      <div class="crumb">Experiment 5</div>
+      <h1>Reports &middot; Aggregates</h1>
+      <p class="muted">GROUP BY, HAVING, ORDER BY and LIKE pattern matching.</p>
+      <div class="concept-chips c-amber">
+        <span class="concept-chip c-amber">COUNT / AVG / SUM</span>
+        <span class="concept-chip c-amber">GROUP BY</span>
+        <span class="concept-chip c-amber">HAVING</span>
+        <span class="concept-chip c-amber">ORDER BY</span>
+        <span class="concept-chip c-amber">LIKE %_</span>
+      </div>
+      <div class="theory-box">
+        <h4>WHERE vs HAVING</h4>
+        <p class="muted"><code>WHERE</code> filters individual rows before grouping. <code>HAVING</code> filters groups after <code>GROUP BY</code> has produced them, so it can reference aggregate results like <code>COUNT(*)</code> that <code>WHERE</code> cannot see.</p>
+      </div>
+      <div class="query-buttons" id="reportButtons"></div>
+      <h3>Result</h3>
+      <pre id="reportSql" class="code-block small"></pre>
+      <div id="reportResult" class="table-wrap"></div>
+    </section>
+
+    <!-- VIEWS & JOINS (Exp 6) -->
+    <section id="page-views" class="page hidden">
+      <div class="crumb">Experiment 6</div>
+      <h1>Views, Joins &amp; Nested Queries</h1>
+      <p class="muted">CREATE VIEW, INNER/LEFT JOIN and subqueries with IN / EXISTS.</p>
+      <div class="concept-chips c-amber">
+        <span class="concept-chip c-amber">CREATE VIEW</span>
+        <span class="concept-chip c-amber">INNER JOIN</span>
+        <span class="concept-chip c-amber">LEFT JOIN</span>
+        <span class="concept-chip c-amber">Subquery IN</span>
+        <span class="concept-chip c-amber">EXISTS</span>
+      </div>
+      <div class="theory-box">
+        <h4>Updating through a view</h4>
+        <p class="muted">A view is a stored query, not stored data. Updating through a view that joins multiple tables or uses aggregates is ambiguous (which base table does the change belong to?), so most engines restrict updatable views to simple single-table projections.</p>
+      </div>
+      <div class="query-buttons" id="viewButtons"></div>
+      <h3>Result</h3>
+      <pre id="viewSql" class="code-block small"></pre>
+      <div id="viewResult" class="table-wrap"></div>
+    </section>
+
+    <!-- ACCESS CONTROL (Exp 7) -->
+    <section id="page-access" class="page hidden">
+      <div class="crumb">Experiment 7</div>
+      <h1>Access Control</h1>
+      <p class="muted">RBAC / DAC simulation - MediTrack's own navigation enforces this: compare what Admin, Doctor and Patient can each see.</p>
+      <div class="concept-chips c-red">
+        <span class="concept-chip c-red">RBAC</span>
+        <span class="concept-chip c-red">DAC</span>
+        <span class="concept-chip c-red">MAC</span>
+        <span class="concept-chip c-red">GRANT / REVOKE</span>
+      </div>
+
+      <div class="acid-grid">
+        <div class="acid-card">
+          <div class="letter">R</div>
+          <h4>RBAC</h4>
+          <p>Role-Based Access Control. Permissions attach to a role (Admin, Doctor, Patient), and users inherit whatever their assigned role can do. This is exactly how MediTrack's own sidebar works.</p>
+        </div>
+        <div class="acid-card">
+          <div class="letter">D</div>
+          <h4>DAC</h4>
+          <p>Discretionary Access Control. The owner of an object grants or revokes privileges directly on it with <code>GRANT</code> / <code>REVOKE</code>, optionally letting the grantee re-grant it with <code>WITH GRANT OPTION</code>.</p>
+        </div>
+        <div class="acid-card">
+          <div class="letter">M</div>
+          <h4>MAC</h4>
+          <p>Mandatory Access Control. A central authority assigns a classification level to data and a clearance level to users; access is allowed only when clearance meets or exceeds classification, regardless of ownership.</p>
+        </div>
+      </div>
+
+      <h3>Role &rarr; page access matrix</h3>
+      <div id="accessMatrix" class="table-wrap"></div>
+      <h3>Equivalent SQL (DAC)</h3>
+      <pre class="code-block small">GRANT SELECT, INSERT, UPDATE ON patient TO doctor_role;
+GRANT SELECT ON patient TO patient_role;
+REVOKE UPDATE ON patient FROM patient_role;
+GRANT SELECT ON doctor TO patient_role WITH GRANT OPTION;</pre>
+      <div class="theory-box">
+        <h4>Access Control List vs Access Control Matrix</h4>
+        <p class="muted">An <strong>Access Control List (ACL)</strong> is stored per object: each table keeps its own list of which roles can do what to it. An <strong>Access Control Matrix</strong> is the conceptual whole-system view: rows are subjects (roles/users), columns are objects (tables/views), and each cell is the set of permitted operations. ACLs are one efficient way to store that matrix's columns.</p>
+      </div>
+    </section>
+
+    <!-- INDEXING (Exp 8) -->
+    <section id="page-indexing" class="page hidden">
+      <div class="crumb">Experiment 8</div>
+      <h1>Indexing &amp; Query Plans</h1>
+      <p class="muted">EXPLAIN QUERY PLAN before and after creating an index on <code>patient.disease</code>.</p>
+      <div class="concept-chips c-red">
+        <span class="concept-chip c-red">Query optimizer</span>
+        <span class="concept-chip c-red">B-tree index</span>
+        <span class="concept-chip c-red">EXPLAIN</span>
+        <span class="concept-chip c-red">Cost estimation</span>
+      </div>
+
+      <h3>Steps of query optimization</h3>
+      <ol class="step-list">
+        <li>Parse the SQL into a relational-algebra expression tree.</li>
+        <li>Apply equivalence rules (push selections down, reorder joins) to generate alternative plan trees.</li>
+        <li>Estimate the cost of each plan using table statistics (row counts, index availability, I/O and CPU cost).</li>
+        <li>Choose the lowest-estimated-cost plan and hand it to the execution engine.</li>
+      </ol>
+
+      <h3>1. Baseline <span class="tag">full table scan</span></h3>
+      <button id="btnExplainBefore" class="btn-primary c-red">Run EXPLAIN (no index)</button>
+      <pre id="planBefore" class="code-block small"></pre>
+
+      <h3>2. Add an index <span class="tag">DDL</span></h3>
+      <button id="btnCreateIndex" class="btn-primary c-red">CREATE INDEX idx_disease ON patient(disease)</button>
+
+      <h3>3. Re-check the plan <span class="tag">index seek</span></h3>
+      <button id="btnExplainAfter" class="btn-primary c-red">Run EXPLAIN (indexed)</button>
+      <pre id="planAfter" class="code-block small"></pre>
+      <div class="theory-box">
+        <h4>Reading the plan</h4>
+        <p class="muted">Before the index, the plan says <code>SCAN patient</code>, meaning every row is checked. After <code>CREATE INDEX</code>, SQLite's planner switches to <code>SEARCH patient USING INDEX idx_disease</code>, jumping straight to matching rows via a B-tree lookup instead of scanning the whole table.</p>
+      </div>
+    </section>
+
+    <!-- TRANSACTIONS (Exp 9) -->
+    <section id="page-transactions" class="page hidden">
+      <div class="crumb">Experiment 9</div>
+      <h1>Transactions &amp; ACID</h1>
+      <p class="muted">BEGIN / COMMIT / ROLLBACK, demonstrated on a ward-transfer.</p>
+      <div class="concept-chips c-red">
+        <span class="concept-chip c-red">BEGIN</span>
+        <span class="concept-chip c-red">COMMIT</span>
+        <span class="concept-chip c-red">ROLLBACK</span>
+        <span class="concept-chip c-red">Isolation level</span>
+      </div>
+
+      <div class="acid-grid">
+        <div class="acid-card"><div class="letter">A</div><h4>Atomicity</h4><p>The bed transfer below runs both UPDATEs as one unit. Either both succeed, or neither does, so a ward can never lose a bed without another ward gaining it.</p></div>
+        <div class="acid-card"><div class="letter">C</div><h4>Consistency</h4><p>The <code>CHECK (salary &gt; 0)</code> constraint from Experiment 3 and foreign keys guarantee the database moves between valid states only.</p></div>
+        <div class="acid-card"><div class="letter">I</div><h4>Isolation</h4><p>Concurrent transactions should not see each other's uncommitted changes. SQLite's default is Serializable for a single connection; PostgreSQL defaults to Read Committed.</p></div>
+        <div class="acid-card"><div class="letter">D</div><h4>Durability</h4><p>Once COMMIT returns, the change survives a crash. ROLLBACK below demonstrates the opposite: an uncommitted change is fully undone.</p></div>
+      </div>
+
+      <h3>Isolation levels (PostgreSQL)</h3>
+      <div class="table-wrap">
+        <table class="iso-table">
+          <thead><tr><th>Level</th><th>Dirty read</th><th>Non-repeatable read</th><th>Phantom read</th></tr></thead>
+          <tbody>
+            <tr><td>Read Committed (default)</td><td>No</td><td>Possible</td><td>Possible</td></tr>
+            <tr><td>Repeatable Read</td><td>No</td><td>No</td><td>Possible</td></tr>
+            <tr><td>Serializable</td><td>No</td><td>No</td><td>No (fails with serialization_failure instead)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Transfer a patient between wards <span class="tag">atomic</span></h3>
+      <pre class="code-block small">BEGIN;
+UPDATE ward SET capacity = capacity - 1 WHERE ward_no = 1;
+UPDATE ward SET capacity = capacity + 1 WHERE ward_no = 5;
+COMMIT;</pre>
+      <button id="btnTransfer" class="btn-primary c-red">Run transfer (COMMIT)</button>
+
+      <h3>Rollback demo <span class="tag">durability check</span></h3>
+      <pre class="code-block small">BEGIN;
+DELETE FROM patient WHERE name = 'A. Shah';
+ROLLBACK;</pre>
+      <button id="btnRollback" class="btn-primary c-red">Run delete then ROLLBACK</button>
+      <div id="txResult" class="muted small"></div>
+
+      <h3>Ward capacity (live)</h3>
+      <div id="wardTable" class="table-wrap"></div>
+    </section>
+
+    <!-- SQL CONSOLE -->
+    <section id="page-sqlconsole" class="page hidden">
+      <div class="crumb">Admin</div>
+      <h1>SQL Console</h1>
+      <p class="muted">Run any SQL against the in-browser SQLite database.</p>
+      <div class="query-buttons" id="consoleButtons"></div>
+      <textarea id="sqlInput" rows="4" placeholder="SELECT * FROM patient;"></textarea>
+      <button id="btnRunSql" class="btn-primary">Run</button>
+      <div id="sqlConsoleResult" class="table-wrap"></div>
+    </section>
+
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sql.js@1.11.0/dist/sql-wasm.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
