@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HeatSense - Data Structures Mini Project</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">HeatSense</div>
+  <button id="menuBtn" class="icon-btn" aria-label="Menu">&#9776;</button>
+</header>
+
+<!-- ============ LANDING SCREEN ============ -->
+<section id="landingScreen" class="screen">
+  <div class="hero">
+    <span class="eyebrow">Weather Heatwave Detection</span>
+    <h1>HeatSense</h1>
+    <p class="muted">A Data Structures mini project: 8 experiments, one running heatwave-monitoring case study. Click in to explore.</p>
+
+    <div class="stat-row" id="heroStats"></div>
+
+    <button id="enterBtn" class="btn-primary" style="font-size:15px;padding:12px 28px;">Enter dashboard &rarr;</button>
+
+    <h2 class="section-title">What's inside</h2>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-icon">&#128202;</div>
+        <h4>8 live data structures</h4>
+        <p class="muted">Arrays, linked lists, stacks, queues, BST, graphs, sorting and hashing, each driving a real part of a heatwave monitoring system.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-icon">&#9889;</div>
+        <h4>Interactive, not just slides</h4>
+        <p class="muted">Insert a station, push an alert, run BFS from an epicentre region, every operation runs live in your browser.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-icon">&#128196;</div>
+        <h4>Real C programs included</h4>
+        <p class="muted">Each tab's JS demo mirrors an actual, downloadable C program matching the lab's required function signatures.</p>
+      </div>
+    </div>
+    <p class="footer-note">HeatSense - Data Structures Mini Project (Experiments 1-8) &middot; AI use case: Weather Heatwave Detection</p>
+  </div>
+</section>
+
+<!-- ============ APP SHELL ============ -->
+<div id="appShell" class="app-shell hidden">
+  <nav id="sideNav" class="sidenav">
+    <div class="nav-group g-arr">
+      <div class="nav-section-label">Exp 1 &middot; Foundations</div>
+      <a href="#registry" data-page="registry" class="nav-link"><span class="dot"></span>Station Registry</a>
+    </div>
+
+    <div class="nav-group g-lin">
+      <div class="nav-section-label">Exp 2&ndash;4 &middot; Linear structures</div>
+      <a href="#alertlog" data-page="alertlog" class="nav-link"><span class="dot"></span>Alert Log (SLL)</a>
+      <a href="#stack" data-page="stack" class="nav-link"><span class="dot"></span>Heat Index Stack</a>
+      <a href="#queue" data-page="queue" class="nav-link"><span class="dot"></span>Dispatch Queue</a>
+    </div>
+
+    <div class="nav-group g-tree">
+      <div class="nav-section-label">Exp 5&ndash;6 &middot; Nonlinear structures</div>
+      <a href="#bst" data-page="bst" class="nav-link"><span class="dot"></span>Station Index (BST)</a>
+      <a href="#graph" data-page="graph" class="nav-link"><span class="dot"></span>Region Network (BFS)</a>
+    </div>
+
+    <div class="nav-group g-adv">
+      <div class="nav-section-label">Exp 7&ndash;8 &middot; Algorithms</div>
+      <a href="#sortsearch" data-page="sortsearch" class="nav-link"><span class="dot"></span>Sort &amp; Search</a>
+      <a href="#hashtable" data-page="hashtable" class="nav-link"><span class="dot"></span>Station Hash Table</a>
+    </div>
+
+    <div class="nav-footer">
+      <button id="backToLanding" class="btn-link small">&larr; Back to landing</button>
+    </div>
+  </nav>
+
+  <main id="pageHost" class="page-host">
+
+    <!-- EXP 1: STATION REGISTRY -->
+    <section id="page-registry" class="page">
+      <div class="crumb">Experiment 1</div>
+      <h1>Station Registry</h1>
+      <p class="muted">Arrays, array of structures and pointers: a fixed-size list of weather stations, matching the lab's roll-call-list pattern.</p>
+      <div class="concept-chips">
+        <span class="concept-chip">struct Station</span>
+        <span class="concept-chip">array of structs</span>
+        <span class="concept-chip">pointer return</span>
+      </div>
+
+      <h3>Insert a station</h3>
+      <form id="registryForm" class="inline-form">
+        <input name="id" type="number" placeholder="Station ID" required />
+        <input name="name" placeholder="Station name" required />
+        <input name="temp" type="number" step="0.1" placeholder="Temp (C)" required />
+        <button type="submit" class="btn-primary">insertLast()</button>
+      </form>
+      <div class="query-buttons">
+        <button id="btnDeleteLast">deleteLast()</button>
+      </div>
+
+      <h3>Search a station</h3>
+      <form id="searchForm" class="inline-form">
+        <input name="id" type="number" placeholder="Station ID" required />
+        <button type="submit" class="btn-primary c-blue">search()</button>
+      </form>
+      <div id="searchResult" class="muted small" style="margin-bottom:16px"></div>
+
+      <h3>display()</h3>
+      <div id="registryTable" class="table-wrap"></div>
+
+      <div class="theory-box">
+        <h4>Why arrays here</h4>
+        <p class="muted">A fixed-capacity registry (here capped at 50 stations, matching <code>#define MAX 50</code> in the C source) is the simplest structure: O(1) access by position, O(n) search by station ID, and insert/delete are restricted to the last slot to keep the operation O(1) rather than shifting the whole array.</p>
+      </div>
+      <h3>C source</h3>
+      <pre id="registryCode" class="code-block small"></pre>
+      <div class="download-row"><a class="download-link" href="c_programs/exp1_station_registry.c" download>&#8595; exp1_station_registry.c</a></div>
+    </section>
+
+    <!-- EXP 2: ALERT LOG (SLL) -->
+    <section id="page-alertlog" class="page hidden">
+      <div class="crumb">Experiment 2</div>
+      <h1>Alert Log &middot; Singly Linked List</h1>
+      <p class="muted">A chronological log of heatwave advisories. Insert at begin, insert after an existing alert, delete the node before an existing alert.</p>
+      <div class="concept-chips c-blue">
+        <span class="concept-chip c-blue">insertBegin()</span>
+        <span class="concept-chip c-blue">insertAfter()</span>
+        <span class="concept-chip c-blue">deleteBefore()</span>
+      </div>
+
+      <h3>Insert at begin</h3>
+      <form id="sllInsertBeginForm" class="inline-form">
+        <input name="id" type="number" placeholder="Alert ID" required />
+        <input name="region" placeholder="Region" required />
+        <button type="submit" class="btn-primary c-blue">insertBegin()</button>
+      </form>
+
+      <h3>Insert after an existing alert</h3>
+      <form id="sllInsertAfterForm" class="inline-form">
+        <input name="id" type="number" placeholder="New Alert ID" required />
+        <input name="region" placeholder="Region" required />
+        <select name="existing" id="sllExistingSelect1"></select>
+        <button type="submit" class="btn-primary c-blue">insertAfter()</button>
+      </form>
+
+      <h3>Delete the node before an existing alert</h3>
+      <form id="sllDeleteBeforeForm" class="inline-form">
+        <select name="existing" id="sllExistingSelect2"></select>
+        <button type="submit" class="btn-primary c-red">deleteBefore()</button>
+      </form>
+      <div id="sllResult" class="muted small" style="margin-bottom:16px"></div>
+
+      <h3>display() - the chain</h3>
+      <div id="sllViz" class="viz-row"></div>
+
+      <div class="theory-box">
+        <h4>deleteBefore() is the interesting case</h4>
+        <p class="muted">Unlike a normal "delete by value," this walks two pointers (<code>prev</code>, <code>cur</code>) so that when <code>cur-&gt;next</code> matches the target, <code>cur</code> itself (the node <em>before</em> it) is the one unlinked, exactly as the lab's algorithm specifies.</p>
+      </div>
+      <h3>C source</h3>
+      <pre id="sllCode" class="code-block small"></pre>
+      <div class="download-row"><a class="download-link" href="c_programs/exp2_alert_log_sll.c" download>&#8595; exp2_alert_log_sll.c</a></div>
+    </section>
+
+    <!-- EXP 3: STACK / INFIX-POSTFIX -->
+    <section id="page-stack" class="page hidden">
+      <div class="crumb">Experiment 3</div>
+      <h1>Heat Index Stack &middot; Infix to Postfix</h1>
+      <p class="muted">A dynamic stack (backed by a linked list) used to convert an infix heat-index formula to postfix.</p>
+      <div class="concept-chips c-blue">
+        <span class="concept-chip c-blue">push()</span>
+        <span class="concept-chip c-blue">pop()</span>
+        <span class="concept-chip c-blue">peek()</span>
+        <span class="concept-chip c-blue">precedence()</span>
+      </div>
+
+      <h3>Convert an expression</h3>
+      <form id="infixForm" class="inline-form">
+        <input name="expr" placeholder="e.g. (T*2-H*3)/(T-H)" value="(T*2-H*3)/(T-H)" style="min-width:260px" />
+        <button type="submit" class="btn-primary c-blue">infixToPostfix()</button>
+      </form>
+
+      <h3>Stack trace</h3>
+      <div id="stackTrace" class="table-wrap"></div>
+
+      <div class="theory-box">
+        <h4>Why postfix</h4>
+        <p class="muted">Postfix notation needs no parentheses and no operator-precedence lookup at evaluation time, each token is either pushed (operand) or immediately applied to the top two stack values (operator), which is exactly how a calculator or formula engine evaluates the heat-index expression at runtime.</p>
+      </div>
+      <h3>C source</h3>
+      <pre id="stackCode" class="code-block small"></pre>
+      <div class="download-row"><a class="download-link" href="c_programs/exp3_heatindex_stack.c" download>&#8595; exp3_heatindex_stack.c</a></div>
+    </section>
+
+    <!-- EXP 4: CIRCULAR QUEUE -->
+    <section id="page-queue" class="page hidden">
+      <div class="crumb">Experiment 4</div>
+      <h1>Dispatch Queue &middot; Static Circular Queue</h1>
+      <p class="muted">A fixed-size (5-slot) circular queue of alerts waiting to be dispatched to field response teams, FIFO order, counter method.</p>
+      <div class="concept-chips c-blue">
+        <span class="concept-chip c-blue">enqueue()</span>
+        <span class="concept-chip c-blue">dequeue()</span>
+        <span class="concept-chip c-blue">(front+1)%SIZE</span>
+      </div>
+
+      <form id="enqueueForm" class="inline-form">
+        <input name="id" type="number" placeholder="Alert ID" required />
+        <button type="submit" class="btn-primary c-blue">enqueue()</button>
+      </form>
+      <div class="query-buttons">
+        <button id="btnDequeue">dequeue()</button>
+      </div>
+      <div id="queueResult" class="muted small" style="margin-bottom:16px"></div>
+
+      <h3>Circular buffer (5 slots)</h3>
+      <div id="queueViz" class="viz-row"></div>
+      <p class="muted small">front = <span id="qFront">0</span>, rear = <span id="qRear">0</span>, count = <span id="qCount">0</span> / 5</p>
+
+      <div class="theory-box">
+        <h4>Counter method</h4>
+        <p class="muted">Rather than reserving an empty slot to tell "full" from "empty", this implementation keeps an explicit <code>count</code>. Both <code>front</code> and <code>rear</code> wrap around with <code>(index + 1) % SIZE</code>, so the 5 slots are reused indefinitely instead of a plain array that would run out of room after 5 dispatches.</p>
+      </div>
+      <h3>C source</h3>
+      <pre id="queueCode" class="code-block small"></pre>
+      <div class="download-row"><a class="download-link" href="c_programs/exp4_dispatch_queue.c" download>&#8595; exp4_dispatch_queue.c</a></div>
+    </section>
+
+    <!-- EXP 5: BST -->
+    <section id="page-bst" class="page hidden">
+      <div class="crumb">Experiment 5</div>
+      <h1>Station Index &middot; Binary Search Tree</h1>
+      <p class="muted">Stations indexed by temperature for fast insert/search/delete and a sorted (inorder) listing.</p>
+      <div class="concept-chips c-purple">
+        <span class="concept-chip c-purple">insert()</span>
+        <span class="concept-chip c-purple">search()</span>
+        <span class="concept-chip c-purple">deleteNode()</span>
+        <span class="concept-chip c-purple">inorder</span>
+      </div>
+
+      <form id="bstInsertForm" class="inline-form">
+        <input name="temp" type="number" step="0.1" placeholder="Temperature" required />
+        <button type="submit" class="btn-primary c-purple">insert()</button>
+      </form>
+      <form id="bstSearchForm" class="inline-form">
+        <input name="temp" type="number" step="0.1" placeholder="Temperature" required />
+        <button type="submit" class="btn-primary c-purple">search()</button>
+      </form>
+      <form id="bstDeleteForm" class="inline-form">
+        <input name="temp" type="number" step="0.1" placeholder="Temperature" required />
+        <button type="submit" class="btn-primary c-red">deleteNode()</button>
+      </form>
+      <div id="bstResult" class="muted small" style="margin-bottom:16px"></div>
+
+      <h3>Tree (levels, top to bottom)</h3>
+      <div id="bstViz"></div>
+
+      <h3>displayInorder() - sorted readings</h3>
+      <div id="bstInorder" class="viz-row"></div>
+
+      <div class="theory-box">
+        <h4>BST property</h4>
+        <p class="muted">Every left subtree holds temperatures strictly less than its parent, every right subtree strictly greater, so an inorder traversal always visits nodes in sorted order without any separate sort step, and search/insert/delete run in O(log n) on a balanced tree.</p>
+      </div>
+      <h3>C source</h3>
+      <pre id="bstCode" class="code-block small"></pre>
+      <div class="download-row"><a class="download-link" href="c_programs/exp5_station_bst.c" download>&#8595; exp5_station_bst.c</a></div>
+    </section>
+
+    <!-- EXP 6: GRAPH BFS -->
+    <section id="page-graph" class="page hidden">
+      <div class="crumb">Experiment 6</div>
+      <h1>Region Network &middot; Graph Traversal (BFS)</h1>
+      <p class="muted">6 districts connected into a network. BFS from an epicentre region shows the order a heatwave advisory would spread outward.</p>
+      <div class="concept-chips c-purple">
+        <span class="concept-chip c-purple">adjacency matrix</span>
+        <span class="concept-chip c-purple">addQueue / deleteQueue</span>
+        <span class="concept-chip c-purple">visited[]</span>
+      </div>
+
+      <form id="bfsForm" class="inline-form">
+        <select name="start" id="bfsStartSelect"></select>
+        <button type="submit" class="btn-primary c-purple">bfs(start)</button>
+      </form>
+
+      <h3>Region network</h3>
+      <div id="graphViz" class="table-wrap"></div>
+
+      <h3>BFS order</h3>
+      <div id="bfsOrder" class="viz-row"></div>
+
+      <div class="theory-box">
+        <h4>Why BFS for advisory spread</h4>
+        <p class="muted">BFS visits all directly-adjacent regions before moving further out, exactly matching how a heatwave advisory would reasonably propagate ring by ring through neighbouring districts, rather than DFS's deep-first behaviour which would tunnel far from the epicentre before covering its immediate neighbours.</p>
+      </div>
+      <h3>C source</h3>
+      <pre id="graphCode" class="code-block small"></pre>
+      <div class="download-row"><a class="download-link" href="c_programs/exp6_region_network_bfs.c" download>&#8595; exp6_region_network_bfs.c</a></div>
+    </section>
+
+    <!-- EXP 7: SORT + BINARY SEARCH -->
+    <section id="page-sortsearch" class="page hidden">
+      <div class="crumb">Experiment 7</div>
+      <h1>Historical Records &middot; Sort &amp; Binary Search</h1>
+      <p class="muted">Historical daily max-temperatures, sorted with quicksort, then searched with binary search.</p>
+      <div class="concept-chips c-red">
+        <span class="concept-chip c-red">quickSort()</span>
+        <span class="concept-chip c-red">binarySearch()</span>
+      </div>
+
+      <button id="btnResortRecords" class="btn-primary c-red">Generate new random records + quickSort()</button>
+      <h3>Sorted records</h3>
+      <div id="recordsViz" class="viz-row"></div>
+
+      <form id="searchRecordForm" class="inline-form">
+        <input name="temp" type="number" step="0.1" placeholder="Temperature to find" required />
+        <button type="submit" class="btn-primary c-red">binarySearch()</button>
+      </form>
+      <div id="searchRecordResult" class="muted small" style="margin-bottom:16px"></div>
+
+      <div class="theory-box">
+        <h4>Why sort first</h4>
+        <p class="muted">Binary search only works on a sorted sequence: each comparison with the middle element halves the remaining search space, giving O(log n) lookups instead of linear search's O(n); the one-time O(n log n) quicksort pays for itself over many repeated searches.</p>
+      </div>
+      <h3>C source</h3>
+      <pre id="sortCode" class="code-block small"></pre>
+      <div class="download-row"><a class="download-link" href="c_programs/exp7_history_sort_search.c" download>&#8595; exp7_history_sort_search.c</a></div>
+    </section>
+
+    <!-- EXP 8: HASH TABLE -->
+    <section id="page-hashtable" class="page hidden">
+      <div class="crumb">Experiment 8</div>
+      <h1>Station Hash Table &middot; Dictionary via Circular Array</h1>
+      <p class="muted">station_id &rarr; temperature, hashed with <code>key % SIZE</code> and linear probing for collisions, over a 10-slot circular array.</p>
+      <div class="concept-chips c-red">
+        <span class="concept-chip c-red">hashCode()</span>
+        <span class="concept-chip c-red">linear probing</span>
+        <span class="concept-chip c-red">tombstone delete</span>
+      </div>
+
+      <form id="hashInsertForm" class="inline-form">
+        <input name="key" type="number" placeholder="Station ID (key)" required />
+        <input name="data" type="number" step="0.1" placeholder="Temp (C)" required />
+        <button type="submit" class="btn-primary c-red">insert()</button>
+      </form>
+      <form id="hashSearchForm" class="inline-form">
+        <input name="key" type="number" placeholder="Station ID" required />
+        <button type="submit" class="btn-primary c-red">search()</button>
+      </form>
+      <form id="hashDeleteForm" class="inline-form">
+        <input name="key" type="number" placeholder="Station ID" required />
+        <button type="submit" class="btn-primary c-red">deleteItem()</button>
+      </form>
+      <div id="hashResult" class="muted small" style="margin-bottom:16px"></div>
+
+      <h3>Hash table (10 slots)</h3>
+      <div id="hashViz" class="viz-row"></div>
+
+      <div class="theory-box">
+        <h4>Collision example</h4>
+        <p class="muted">Station 6 and station 16 both hash to index 6 (<code>6 % 10 = 6</code>, <code>16 % 10 = 6</code>). The second insert probes forward to the next empty slot; search and delete follow the exact same probe sequence so they still find it. A deleted slot is marked with a tombstone rather than emptied outright, so later searches don't stop early and miss keys stored past it.</p>
+      </div>
+      <h3>C source</h3>
+      <pre id="hashCode" class="code-block small"></pre>
+      <div class="download-row"><a class="download-link" href="c_programs/exp8_station_hashtable.c" download>&#8595; exp8_station_hashtable.c</a></div>
+    </section>
+
+  </main>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
