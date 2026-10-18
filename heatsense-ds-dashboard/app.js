@@ -19,6 +19,7 @@ document.querySelectorAll(".nav-link").forEach((link) => {
 });
 
 function navigate(page) {
+  T.setPage(page);
   document.querySelectorAll(".page").forEach((p) => p.classList.add("hidden"));
   document.getElementById(`page-${page}`).classList.remove("hidden");
   document.querySelectorAll(".nav-link").forEach((l) => l.classList.toggle("active", l.dataset.page === page));
@@ -78,18 +79,26 @@ document.getElementById("registryForm").addEventListener("submit", (e) => {
   e.preventDefault();
   const f = new FormData(e.target);
   if (registry.length >= MAX_STATIONS) { alert("Registry full (MAX 50)."); return; }
-  registry.push({ id: Number(f.get("id")), name: f.get("name"), temp: Number(f.get("temp")) });
+  const newStation = { id: Number(f.get("id")), name: f.get("name"), temp: Number(f.get("temp")) };
+  registry.push(newStation);
+  T.step(`insert ${newStation.name} at index ${registry.length - 1} (one write, no shifting)`);
   e.target.reset();
   renderRegistry();
 });
 document.getElementById("btnDeleteLast").addEventListener("click", () => {
-  registry.pop();
+  const removed = registry.pop();
+  if (removed) T.step(`delete last: ${removed.name} (count decremented, slot reused later)`);
   renderRegistry();
 });
 document.getElementById("searchForm").addEventListener("submit", (e) => {
   e.preventDefault();
   const id = Number(new FormData(e.target).get("id"));
-  const found = registry.find((s) => s.id === id);
+  let found = null;
+  for (const s of registry) {
+    T.count("comparisons");
+    if (s.id === id) { found = s; break; }
+  }
+  T.step(`search ID ${id}: ${found ? "found " + found.name : "not found after " + registry.length + " comparisons"}`);
   document.getElementById("searchResult").textContent = found
     ? `Found: ${found.name}, ${found.temp.toFixed(1)}C`
     : "Station not found.";
@@ -102,12 +111,14 @@ let sllHead = null; // { id, region, next }
 
 function sllInsertBegin(id, region) {
   sllHead = { id, region, next: sllHead };
+  T.step(`insert ${id} at begin: new.next = old head, head = new (O(1))`);
 }
 function sllInsertAfter(id, region, existingId) {
   let p = sllHead;
-  while (p && p.id !== existingId) p = p.next;
+  while (p && p.id !== existingId) { T.count("traversal steps"); p = p.next; }
   if (!p) { document.getElementById("sllResult").textContent = `Existing alert ${existingId} not found.`; return; }
   p.next = { id, region, next: p.next };
+  T.step(`insert ${id} after ${existingId}: relinked next pointers`);
 }
 function sllDeleteBefore(existingId) {
   if (!sllHead || sllHead.id === existingId) {
@@ -115,9 +126,10 @@ function sllDeleteBefore(existingId) {
     return;
   }
   let prev = null, cur = sllHead;
-  while (cur.next && cur.next.id !== existingId) { prev = cur; cur = cur.next; }
+  while (cur.next && cur.next.id !== existingId) { T.count("traversal steps"); prev = cur; cur = cur.next; }
   if (!cur.next) { document.getElementById("sllResult").textContent = `Existing alert ${existingId} not found.`; return; }
   if (!prev) sllHead = cur.next; else prev.next = cur.next;
+  T.step(`unlink node ${cur.id} (prev.next now skips it)`);
   document.getElementById("sllResult").textContent = `Deleted alert ${cur.id} (${cur.region}).`;
 }
 
@@ -187,6 +199,8 @@ function infixToPostfixTraced(infix) {
       stack.push(ch);
     }
     steps.push({ token: ch, stack: stack.join(" "), postfix });
+    T.count("tokens read");
+    T.step(`token '${ch}': stack [${stack.join(" ")}], output ${postfix}`);
   }
   while (stack.length) postfix += stack.pop();
   steps.push({ token: "(end)", stack: stack.join(" "), postfix });
@@ -232,6 +246,8 @@ document.getElementById("enqueueForm").addEventListener("submit", (e) => {
     document.getElementById("queueResult").textContent = `Queue full. Cannot dispatch alert ${id}.`;
   } else {
     cq[qRear] = id;
+    T.count("enqueues");
+    T.step(`enqueue ${id} at slot ${qRear}`);
     qRear = (qRear + 1) % Q_SIZE;
     qCount++;
     document.getElementById("queueResult").textContent = `Alert ${id} enqueued.`;
@@ -244,6 +260,8 @@ document.getElementById("btnDequeue").addEventListener("click", () => {
     document.getElementById("queueResult").textContent = "Queue empty.";
   } else {
     const val = cq[qFront];
+    T.count("dequeues");
+    T.step(`dequeue ${val} from slot ${qFront}`);
     cq[qFront] = null;
     qFront = (qFront + 1) % Q_SIZE;
     qCount--;
@@ -258,25 +276,34 @@ document.getElementById("btnDequeue").addEventListener("click", () => {
 let bstRoot = null; // { temp, left, right }
 
 function bstInsert(node, temp) {
-  if (!node) return { temp, left: null, right: null };
+  if (!node) {
+    T.step(`place ${temp} as a new leaf`);
+    return { temp, left: null, right: null };
+  }
+  T.count("comparisons");
+  T.step(`compare ${temp} with ${node.temp}: go ${temp < node.temp ? "left" : temp > node.temp ? "right" : "stop (duplicate)"}`);
   if (temp < node.temp) node.left = bstInsert(node.left, temp);
   else if (temp > node.temp) node.right = bstInsert(node.right, temp);
   return node;
 }
 function bstSearch(node, temp) {
   if (!node) return null;
+  T.count("comparisons");
+  T.step(`search: compare ${temp} with ${node.temp}`);
   if (temp === node.temp) return node;
   return temp < node.temp ? bstSearch(node.left, temp) : bstSearch(node.right, temp);
 }
 function bstFindMin(node) { while (node.left) node = node.left; return node; }
 function bstDelete(node, temp) {
   if (!node) return null;
+  T.count("comparisons");
   if (temp < node.temp) node.left = bstDelete(node.left, temp);
   else if (temp > node.temp) node.right = bstDelete(node.right, temp);
   else {
     if (!node.left) return node.right;
     if (!node.right) return node.left;
     const succ = bstFindMin(node.right);
+    T.step(`two children: replace ${node.temp} with inorder successor ${succ.temp}`);
     node.temp = succ.temp;
     node.right = bstDelete(node.right, succ.temp);
   }
@@ -356,10 +383,13 @@ function bfs(start) {
   const order = [];
   while (queue.length) {
     const v = queue.shift();
+    T.step(`dequeue ${regionNames[v]}`);
     order.push(v);
     for (let w = 0; w < regionNames.length; w++) {
+      T.count("cells checked");
       if (adj[v][w] === 1 && !visited[w]) {
         queue.push(w);
+        T.step(`discover ${regionNames[w]} from ${regionNames[v]}`);
         visited[w] = true;
       }
     }
@@ -408,7 +438,8 @@ function partition(arr, low, high) {
   const pivot = arr[high];
   let i = low - 1;
   for (let j = low; j < high; j++) {
-    if (arr[j] <= pivot) { i++; [arr[i], arr[j]] = [arr[j], arr[i]]; }
+    T.count("comparisons");
+    if (arr[j] <= pivot) { i++; [arr[i], arr[j]] = [arr[j], arr[i]]; T.count("swaps"); }
   }
   [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
   return i + 1;
@@ -419,6 +450,8 @@ function binarySearchTraced(arr, key) {
   while (low <= high) {
     const mid = Math.floor((low + high) / 2);
     steps.push(mid);
+    T.count("probes");
+    T.step(`probe index ${mid} (value ${arr[mid]})`);
     if (arr[mid] === key) return { index: mid, steps };
     else if (arr[mid] < key) low = mid + 1;
     else high = mid - 1;
@@ -463,8 +496,10 @@ function hashInsert(key, data) {
   const start = hashCodeOf(key);
   let idx = start;
   for (let probes = 0; probes < H_SIZE; probes++) {
+    T.count("probes");
     if (hashArr[idx].status !== "filled") {
       hashArr[idx] = { status: "filled", key, data };
+      T.step(`insert ${key}: hash ${start}${idx !== start ? ", collision, probed to " + idx : ", direct hit at " + idx}`);
       return `Station ${key} (${data.toFixed(1)}C) stored at index ${idx}.`;
     }
     idx = (idx + 1) % H_SIZE;
@@ -475,6 +510,7 @@ function hashSearch(key) {
   const start = hashCodeOf(key);
   let idx = start;
   for (let probes = 0; probes < H_SIZE; probes++) {
+    T.count("probes");
     if (hashArr[idx].status === EMPTY) return null;
     if (hashArr[idx].status === "filled" && hashArr[idx].key === key) return { idx, ...hashArr[idx] };
     idx = (idx + 1) % H_SIZE;
@@ -485,9 +521,11 @@ function hashDelete(key) {
   const start = hashCodeOf(key);
   let idx = start;
   for (let probes = 0; probes < H_SIZE; probes++) {
+    T.count("probes");
     if (hashArr[idx].status === EMPTY) return `Station ${key} not found.`;
     if (hashArr[idx].status === "filled" && hashArr[idx].key === key) {
       hashArr[idx] = { status: DELETED, key: null, data: null };
+      T.step(`delete ${key} at ${idx}: tombstone left so searches continue past it`);
       return `Removed station ${key} from index ${idx}.`;
     }
     idx = (idx + 1) % H_SIZE;
