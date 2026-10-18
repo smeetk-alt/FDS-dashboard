@@ -231,3 +231,10 @@ document.querySelectorAll("section.page").forEach((section) => {
   if (notes) notes.insertAdjacentElement("beforebegin", panel);
   else section.appendChild(panel);
 });
+
+document.querySelectorAll("[data-hub]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.getElementById("enterBtn").click();
+    navigate(btn.dataset.hub);
+  });
+});
