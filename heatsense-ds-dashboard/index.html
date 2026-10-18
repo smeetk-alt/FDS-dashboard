@@ -119,6 +119,29 @@
       <h3>C source</h3>
       <pre id="registryCode" class="code-block small"></pre>
       <div class="download-row"><a class="download-link" href="c_programs/exp1_station_registry.c" download>&#8595; exp1_station_registry.c</a></div>
+    
+      <div class="notes-box">
+        <h3>Notes</h3>
+        <h4>Key concepts</h4>
+        <ul>
+          <li><b>Array</b>: contiguous memory, fixed size, index-based access in O(1).</li>
+          <li><b>Array of structures</b>: each element groups related fields (station_id, name, temperature) under one <code>struct</code>.</li>
+          <li><b>Pointer to struct</b>: <code>search()</code> returns <code>&amp;registry[i]</code> so the caller reads the matched record without copying it.</li>
+        </ul>
+        <h4>Complexity</h4>
+        <table><thead><tr><th>Operation</th><th>Time</th></tr></thead><tbody>
+          <tr><td>Insert at last position</td><td>O(1)</td></tr>
+          <tr><td>Delete from last position</td><td>O(1)</td></tr>
+          <tr><td>Search by ID (linear)</td><td>O(n)</td></tr>
+          <tr><td>Display all</td><td>O(n)</td></tr>
+        </tbody></table>
+        <h4>Common mistakes</h4>
+        <ul>
+          <li>Forgetting the bounds check before <code>registry[count]</code> (overflow past <code>MAX</code>).</li>
+          <li>Using <code>scanf("%s")</code> for names with spaces; it stops at the first space.</li>
+          <li>Comparing structs with <code>==</code> in C; compare individual fields instead.</li>
+        </ul>
+      </div>
     </section>
 
     <!-- EXP 2: ALERT LOG (SLL) -->
@@ -164,6 +187,29 @@
       <h3>C source</h3>
       <pre id="sllCode" class="code-block small"></pre>
       <div class="download-row"><a class="download-link" href="c_programs/exp2_alert_log_sll.c" download>&#8595; exp2_alert_log_sll.c</a></div>
+    
+      <div class="notes-box">
+        <h3>Notes</h3>
+        <h4>Key concepts</h4>
+        <ul>
+          <li><b>Node</b>: data plus a <code>next</code> pointer; the list is reached only through <code>start</code>.</li>
+          <li><b>Dynamic memory</b>: nodes are created with <code>malloc</code> and released with <code>free</code>; no fixed capacity.</li>
+          <li><b>deleteBefore</b> needs two pointers (<code>prev</code>, <code>cur</code>) because a singly linked list cannot step backwards.</li>
+        </ul>
+        <h4>Complexity</h4>
+        <table><thead><tr><th>Operation</th><th>Time</th></tr></thead><tbody>
+          <tr><td>Insert at begin</td><td>O(1)</td></tr>
+          <tr><td>Insert after a given node</td><td>O(n) to find it, O(1) to link</td></tr>
+          <tr><td>Delete before a given node</td><td>O(n)</td></tr>
+          <tr><td>Display</td><td>O(n)</td></tr>
+        </tbody></table>
+        <h4>Common mistakes</h4>
+        <ul>
+          <li>Deleting the head when asked to delete "before" the first node (no predecessor exists).</li>
+          <li>Losing the rest of the list by overwriting <code>next</code> before saving it.</li>
+          <li>Not calling <code>free()</code> on removed nodes (memory leak).</li>
+        </ul>
+      </div>
     </section>
 
     <!-- EXP 3: STACK / INFIX-POSTFIX -->
@@ -194,6 +240,28 @@
       <h3>C source</h3>
       <pre id="stackCode" class="code-block small"></pre>
       <div class="download-row"><a class="download-link" href="c_programs/exp3_heatindex_stack.c" download>&#8595; exp3_heatindex_stack.c</a></div>
+    
+      <div class="notes-box">
+        <h3>Notes</h3>
+        <h4>Key concepts</h4>
+        <ul>
+          <li><b>LIFO</b>: the last element pushed is the first popped.</li>
+          <li><b>Linked-list stack</b>: push and pop happen at the head, so both are O(1) and the stack never overflows (only memory limits it).</li>
+          <li><b>Infix to postfix</b>: operands go straight to the output; operators wait on the stack until a lower or equal precedence operator arrives.</li>
+        </ul>
+        <h4>Precedence used</h4>
+        <table><thead><tr><th>Operator</th><th>Precedence</th></tr></thead><tbody>
+          <tr><td><code>*</code> <code>/</code></td><td>2 (higher)</td></tr>
+          <tr><td><code>+</code> <code>-</code></td><td>1</td></tr>
+          <tr><td><code>(</code></td><td>0 (never popped by an operator)</td></tr>
+        </tbody></table>
+        <h4>Common mistakes</h4>
+        <ul>
+          <li>Popping the <code>(</code> into the output instead of discarding it.</li>
+          <li>Using <code>&gt;</code> instead of <code>&gt;=</code> when comparing precedence, which breaks left-to-right order for <code>-</code> and <code>/</code>.</li>
+          <li>Forgetting to pop leftover operators at the end of the expression.</li>
+        </ul>
+      </div>
     </section>
 
     <!-- EXP 4: CIRCULAR QUEUE -->
@@ -227,6 +295,27 @@
       <h3>C source</h3>
       <pre id="queueCode" class="code-block small"></pre>
       <div class="download-row"><a class="download-link" href="c_programs/exp4_dispatch_queue.c" download>&#8595; exp4_dispatch_queue.c</a></div>
+    
+      <div class="notes-box">
+        <h3>Notes</h3>
+        <h4>Key concepts</h4>
+        <ul>
+          <li><b>FIFO</b>: the first item enqueued is the first dequeued.</li>
+          <li><b>Circular array</b>: after the last slot, <code>rear</code> and <code>front</code> wrap to index 0 via <code>(index + 1) % SIZE</code>, so freed slots are reused.</li>
+          <li><b>Counter method</b>: a separate <code>count</code> tells full (<code>count == SIZE</code>) from empty (<code>count == 0</code>) without wasting a slot.</li>
+        </ul>
+        <h4>Complexity</h4>
+        <table><thead><tr><th>Operation</th><th>Time</th></tr></thead><tbody>
+          <tr><td>enqueue / dequeue</td><td>O(1)</td></tr>
+          <tr><td>getFront / getRear</td><td>O(1)</td></tr>
+          <tr><td>displayAll</td><td>O(n)</td></tr>
+        </tbody></table>
+        <h4>Common mistakes</h4>
+        <ul>
+          <li>Testing emptiness with <code>front == rear</code> alone; that is ambiguous when the queue is full.</li>
+          <li>Computing the rear index as <code>rear - 1</code> without adding <code>SIZE</code> first (negative index when rear is 0).</li>
+        </ul>
+      </div>
     </section>
 
     <!-- EXP 5: BST -->
@@ -268,6 +357,27 @@
       <h3>C source</h3>
       <pre id="bstCode" class="code-block small"></pre>
       <div class="download-row"><a class="download-link" href="c_programs/exp5_station_bst.c" download>&#8595; exp5_station_bst.c</a></div>
+    
+      <div class="notes-box">
+        <h3>Notes</h3>
+        <h4>Key concepts</h4>
+        <ul>
+          <li><b>BST property</b>: left subtree &lt; node &lt; right subtree, for every node.</li>
+          <li><b>Traversals</b>: inorder gives sorted output; preorder copies a tree; postorder deletes a tree safely.</li>
+          <li><b>Delete</b> has three cases: leaf (remove), one child (replace with that child), two children (replace with inorder successor, then delete the successor).</li>
+        </ul>
+        <h4>Complexity</h4>
+        <table><thead><tr><th>Operation</th><th>Average (balanced)</th><th>Worst (skewed)</th></tr></thead><tbody>
+          <tr><td>Search / insert / delete</td><td>O(log n)</td><td>O(n)</td></tr>
+          <tr><td>Inorder traversal</td><td>O(n)</td><td>O(n)</td></tr>
+        </tbody></table>
+        <h4>Common mistakes</h4>
+        <ul>
+          <li>Inserting duplicate keys without a rule for them.</li>
+          <li>Forgetting to reassign the returned root in recursive insert or delete.</li>
+          <li>Not handling the two-child case, which is the one that needs the successor.</li>
+        </ul>
+      </div>
     </section>
 
     <!-- EXP 6: GRAPH BFS -->
@@ -299,6 +409,27 @@
       <h3>C source</h3>
       <pre id="graphCode" class="code-block small"></pre>
       <div class="download-row"><a class="download-link" href="c_programs/exp6_region_network_bfs.c" download>&#8595; exp6_region_network_bfs.c</a></div>
+    
+      <div class="notes-box">
+        <h3>Notes</h3>
+        <h4>Key concepts</h4>
+        <ul>
+          <li><b>Adjacency matrix</b>: an n x n grid where <code>adj[i][j] = 1</code> means an edge joins i and j. Undirected graphs give a symmetric matrix.</li>
+          <li><b>BFS</b>: explores all neighbours of a node before going further, so it finds the fewest-edge path from the start.</li>
+          <li><b>visited[]</b>: marks a node when it is enqueued, not when it is dequeued, to avoid adding it twice.</li>
+        </ul>
+        <h4>Complexity</h4>
+        <table><thead><tr><th>Representation</th><th>BFS time</th><th>Space</th></tr></thead><tbody>
+          <tr><td>Adjacency matrix</td><td>O(V^2)</td><td>O(V^2)</td></tr>
+          <tr><td>Adjacency list</td><td>O(V + E)</td><td>O(V + E)</td></tr>
+        </tbody></table>
+        <h4>Common mistakes</h4>
+        <ul>
+          <li>Marking a node visited only when dequeued, which can enqueue the same node many times.</li>
+          <li>Forgetting to set the matrix symmetrically for an undirected graph.</li>
+          <li>Starting index out of range (the lab uses 0-indexed regions).</li>
+        </ul>
+      </div>
     </section>
 
     <!-- EXP 7: SORT + BINARY SEARCH -->
@@ -328,6 +459,27 @@
       <h3>C source</h3>
       <pre id="sortCode" class="code-block small"></pre>
       <div class="download-row"><a class="download-link" href="c_programs/exp7_history_sort_search.c" download>&#8595; exp7_history_sort_search.c</a></div>
+    
+      <div class="notes-box">
+        <h3>Notes</h3>
+        <h4>Key concepts</h4>
+        <ul>
+          <li><b>Precondition</b>: binary search only works on a sorted array.</li>
+          <li><b>Quicksort</b>: picks a pivot, partitions smaller and larger values around it, then recurses on each side.</li>
+          <li><b>Binary search</b>: compares the key with the middle element and discards half the remaining range each step.</li>
+        </ul>
+        <h4>Complexity</h4>
+        <table><thead><tr><th>Algorithm</th><th>Best / average</th><th>Worst</th></tr></thead><tbody>
+          <tr><td>Quicksort</td><td>O(n log n)</td><td>O(n^2) (already sorted input, bad pivot)</td></tr>
+          <tr><td>Binary search</td><td>O(log n)</td><td>O(log n)</td></tr>
+        </tbody></table>
+        <h4>Common mistakes</h4>
+        <ul>
+          <li>Running binary search on an unsorted array and reporting "not found" incorrectly.</li>
+          <li>Using <code>(low + high) / 2</code> with very large indices (overflow); <code>low + (high - low) / 2</code> is safer.</li>
+          <li>Off-by-one errors in <code>low</code>/<code>high</code> updates, which can cause an infinite loop.</li>
+        </ul>
+      </div>
     </section>
 
     <!-- EXP 8: HASH TABLE -->
@@ -366,6 +518,26 @@
       <h3>C source</h3>
       <pre id="hashCode" class="code-block small"></pre>
       <div class="download-row"><a class="download-link" href="c_programs/exp8_station_hashtable.c" download>&#8595; exp8_station_hashtable.c</a></div>
+    
+      <div class="notes-box">
+        <h3>Notes</h3>
+        <h4>Key concepts</h4>
+        <ul>
+          <li><b>Hash function</b>: <code>key % SIZE</code> maps any key to a slot index.</li>
+          <li><b>Linear probing</b>: on a collision, try the next slot, wrapping around the circular array.</li>
+          <li><b>Tombstone</b>: a deleted slot is marked, not emptied, so later searches keep probing past it.</li>
+        </ul>
+        <h4>Complexity</h4>
+        <table><thead><tr><th>Operation</th><th>Average</th><th>Worst</th></tr></thead><tbody>
+          <tr><td>Insert / search / delete</td><td>O(1)</td><td>O(n) (all keys collide)</td></tr>
+        </tbody></table>
+        <h4>Common mistakes</h4>
+        <ul>
+          <li>Emptying a deleted slot to "empty", which breaks searches for keys stored past it.</li>
+          <li>Probing forever on a full table; stop after <code>SIZE</code> probes.</li>
+          <li>Negative keys giving a negative index; use <code>((key % SIZE) + SIZE) % SIZE</code>.</li>
+        </ul>
+      </div>
     </section>
 
   </main>

@@ -213,3 +213,9 @@ tbody tr:hover { background: var(--amber-50); }
   .sidenav { width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
   .page-host { padding: 20px; }
 }
+
+.notes-box { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 22px; margin: 22px 0; box-shadow: var(--shadow-sm); }
+.notes-box h3 { margin-top: 0; color: var(--amber-dark); }
+.notes-box h4 { margin: 16px 0 8px; font-size: 14px; color: var(--ink); }
+.notes-box ul { margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.7; color: var(--muted); }
+.notes-box table { font-size: 13px; }
