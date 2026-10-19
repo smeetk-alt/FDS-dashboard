@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,7 +10,10 @@
 
 <header class="topbar">
   <div class="brand">HeatSense</div>
-  <button id="menuBtn" class="icon-btn" aria-label="Menu">&#9776;</button>
+  <div class="topbar-actions">
+    <button id="themeToggle" class="icon-btn theme-toggle" type="button" aria-label="Switch to dark mode" title="Toggle theme"><span class="icon">&#9790;</span></button>
+    <button id="menuBtn" class="icon-btn" aria-label="Menu">&#9776;</button>
+  </div>
 </header>
 
 <!-- ============ LANDING SCREEN ============ -->

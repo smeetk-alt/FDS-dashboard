@@ -238,3 +238,33 @@ document.querySelectorAll("[data-hub]").forEach((btn) => {
     navigate(btn.dataset.hub);
   });
 });
+
+(() => {
+  const root = document.documentElement;
+  const toggle = document.getElementById("themeToggle");
+  const stored = (() => { try { return localStorage.getItem("heatsense-theme"); } catch (e) { return null; } })();
+  const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const apply = (theme) => {
+    root.dataset.theme = theme;
+    toggle.setAttribute("aria-label", theme === "dark" ? "Switch to light mode" : "Switch to dark mode");
+    toggle.querySelector(".icon").innerHTML = theme === "dark" ? "&#9788;" : "&#9790;";
+  };
+  apply(stored || (prefersDark ? "dark" : "light"));
+  toggle.addEventListener("click", () => {
+    const next = root.dataset.theme === "dark" ? "light" : "dark";
+    apply(next);
+    try { localStorage.setItem("heatsense-theme", next); } catch (e) {}
+  });
+})();
+
+document.addEventListener("pointerdown", (e) => {
+  const btn = e.target.closest(".btn-primary, .hub-card, .nav-link");
+  if (!btn || btn.disabled) return;
+  const rect = btn.getBoundingClientRect();
+  const dot = document.createElement("span");
+  dot.className = "ripple-dot";
+  dot.style.left = (e.clientX - rect.left) + "px";
+  dot.style.top = (e.clientY - rect.top) + "px";
+  btn.appendChild(dot);
+  dot.addEventListener("animationend", () => dot.remove());
+});
