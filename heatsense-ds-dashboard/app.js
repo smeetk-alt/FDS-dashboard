@@ -57,11 +57,7 @@ document.getElementById("heroStats").innerHTML = `
    EXP 1: Station Registry (array of structs)
    =================================================================== */
 const MAX_STATIONS = 50;
-let registry = [
-  { id: 101, name: "Chandrapur", temp: 46.3 },
-  { id: 102, name: "Nagpur", temp: 44.8 },
-  { id: 103, name: "Akola", temp: 36.1 },
-];
+let registry = [];
 
 function registryTableHtml() {
   if (!registry.length) return `<p class="muted small" style="padding:12px">Registry empty.</p>`;
@@ -422,9 +418,10 @@ document.getElementById("bfsForm").addEventListener("submit", (e) => {
    EXP 7: QuickSort + Binary Search
    =================================================================== */
 let records = [];
+let chennaiSeries = [];
 
 function regenerateRecords() {
-  records = Array.from({ length: 12 }, () => +(28 + Math.random() * 20).toFixed(1));
+  records = chennaiSeries.map((d) => d.temp);
   quickSort(records, 0, records.length - 1);
 }
 function quickSort(arr, low, high) {
@@ -463,7 +460,7 @@ function renderRecords(highlightIdx = -1, visited = []) {
   document.getElementById("recordsViz").innerHTML = records
     .map((t, i) => {
       const cls = i === highlightIdx ? "found" : visited.includes(i) ? "active" : "";
-      return `<div class="viz-cell ${cls}">${t}</div>`;
+      return `<div class="viz-cell mini ${cls}" title="${t} C">${t}</div>`;
     })
     .join("");
 }
@@ -570,3 +567,18 @@ document.getElementById("hashDeleteForm").addEventListener("submit", (e) => {
 hashInsert(6, 38.2);
 hashInsert(16, 41.0); /* collides with 6 -> probes to next slot */
 hashInsert(23, 29.7);
+
+fetch("weather_data.json")
+  .then((r) => r.json())
+  .then((data) => {
+    registry = data.stations.map((s) => ({ id: s.id, name: s.name, temp: s.mean_temp }));
+    chennaiSeries = data.chennai_daily;
+    renderRegistry();
+    regenerateRecords();
+    renderRecords();
+    const v = records;
+    const p = (q) => v[Math.min(v.length - 1, Math.floor(q * v.length))];
+    document.getElementById("searchRecordResult").textContent =
+      `Chennai 2022, ${v.length} days: min ${v[0]} C, median ${p(0.5)} C, 95th percentile ${p(0.95)} C, max ${v[v.length - 1]} C.`;
+  })
+  .catch(() => {});
